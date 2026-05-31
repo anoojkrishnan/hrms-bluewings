@@ -347,11 +347,19 @@ export class OrganizationService {
 
   async createLocation(dto: CreateLocationDto, tenantId: string, organizationId: string, actorId: string): Promise<Location> {
     const publicId = generatePublicId('loc_');
+    const { address, city, state, country, pincode, addressObj, ...rest } = dto;
+    const nestedAddress = addressObj ?? (
+      (address || city || state || country || pincode)
+        ? { line1: address, city, state, pincode, country: country ?? 'IN' }
+        : undefined
+    );
     const location = await this.repo.createLocation({
-      ...dto,
+      ...rest,
+      address: nestedAddress,
       publicId,
       tenantId,
       organizationId,
+      type: dto.type ?? 'office',
       timezone: dto.timezone ?? 'Asia/Kolkata',
       isActive: true,
       createdBy: actorId,
@@ -384,7 +392,17 @@ export class OrganizationService {
     const existing = await this.repo.findLocationByPublicId(publicId, tenantId);
     if (!existing) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Location not found');
 
-    const updated = await this.repo.updateLocation(publicId, tenantId, { ...dto, updatedBy: actorId });
+    const { address, city, state, country, pincode, addressObj, ...rest } = dto;
+    const nestedAddress = addressObj ?? (
+      (address || city || state || country || pincode)
+        ? { line1: address, city, state, pincode, country: country ?? 'IN' }
+        : undefined
+    );
+    const updated = await this.repo.updateLocation(publicId, tenantId, {
+      ...rest,
+      ...(nestedAddress ? { address: nestedAddress } : {}),
+      updatedBy: actorId,
+    });
     if (!updated) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Location not found');
 
     auditService.writeAsync({

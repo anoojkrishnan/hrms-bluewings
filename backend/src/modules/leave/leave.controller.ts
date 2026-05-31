@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import { LeaveService } from './leave.service';
 import { success, successList } from '@/shared/utils/response';
+import { AppError } from '@/shared/errors/AppError';
 
 export class LeaveController {
   private readonly service: LeaveService;
@@ -38,8 +39,16 @@ export class LeaveController {
 
   applyLeave = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { tenantId, organizationId, userId } = req.user;
-      const app = await this.service.applyLeave(req.body, tenantId, organizationId, userId);
+      const { tenantId, organizationId, userId, employeePublicId } = req.user;
+      const body = req.body as { employeeCode?: string; [key: string]: unknown };
+      // Fall back to the authenticated user's own employee code when not explicitly provided
+      if (!body.employeeCode) {
+        if (!employeePublicId) {
+          throw new AppError(422, 'EMPLOYEE_NOT_LINKED', 'Your account is not linked to an employee record. Contact HR.');
+        }
+        body.employeeCode = employeePublicId;
+      }
+      const app = await this.service.applyLeave(body, tenantId, organizationId, userId);
       res.status(201).json(success(app));
     } catch (err) { next(err); }
   };
@@ -174,6 +183,14 @@ export class LeaveController {
       const { tenantId, organizationId, userId } = req.user;
       const policy = await this.service.upsertWeekendPolicy(req.body, tenantId, organizationId, userId);
       res.json(success(policy));
+    } catch (err) { next(err); }
+  };
+
+  initAllBalances = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, organizationId } = req.user;
+      const result = await this.service.initAllBalances(tenantId, organizationId);
+      res.json(success(result));
     } catch (err) { next(err); }
   };
 }

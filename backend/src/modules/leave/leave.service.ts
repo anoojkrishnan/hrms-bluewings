@@ -80,7 +80,40 @@ export class LeaveService {
       entityPublicId: lt.publicId,
     });
 
+    // Initialize zero-balance records for all existing active employees so they
+    // immediately see this leave type in their balance view. HR can then adjust.
+    void this.initBalancesForNewLeaveType(lt.publicId, tenantId, organizationId);
+
     return lt;
+  }
+
+  private async initBalancesForNewLeaveType(leaveTypeId: string, tenantId: string, organizationId: string): Promise<void> {
+    try {
+      const { EmployeeRepository } = await import('@/modules/employee/employee.repository');
+      const empRepo = new EmployeeRepository();
+      const result = await empRepo.findEmployees(tenantId, organizationId, { status: 'active' }, 1, 1000);
+      const year = new Date().getFullYear();
+      await Promise.all(
+        result.data.map((emp) =>
+          this.repo.upsertBalance({
+            tenantId,
+            employeeId: emp.publicId,
+            leaveTypeId,
+            leaveYear: year,
+            openingBalance: 0,
+            accrued: 0,
+            granted: 0,
+            taken: 0,
+            encashed: 0,
+            lapsed: 0,
+            closingBalance: 0,
+            lastUpdatedAt: new Date(),
+          }),
+        ),
+      );
+    } catch {
+      // Non-critical — log silently, don't block leave type creation
+    }
   }
 
   async listLeaveTypes(tenantId: string): Promise<LeaveType[]> {
@@ -365,6 +398,45 @@ export class LeaveService {
       entityPublicId: employee.publicId,
       newValue: { leaveTypeCode: dto.leaveTypeCode, days: dto.days, field: dto.field, reason: dto.reason } as unknown as Record<string, unknown>,
     });
+  }
+
+  // Idempotent: creates missing leave_balance records (zero) for every
+  // active employee × active leave type combination for the current year.
+  async initAllBalances(tenantId: string, organizationId: string): Promise<{ created: number }> {
+    const { EmployeeRepository } = await import('@/modules/employee/employee.repository');
+    const empRepo = new EmployeeRepository();
+    const [empResult, leaveTypes] = await Promise.all([
+      empRepo.findEmployees(tenantId, organizationId, { status: 'active' }, 1, 1000),
+      this.repo.findLeaveTypes(tenantId),
+    ]);
+
+    const year = this.currentLeaveYear();
+    let created = 0;
+
+    for (const emp of empResult.data) {
+      for (const lt of leaveTypes) {
+        const existing = await this.repo.getBalance(emp.publicId, lt.publicId, tenantId, year);
+        if (!existing) {
+          await this.repo.upsertBalance({
+            tenantId,
+            employeeId: emp.publicId,
+            leaveTypeId: lt.publicId,
+            leaveYear: year,
+            openingBalance: 0,
+            accrued: 0,
+            granted: 0,
+            taken: 0,
+            encashed: 0,
+            lapsed: 0,
+            closingBalance: 0,
+            lastUpdatedAt: new Date(),
+          });
+          created++;
+        }
+      }
+    }
+
+    return { created };
   }
 
   // ── Calendar ──────────────────────────────────────────────────────────

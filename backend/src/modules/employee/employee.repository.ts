@@ -181,12 +181,9 @@ export class EmployeeRepository {
     return doc as unknown as Employee | null;
   }
 
-  // Find an employee linked to a system user.
-  // The link is stored in employee_employment_details or via essUserId when ESS is enabled.
-  // Currently the employee schema does not store userId directly; this method
-  // returns null until the employee schema is extended to store a userId reference.
-  async findByUserId(_userId: string, _tenantId: string): Promise<Employee | null> {
-    return null;
+  async findByUserId(userId: string, tenantId: string): Promise<Employee | null> {
+    const doc = await EmployeeModel.findOne({ userId, tenantId, deletedAt: null }).lean();
+    return doc as unknown as Employee | null;
   }
 
   async findEmployees(

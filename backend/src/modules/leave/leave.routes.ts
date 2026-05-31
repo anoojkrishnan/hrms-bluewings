@@ -35,6 +35,7 @@ router.patch('/leave/applications/:publicId/revoke', requirePermission(P.APPLICA
 router.get('/leave/balances', requirePermission(P.BALANCE_VIEW), ctrl.getMyBalance);
 router.get('/leave/balances/:employeeCode', requirePermission(P.BALANCE_VIEW), ctrl.getBalance);
 router.put('/leave/balances/:employeeCode/adjust', requirePermission(P.BALANCE_ADJUST), validate(adjustBalanceSchema), ctrl.adjustBalance);
+router.post('/leave/balances/init', requirePermission(P.POLICY_CONFIGURE), (req, res, next) => { void ctrl.initAllBalances(req, res, next); });
 
 // ── Calendar ──────────────────────────────────────────────────────────────────
 router.get('/leave/calendar', requirePermission(P.APPLICATION_VIEW), ctrl.getCalendar);

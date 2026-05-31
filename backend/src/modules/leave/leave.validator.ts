@@ -29,7 +29,7 @@ export const updateLeaveTypeSchema = z.object({
 
 export const applyLeaveSchema = z.object({
   body: z.object({
-    employeeCode: z.string().min(1),
+    employeeCode: z.string().min(1).optional(),
     leaveTypeCode: z.string().min(1),
     startDate: z.string().datetime(),
     endDate: z.string().datetime(),

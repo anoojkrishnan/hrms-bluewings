@@ -79,11 +79,11 @@ export default function LocationList() {
     setForm({
       name: loc.name,
       code: loc.code,
-      address: loc.address ?? '',
-      city: loc.city ?? '',
-      state: loc.state ?? '',
-      country: loc.country,
-      pincode: loc.pincode ?? '',
+      address: loc.address?.line1 ?? '',
+      city: loc.address?.city ?? loc.city ?? '',
+      state: loc.address?.state ?? loc.state ?? '',
+      country: loc.address?.country ?? loc.country,
+      pincode: loc.address?.pincode ?? loc.pincode ?? '',
     });
     setFormErrors({});
     setModalOpen(true);
@@ -179,9 +179,9 @@ export default function LocationList() {
                 <tr key={loc.publicId}>
                   <td style={{ fontWeight: 500 }}>{loc.name}</td>
                   <td><code>{loc.code}</code></td>
-                  <td>{loc.city ?? '—'}</td>
-                  <td>{loc.state ?? '—'}</td>
-                  <td>{loc.country}</td>
+                  <td>{loc.address?.city ?? loc.city ?? '—'}</td>
+                  <td>{loc.address?.state ?? loc.state ?? '—'}</td>
+                  <td>{loc.address?.country ?? loc.country}</td>
                   <td>
                     <Badge variant={loc.isActive ? 'success' : 'default'}>
                       {loc.isActive ? 'Active' : 'Inactive'}

@@ -170,8 +170,15 @@ export interface UpdateGradeDto extends Partial<CreateGradeDto> {}
 export interface CreateLocationDto {
   name: string;
   code?: string;
-  type: 'office' | 'branch' | 'remote' | 'warehouse';
-  address?: CompanyAddress;
+  type?: 'office' | 'branch' | 'remote' | 'warehouse';
+  // Flat fields sent by the frontend form
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  pincode?: string;
+  // Or nested address object (for programmatic use)
+  addressObj?: CompanyAddress;
   latitude?: number;
   longitude?: number;
   geofenceRadius?: number;

@@ -71,6 +71,11 @@ export const requireAuth = async (
       payload.organizationId,
     );
 
+    // Look up linked employee record (present for ESS users invited via HR)
+    const { EmployeeRepository } = await import('@/modules/employee/employee.repository');
+    const empRepo = new EmployeeRepository();
+    const linkedEmployee = await empRepo.findByUserId(payload.userId, payload.tenantId);
+
     req.user = {
       userId: payload.userId,
       tenantId: payload.tenantId,
@@ -79,6 +84,8 @@ export const requireAuth = async (
       roles: resolved.roles,
       permissions: resolved.permissions,
       dataScope: resolved.dataScope,
+      // employeePublicId is the employeeCode — used as the external ID in leave/attendance routes
+      employeePublicId: linkedEmployee?.employeeCode,
       isImpersonating: false,
     };
 

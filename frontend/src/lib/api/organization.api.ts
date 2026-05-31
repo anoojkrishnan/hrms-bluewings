@@ -51,7 +51,9 @@ export interface Location {
   publicId: string;
   name: string;
   code: string;
-  address?: string;
+  type?: string;
+  // Backend stores address nested; these are convenience flat accessors populated from address object
+  address?: { line1?: string; city?: string; state?: string; pincode?: string; country?: string };
   city?: string;
   state?: string;
   country: string;

@@ -114,29 +114,38 @@ export const updateGradeSchema = z.object({
   }),
 });
 
+// Flat address fields sent by the frontend (address line, city, state, country, pincode)
+const flatAddressFields = {
+  address:  z.string().optional(),
+  city:     z.string().optional(),
+  state:    z.string().optional(),
+  country:  z.string().optional(),
+  pincode:  z.string().optional(),
+};
+
 export const createLocationSchema = z.object({
   body: z.object({
-    name: z.string().min(1, 'Location name required'),
-    code: z.string().optional(),
-    type: z.enum(['office', 'branch', 'remote', 'warehouse']),
-    address: addressSchema,
-    latitude: z.number().optional(),
-    longitude: z.number().optional(),
+    name:           z.string().min(1, 'Location name required'),
+    code:           z.string().optional(),
+    type:           z.enum(['office', 'branch', 'remote', 'warehouse']).optional().default('office'),
+    ...flatAddressFields,
+    latitude:       z.number().optional(),
+    longitude:      z.number().optional(),
     geofenceRadius: z.number().positive().optional(),
-    timezone: z.string().default('Asia/Kolkata'),
+    timezone:       z.string().default('Asia/Kolkata'),
   }),
 });
 
 export const updateLocationSchema = z.object({
   params: z.object({ publicId: z.string().min(1) }),
   body: z.object({
-    name: z.string().min(1).optional(),
-    code: z.string().optional(),
-    type: z.enum(['office', 'branch', 'remote', 'warehouse']).optional(),
-    address: addressSchema,
-    latitude: z.number().optional(),
-    longitude: z.number().optional(),
+    name:           z.string().min(1).optional(),
+    code:           z.string().optional(),
+    type:           z.enum(['office', 'branch', 'remote', 'warehouse']).optional(),
+    ...flatAddressFields,
+    latitude:       z.number().optional(),
+    longitude:      z.number().optional(),
     geofenceRadius: z.number().positive().optional(),
-    timezone: z.string().optional(),
+    timezone:       z.string().optional(),
   }),
 });

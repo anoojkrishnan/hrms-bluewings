@@ -110,6 +110,8 @@ export const leaveApi = {
     reason?: string;
   }) => put<void>(`/leave/balances/${employeeCode}/adjust`, dto),
 
+  initAllBalances: () => post<{ created: number }>('/leave/balances/init', {}),
+
   // Calendar
   getCalendar: (companyId: string, month: number, year: number) =>
     get<{ date: string; type: string; label: string }[]>('/leave/calendar', {

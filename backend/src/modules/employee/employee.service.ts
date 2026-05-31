@@ -66,7 +66,40 @@ export class EmployeeService {
       newValue: { employeeCode, status: employee.status } as unknown as Record<string, unknown>,
     });
 
+    // Initialize zero-balance records for all existing leave types so the employee
+    // immediately appears in balance views. HR can then set the opening balance.
+    void this.initBalancesForNewEmployee(employee.publicId, tenantId, organizationId);
+
     return employee;
+  }
+
+  private async initBalancesForNewEmployee(employeeId: string, tenantId: string, organizationId: string): Promise<void> {
+    try {
+      const { LeaveRepository } = await import('@/modules/leave/leave.repository');
+      const leaveRepo = new LeaveRepository();
+      const leaveTypes = await leaveRepo.findLeaveTypes(tenantId);
+      const year = new Date().getFullYear();
+      await Promise.all(
+        leaveTypes.map((lt) =>
+          leaveRepo.upsertBalance({
+            tenantId,
+            employeeId,
+            leaveTypeId: lt.publicId,
+            leaveYear: year,
+            openingBalance: 0,
+            accrued: 0,
+            granted: 0,
+            taken: 0,
+            encashed: 0,
+            lapsed: 0,
+            closingBalance: 0,
+            lastUpdatedAt: new Date(),
+          }),
+        ),
+      );
+    } catch {
+      // Non-critical
+    }
   }
 
   async getEmployee(employeeCode: string, tenantId: string): Promise<Employee> {
