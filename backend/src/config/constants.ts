@@ -1,0 +1,12 @@
+export const DEFAULT_PAGE_SIZE = 20;
+export const MAX_PAGE_SIZE = 100;
+export const SIGNED_URL_EXPIRY_SECONDS = 900; // 15 minutes
+export const MAX_FAILED_LOGIN_ATTEMPTS = 5;
+export const ACCOUNT_LOCK_MINUTES = 30;
+export const SESSION_CLEANUP_DAYS = 30;
+export const BCRYPT_ROUNDS = 12;
+export const PUBLIC_ID_LENGTH = 10;
+export const EMAIL_VERIFY_TOKEN_EXPIRY = '24h';
+export const PASSWORD_RESET_TOKEN_EXPIRY = '1h';
+export const FREE_PLAN_EMPLOYEE_LIMIT = 5;
+export const AUDIT_ASYNC_DELAY_MS = 0;

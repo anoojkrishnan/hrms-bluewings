@@ -1,0 +1,47 @@
+.container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2000;
+  max-width: 380px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised);
+  font-size: 0.875rem;
+  font-weight: 600;
+  animation: slideIn 0.18s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(110%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.success { background: #0A6B3A; color: #fff; }
+.error   { background: var(--color-red); color: #fff; }
+.warning { background: #A05C08; color: #fff; }
+.info    { background: var(--color-primary); color: #fff; }
+
+.message { flex: 1; line-height: 1.4; }
+
+.close {
+  background: rgba(255,255,255,0.18);
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 3px 7px;
+  border-radius: var(--radius-sm);
+  transition: background var(--t-fast);
+}
+.close:hover { background: rgba(255,255,255,0.28); }

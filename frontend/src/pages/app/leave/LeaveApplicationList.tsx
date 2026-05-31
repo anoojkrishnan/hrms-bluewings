@@ -1,0 +1,259 @@
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { leaveApi } from '@/lib/api/leave.api';
+import { useAuthStore } from '@/lib/store/auth.store';
+import { PermissionGuard } from '@/components/guards/PermissionGuard';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
+
+const STATUS_VARIANTS: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'default'> = {
+  approved: 'success',
+  pending: 'warning',
+  rejected: 'danger',
+  cancelled: 'default',
+  revoked: 'danger',
+  draft: 'default',
+};
+
+export default function LeaveApplicationList() {
+  const { user } = useAuthStore();
+  const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+  const [status, setStatus] = useState('');
+  const [showApply, setShowApply] = useState(false);
+  const [rejectTarget, setRejectTarget] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState('');
+
+  // Apply form state
+  const [applyForm, setApplyForm] = useState({
+    leaveTypeCode: '',
+    startDate: '',
+    endDate: '',
+    reason: '',
+  });
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['leave-applications', page, status],
+    queryFn: () => leaveApi.listApplications({ page: String(page), ...(status && { status }) }),
+  });
+
+  const { data: leaveTypes } = useQuery({
+    queryKey: ['leave-types'],
+    queryFn: leaveApi.listTypes,
+  });
+
+  const applyMutation = useMutation({
+    mutationFn: () => leaveApi.apply({
+      ...applyForm,
+      startDate: applyForm.startDate ? new Date(applyForm.startDate).toISOString() : applyForm.startDate,
+      endDate: applyForm.endDate ? new Date(applyForm.endDate).toISOString() : applyForm.endDate,
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leave-applications'] });
+      setShowApply(false);
+      setApplyForm({ leaveTypeCode: '', startDate: '', endDate: '', reason: '' });
+    },
+  });
+
+  const approveMutation = useMutation({
+    mutationFn: (publicId: string) => leaveApi.approve(publicId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['leave-applications'] }),
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: ({ publicId, reason }: { publicId: string; reason: string }) =>
+      leaveApi.reject(publicId, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leave-applications'] });
+      setRejectTarget(null);
+      setRejectReason('');
+    },
+  });
+
+  const cancelMutation = useMutation({
+    mutationFn: (publicId: string) => leaveApi.cancel(publicId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['leave-applications'] }),
+  });
+
+  const applications = data?.data ?? [];
+  const meta = data?.meta;
+
+  return (
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Leave Applications</h1>
+        <div className="page-actions">
+          <PermissionGuard permission="leave.application.create">
+            <Button onClick={() => setShowApply(true)}>Apply for Leave</Button>
+          </PermissionGuard>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <select className="select" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
+          <option value="">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      {isLoading ? (
+        Array.from({ length: 5 }).map((_, i) => <div key={i} style={{ marginBottom: 8 }}><Skeleton height={48} /></div>)
+      ) : applications.length === 0 ? (
+        <EmptyState
+          title="No leave applications"
+          description="No leave applications found."
+          cta={
+            <PermissionGuard permission="leave.application.create">
+              <Button onClick={() => setShowApply(true)}>Apply for Leave</Button>
+            </PermissionGuard>
+          }
+        />
+      ) : (
+        <>
+          <div className="table-wrapper">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Leave Type</th>
+                  <th>Dates</th>
+                  <th>Days</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications.map((app) => (
+                  <tr key={app.publicId}>
+                    <td>{app.employeeId}</td>
+                    <td>{app.leaveTypeId}</td>
+                    <td>
+                      {new Date(app.startDate).toLocaleDateString()} – {new Date(app.endDate).toLocaleDateString()}
+                    </td>
+                    <td>{app.totalDays}</td>
+                    <td>
+                      <Badge variant={STATUS_VARIANTS[app.status] ?? 'default'}>
+                        {app.status}
+                      </Badge>
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        {app.status === 'pending' && (
+                          <>
+                            <PermissionGuard permission="leave.application.approve">
+                              <button
+                                className="btn btn-sm btn-success"
+                                onClick={() => approveMutation.mutate(app.publicId)}
+                              >
+                                Approve
+                              </button>
+                            </PermissionGuard>
+                            <PermissionGuard permission="leave.application.reject">
+                              <button
+                                className="btn btn-sm btn-danger"
+                                onClick={() => setRejectTarget(app.publicId)}
+                              >
+                                Reject
+                              </button>
+                            </PermissionGuard>
+                          </>
+                        )}
+                        {app.status === 'pending' && app.appliedBy === user?.userId && (
+                          <PermissionGuard permission="leave.application.cancel">
+                            <button
+                              className="btn btn-sm btn-secondary"
+                              onClick={() => cancelMutation.mutate(app.publicId)}
+                            >
+                              Cancel
+                            </button>
+                          </PermissionGuard>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {meta && meta.totalPages > 1 && (
+            <div className="pagination">
+              <button className="btn btn-ghost" disabled={!meta.hasPrev} onClick={() => setPage((p) => p - 1)}>Previous</button>
+              <span className="pagination-info">Page {meta.page} of {meta.totalPages}</span>
+              <button className="btn btn-ghost" disabled={!meta.hasNext} onClick={() => setPage((p) => p + 1)}>Next</button>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Apply Leave Modal */}
+      {showApply && (
+        <Modal open={showApply} title="Apply for Leave" onClose={() => setShowApply(false)}>
+          <div className="form-group">
+            <label className="form-label">Leave Type *</label>
+            <select
+              className="select"
+              value={applyForm.leaveTypeCode}
+              onChange={(e) => setApplyForm((f) => ({ ...f, leaveTypeCode: e.target.value }))}
+            >
+              <option value="">Select leave type</option>
+              {leaveTypes?.map((lt) => (
+                <option key={lt.code} value={lt.code}>{lt.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Start Date *</label>
+            <input type="date" className="input" value={applyForm.startDate}
+              onChange={(e) => setApplyForm((f) => ({ ...f, startDate: e.target.value }))} />
+          </div>
+          <div className="form-group">
+            <label className="form-label">End Date *</label>
+            <input type="date" className="input" value={applyForm.endDate}
+              onChange={(e) => setApplyForm((f) => ({ ...f, endDate: e.target.value }))} />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Reason</label>
+            <textarea className="input" rows={3} value={applyForm.reason}
+              onChange={(e) => setApplyForm((f) => ({ ...f, reason: e.target.value }))} />
+          </div>
+          {applyMutation.isError && (
+            <div className="alert alert-danger">Failed to apply. Please check your balance and try again.</div>
+          )}
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 16 }}>
+            <Button variant="secondary" onClick={() => setShowApply(false)}>Cancel</Button>
+            <Button onClick={() => applyMutation.mutate()} disabled={applyMutation.isPending}>
+              {applyMutation.isPending ? 'Applying...' : 'Apply'}
+            </Button>
+          </div>
+        </Modal>
+      )}
+
+      {/* Reject Modal */}
+      {rejectTarget && (
+        <Modal open={!!rejectTarget} title="Reject Leave" onClose={() => setRejectTarget(null)}>
+          <div className="form-group">
+            <label className="form-label">Reason *</label>
+            <textarea className="input" rows={3} value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
+          </div>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 16 }}>
+            <Button variant="secondary" onClick={() => setRejectTarget(null)}>Cancel</Button>
+            <Button
+              variant="danger"
+              disabled={!rejectReason || rejectMutation.isPending}
+              onClick={() => rejectMutation.mutate({ publicId: rejectTarget, reason: rejectReason })}
+            >
+              {rejectMutation.isPending ? 'Rejecting...' : 'Reject'}
+            </Button>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
+}

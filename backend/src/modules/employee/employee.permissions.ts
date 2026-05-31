@@ -1,0 +1,15 @@
+export const EMPLOYEE_PERMISSIONS = {
+  PROFILE_VIEW: 'employee.profile.view',
+  PROFILE_CREATE: 'employee.profile.create',
+  PROFILE_EDIT: 'employee.profile.edit',
+  PROFILE_DELETE: 'employee.profile.delete',
+  BANK_DETAILS_VIEW: 'employee.bank_details.view',
+  BANK_DETAILS_EDIT: 'employee.bank_details.edit',
+  STATUTORY_VIEW: 'employee.statutory_details.view',
+  DOCUMENTS_VIEW: 'employee.documents.view',
+  DOCUMENTS_UPLOAD: 'employee.documents.upload',
+  DOCUMENTS_DELETE: 'employee.documents.delete',
+  TIMELINE_VIEW: 'employee.timeline.view',
+  ESS_MANAGE: 'employee.ess.manage',
+  BULK_IMPORT: 'employee.bulk_import',
+} as const;
