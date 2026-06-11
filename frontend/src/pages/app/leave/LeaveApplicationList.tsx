@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { leaveApi } from '@/lib/api/leave.api';
+import { employeeApi } from '@/lib/api/employee.api';
 import { useAuthStore } from '@/lib/store/auth.store';
 import { PermissionGuard } from '@/components/guards/PermissionGuard';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
 import { Badge } from '@/components/ui/Badge';
+import { SetupGuide } from '@/components/ui/SetupGuide';
+import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 
@@ -27,8 +29,12 @@ export default function LeaveApplicationList() {
   const [rejectTarget, setRejectTarget] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState('');
 
+  // HR users have no employeePublicId — they must pick an employee explicitly
+  const isHrMode = !user?.employeePublicId;
+
   // Apply form state
   const [applyForm, setApplyForm] = useState({
+    employeeCode: '',
     leaveTypeCode: '',
     startDate: '',
     endDate: '',
@@ -47,16 +53,26 @@ export default function LeaveApplicationList() {
 
   const applyMutation = useMutation({
     mutationFn: () => leaveApi.apply({
-      ...applyForm,
+      ...(applyForm.employeeCode ? { employeeCode: applyForm.employeeCode } : {}),
+      leaveTypeCode: applyForm.leaveTypeCode,
       startDate: applyForm.startDate ? new Date(applyForm.startDate).toISOString() : applyForm.startDate,
       endDate: applyForm.endDate ? new Date(applyForm.endDate).toISOString() : applyForm.endDate,
+      reason: applyForm.reason || undefined,
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leave-applications'] });
       setShowApply(false);
-      setApplyForm({ leaveTypeCode: '', startDate: '', endDate: '', reason: '' });
+      setApplyForm({ employeeCode: '', leaveTypeCode: '', startDate: '', endDate: '', reason: '' });
     },
   });
+
+  // Load employees for name resolution in table and for HR apply-on-behalf
+  const { data: employeesData } = useQuery({
+    queryKey: ['employees-list'],
+    queryFn: () => employeeApi.list({ limit: '200', status: 'active' }),
+    enabled: isHrMode,
+  });
+  const employees = employeesData?.data ?? [];
 
   const approveMutation = useMutation({
     mutationFn: (publicId: string) => leaveApi.approve(publicId),
@@ -105,15 +121,7 @@ export default function LeaveApplicationList() {
       {isLoading ? (
         Array.from({ length: 5 }).map((_, i) => <div key={i} style={{ marginBottom: 8 }}><Skeleton height={48} /></div>)
       ) : applications.length === 0 ? (
-        <EmptyState
-          title="No leave applications"
-          description="No leave applications found."
-          cta={
-            <PermissionGuard permission="leave.application.create">
-              <Button onClick={() => setShowApply(true)}>Apply for Leave</Button>
-            </PermissionGuard>
-          }
-        />
+        <SetupGuide content={SETUP['leave-applications']} ctaNode={<Button onClick={() => setShowApply(true)}>Apply for Leave</Button>} />
       ) : (
         <>
           <div className="table-wrapper">
@@ -131,8 +139,8 @@ export default function LeaveApplicationList() {
               <tbody>
                 {applications.map((app) => (
                   <tr key={app.publicId}>
-                    <td>{app.employeeId}</td>
-                    <td>{app.leaveTypeId}</td>
+                    <td>{employees.find(e => e.publicId === app.employeeId)?.employeeCode ?? app.employeeId}</td>
+                    <td>{leaveTypes?.find((t: { publicId: string; name: string }) => t.publicId === app.leaveTypeId)?.name ?? app.leaveTypeId}</td>
                     <td>
                       {new Date(app.startDate).toLocaleDateString()} – {new Date(app.endDate).toLocaleDateString()}
                     </td>
@@ -194,7 +202,27 @@ export default function LeaveApplicationList() {
 
       {/* Apply Leave Modal */}
       {showApply && (
-        <Modal open={showApply} title="Apply for Leave" onClose={() => setShowApply(false)}>
+        <Modal open={showApply} title={isHrMode ? 'Apply Leave on Behalf' : 'Apply for Leave'} onClose={() => setShowApply(false)}>
+          {isHrMode && (
+            <div className="form-group">
+              <label className="form-label">Employee *</label>
+              <select
+                className="select"
+                value={applyForm.employeeCode}
+                onChange={(e) => setApplyForm((f) => ({ ...f, employeeCode: e.target.value }))}
+              >
+                <option value="">Select employee</option>
+                {employees.map((emp) => (
+                  <option key={emp.employeeCode} value={emp.employeeCode}>
+                    {emp.employeeCode}
+                  </option>
+                ))}
+              </select>
+              <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 4, display: 'block' }}>
+                HR applying on behalf of an employee
+              </span>
+            </div>
+          )}
           <div className="form-group">
             <label className="form-label">Leave Type *</label>
             <select
@@ -228,7 +256,10 @@ export default function LeaveApplicationList() {
           )}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 16 }}>
             <Button variant="secondary" onClick={() => setShowApply(false)}>Cancel</Button>
-            <Button onClick={() => applyMutation.mutate()} disabled={applyMutation.isPending}>
+            <Button
+              onClick={() => applyMutation.mutate()}
+              disabled={applyMutation.isPending || (isHrMode && !applyForm.employeeCode)}
+            >
               {applyMutation.isPending ? 'Applying...' : 'Apply'}
             </Button>
           </div>

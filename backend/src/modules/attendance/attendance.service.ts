@@ -1,12 +1,13 @@
 import { AttendanceRepository } from './attendance.repository';
 import type {
-  AttendanceLog, AttendanceException, Shift,
+  AttendanceLog, AttendanceException, Shift, OvertimeRecord, CompOffRecord, ShiftAssignment,
   PunchDto, ManualOverrideDto, RegularizeDto, CreateShiftDto, UpdateShiftDto,
+  SubmitOvertimeDto, AssignShiftDto,
 } from './attendance.types';
-import { AttendanceSource, AttendanceStatus, ExceptionType } from './attendance.types';
+import { AttendanceSource, AttendanceStatus, ExceptionType, OTStatus } from './attendance.types';
 import { AppError } from '@/shared/errors/AppError';
 import { ErrorCodes } from '@/shared/errors/errorCodes';
-import { generateAttendancePublicId, generateExceptionPublicId, generateShiftPublicId } from '@/shared/utils/publicId';
+import { generateAttendancePublicId, generateExceptionPublicId, generateShiftPublicId, generatePublicId } from '@/shared/utils/publicId';
 import { auditService } from '@/modules/audit/audit.service';
 import { AuditAction } from '@/modules/audit/audit.types';
 import { eventBus } from '@/shared/events/eventBus';
@@ -371,5 +372,92 @@ export class AttendanceService {
     });
 
     return updated;
+  }
+
+  // ── Overtime ──────────────────────────────────────────────────────────────
+
+  async submitOvertime(dto: SubmitOvertimeDto, tenantId: string, orgId: string, employeeId: string, actorId: string): Promise<OvertimeRecord> {
+    const ot = await this.repo.createOvertime({
+      publicId: generatePublicId('ot_'),
+      tenantId, organizationId: orgId,
+      employeeId, companyId: dto.companyId,
+      date: new Date(dto.date),
+      overtimeHours: dto.overtimeHours,
+      reason: dto.reason,
+      status: OTStatus.PENDING,
+      isActive: true, createdBy: actorId, updatedBy: actorId, deletedAt: null,
+    });
+    auditService.writeAsync({ tenantId, actorId, action: AuditAction.CREATE, module: 'attendance', entityType: 'overtime_record', entityPublicId: ot.publicId, newValue: { hours: ot.overtimeHours } as unknown as Record<string, unknown> });
+    return ot;
+  }
+
+  async listOvertime(tenantId: string, employeeId?: string, status?: string): Promise<OvertimeRecord[]> {
+    return this.repo.findOvertimeRecords(tenantId, employeeId, status);
+  }
+
+  async approveOvertime(publicId: string, convertToCompOff: boolean, tenantId: string, orgId: string, actorId: string): Promise<OvertimeRecord> {
+    const ot = await this.repo.findOvertimeByPublicId(publicId, tenantId);
+    if (!ot) throw new AppError(404, ErrorCodes.NOT_FOUND, 'Overtime record not found');
+    if (ot.status !== OTStatus.PENDING) throw new AppError(409, ErrorCodes.INVALID_STATUS_TRANSITION, 'Only pending OT can be approved');
+
+    const updated = await this.repo.updateOvertime(publicId, tenantId, {
+      status: convertToCompOff ? OTStatus.CONVERTED : OTStatus.APPROVED,
+      reviewedBy: actorId, reviewedAt: new Date(),
+      compOffGranted: convertToCompOff, updatedBy: actorId,
+    });
+
+    if (convertToCompOff) {
+      const expiryDate = new Date();
+      expiryDate.setMonth(expiryDate.getMonth() + 3);
+      const creditedDays = Math.max(0.5, Math.round(ot.overtimeHours / 8 * 2) / 2);
+      await this.repo.createCompOff({
+        publicId: generatePublicId('compoff_'),
+        tenantId, overtimeId: publicId,
+        employeeId: ot.employeeId,
+        creditedDays, expiryDate, usedDays: 0,
+        isActive: true, createdBy: actorId, updatedBy: actorId, deletedAt: null,
+      });
+    }
+
+    auditService.writeAsync({ tenantId, actorId, action: AuditAction.APPROVE, module: 'attendance', entityType: 'overtime_record', entityPublicId: publicId });
+    return updated!;
+  }
+
+  async rejectOvertime(publicId: string, note: string, tenantId: string, actorId: string): Promise<OvertimeRecord> {
+    const ot = await this.repo.findOvertimeByPublicId(publicId, tenantId);
+    if (!ot) throw new AppError(404, ErrorCodes.NOT_FOUND, 'Overtime record not found');
+    if (ot.status !== OTStatus.PENDING) throw new AppError(409, ErrorCodes.INVALID_STATUS_TRANSITION, 'Only pending OT can be rejected');
+    const updated = await this.repo.updateOvertime(publicId, tenantId, {
+      status: OTStatus.REJECTED, reviewedBy: actorId, reviewedAt: new Date(), rejectionNote: note, updatedBy: actorId,
+    });
+    return updated!;
+  }
+
+  async getCompOffBalance(employeeId: string, tenantId: string): Promise<{ balance: number; records: CompOffRecord[] }> {
+    const [balance, records] = await Promise.all([
+      this.repo.findCompOffBalance(employeeId, tenantId),
+      this.repo.findCompOffRecords(employeeId, tenantId),
+    ]);
+    return { balance, records };
+  }
+
+  // ── Shift Assignments ─────────────────────────────────────────────────────
+
+  async assignShift(shiftId: string, dto: AssignShiftDto, tenantId: string, orgId: string, actorId: string): Promise<ShiftAssignment[]> {
+    const assignments = await Promise.all(dto.employeeIds.map(empId =>
+      this.repo.createShiftAssignment({
+        publicId: generatePublicId('shiftasgn_'),
+        tenantId, organizationId: orgId,
+        employeeId: empId, shiftId,
+        effectiveFrom: new Date(dto.effectiveFrom),
+        effectiveTo: dto.effectiveTo ? new Date(dto.effectiveTo) : undefined,
+        isActive: true, createdBy: actorId, updatedBy: actorId, deletedAt: null,
+      }),
+    ));
+    return assignments;
+  }
+
+  async listShiftAssignments(shiftId: string, tenantId: string): Promise<ShiftAssignment[]> {
+    return this.repo.findShiftAssignments(shiftId, tenantId);
   }
 }

@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dynamicFormsApi } from '@/lib/api/dynamic-forms.api';
 import type { DynamicForm } from '@/lib/api/dynamic-forms.api';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { SetupGuide } from '@/components/ui/SetupGuide';
+import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
@@ -44,7 +45,6 @@ export default function FormList() {
           <Button onClick={() => setShowCreate(true)}>Create Form</Button>
         </div>
       </div>
-
       {isLoading ? (
         Array.from({ length: 5 }).map((_, i) => (
           <div key={i} style={{ marginBottom: 8 }}>
@@ -52,11 +52,7 @@ export default function FormList() {
           </div>
         ))
       ) : forms.length === 0 ? (
-        <EmptyState
-          title="No forms configured"
-          description="Create dynamic forms to collect structured data across HR workflows."
-          cta={<Button onClick={() => setShowCreate(true)}>Create Form</Button>}
-        />
+        <SetupGuide content={SETUP['forms']} />
       ) : (
         <>
           <div className="table-wrapper">

@@ -2,6 +2,8 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosR
 import type { PaginatedResponse, PaginationMeta } from '@/types/api.types';
 
 let apiClient: AxiosInstance | null = null;
+let isRefreshing = false;
+let refreshSubscribers: Array<(ok: boolean) => void> = [];
 
 function getOrganizationId(): string | null {
   try {
@@ -13,6 +15,7 @@ function getOrganizationId(): string | null {
 }
 
 const PUBLIC_PATHS = new Set(['/login', '/signup', '/verify-email', '/forgot-password', '/reset-password']);
+const SKIP_REFRESH_URLS = new Set(['/auth/login', '/auth/refresh', '/auth/logout']);
 
 function redirectToLogin(): void {
   const currentPath = window.location.pathname;
@@ -43,10 +46,43 @@ export function createApiClient(): AxiosInstance {
 
   apiClient.interceptors.response.use(
     (response: AxiosResponse) => response,
-    (error) => {
-      if (error.response?.status === 401) {
+    async (error) => {
+      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+      const requestUrl: string = originalRequest.url ?? '';
+
+      if (error.response?.status === 401 && !originalRequest._retry && !SKIP_REFRESH_URLS.has(requestUrl)) {
+        if (isRefreshing) {
+          // Queue this request until the refresh completes
+          return new Promise((resolve, reject) => {
+            refreshSubscribers.push((ok) => {
+              if (ok) {
+                resolve(apiClient!.request(originalRequest));
+              } else {
+                reject(error);
+              }
+            });
+          });
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        try {
+          await apiClient!.post('/auth/refresh');
+          refreshSubscribers.forEach((cb) => cb(true));
+          refreshSubscribers = [];
+          isRefreshing = false;
+          return apiClient!.request(originalRequest);
+        } catch {
+          refreshSubscribers.forEach((cb) => cb(false));
+          refreshSubscribers = [];
+          isRefreshing = false;
+          redirectToLogin();
+        }
+      } else if (error.response?.status === 401) {
         redirectToLogin();
       }
+
       return Promise.reject(error);
     },
   );

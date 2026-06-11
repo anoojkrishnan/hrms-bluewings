@@ -1,0 +1,17 @@
+- generic [ref=e39]:
+  - heading "Sign in to HRMS" [level=1] [ref=e40]
+  - status [ref=e41]: Account created! Check your inbox and click the verification link to activate your account.
+  - generic [ref=e42]:
+    - generic [ref=e43]:
+      - generic [ref=e44]: Work email
+      - textbox "Work email" [ref=e46]
+    - generic [ref=e47]:
+      - generic [ref=e48]: Password
+      - textbox "Password" [ref=e50]
+    - link "Forgot password?" [ref=e52] [cursor=pointer]:
+      - /url: /forgot-password
+    - button "Sign in" [ref=e53] [cursor=pointer]
+  - paragraph [ref=e54]:
+    - text: Don't have an account?
+    - link "Sign up free" [ref=e55] [cursor=pointer]:
+      - /url: /signup

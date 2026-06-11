@@ -1,0 +1,4 @@
+[    3683ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://yopmail.com/:0
+[    3745ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://yopmail.com/:0
+[    4604ms] [ERROR] Attestation check for Shared Storage on https://www.googleadservices.com failed. @ https://www.googleadservices.com/pagead/managed/js/activeview/current/reach_worklet.html:0
+[    4607ms] [ERROR] Attestation check for Shared Storage on https://www.googleadservices.com failed. @ https://www.googleadservices.com/pagead/managed/js/activeview/current/reach_worklet.html:0

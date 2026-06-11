@@ -20,31 +20,31 @@
   display: flex;
   align-items: center;
   padding: 0 16px;
-  gap: 11px;
+  gap: 12px;
   border-bottom: 1px solid var(--color-sidebar-border);
   flex-shrink: 0;
 }
 
 .logoMark {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-md);
-  background: var(--color-primary);
+  background: var(--color-monday-violet);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8125rem;
-  font-weight: 800;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: #fff;
   flex-shrink: 0;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
 }
 
 .logoName {
   font-size: 0.9375rem;
-  font-weight: 800;
-  color: #E8EDF5;
-  letter-spacing: -0.04em;
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: -0.03em;
   white-space: nowrap;
 }
 
@@ -58,6 +58,9 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.nav::-webkit-scrollbar { width: 3px; }
+.nav::-webkit-scrollbar-thumb { background: var(--color-mist); border-radius: 99px; }
 
 .section { margin-top: 4px; }
 
@@ -76,25 +79,29 @@
   align-items: center;
   gap: 9px;
   padding: 8px 10px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-nav);
   color: var(--color-sidebar-text);
   text-decoration: none;
   font-size: 0.8125rem;
   font-weight: 500;
   white-space: nowrap;
-  transition: background var(--t-fast), color var(--t-fast);
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
   letter-spacing: -0.005em;
+  border-left: 3px solid transparent;
 }
 
 .item:hover {
-  background: rgba(255,255,255,0.06);
+  background: var(--color-snow);
   color: var(--color-sidebar-text-hover);
   text-decoration: none;
+  border-left-color: var(--color-mist);
 }
 
 .item.active {
   background: var(--color-sidebar-active-bg);
   color: var(--color-sidebar-active-text);
+  border-left-color: var(--color-monday-violet);
+  font-weight: 600;
 }
 
 .itemIcon {
@@ -103,7 +110,10 @@
   text-align: center;
   flex-shrink: 0;
   line-height: 1;
+  opacity: 0.8;
 }
+
+.item.active .itemIcon { opacity: 1; }
 
 .itemLabel { flex: 1; }
 

@@ -48,6 +48,33 @@ const LocationList    = lazy(() => import('@/pages/app/organization/LocationList
 const UserList = lazy(() => import('@/pages/app/admin/UserList'));
 const RoleList = lazy(() => import('@/pages/app/admin/RoleList'));
 
+// Phase 5
+const ShiftList         = lazy(() => import('@/pages/app/attendance/ShiftList'));
+const OvertimeList      = lazy(() => import('@/pages/app/attendance/OvertimeList'));
+const ExpenseClaimList  = lazy(() => import('@/pages/app/expense/ExpenseClaimList'));
+const LoanList          = lazy(() => import('@/pages/app/payroll/LoanList'));
+const FnFPage           = lazy(() => import('@/pages/app/payroll/FnFPage'));
+
+// Phase 6
+const ReportsPage          = lazy(() => import('@/pages/app/reports/ReportsPage'));
+const AnalyticsDashboard   = lazy(() => import('@/pages/app/reports/AnalyticsDashboard'));
+const ApiClientList        = lazy(() => import('@/pages/app/integrations/ApiClientList'));
+const WebhookList          = lazy(() => import('@/pages/app/integrations/WebhookList'));
+const AccountingMappings   = lazy(() => import('@/pages/app/payroll/AccountingMappings'));
+
+// Payroll
+const PayrollDashboard      = lazy(() => import('@/pages/app/payroll/PayrollDashboard'));
+const SalaryComponentList   = lazy(() => import('@/pages/app/payroll/SalaryComponentList'));
+const SalaryStructureList   = lazy(() => import('@/pages/app/payroll/SalaryStructureList'));
+const PayrollCycleList      = lazy(() => import('@/pages/app/payroll/PayrollCycleList'));
+const PayrollRunList        = lazy(() => import('@/pages/app/payroll/PayrollRunList'));
+const PayrollRunDetail      = lazy(() => import('@/pages/app/payroll/PayrollRunDetail'));
+const PayrollInputsPage     = lazy(() => import('@/pages/app/payroll/PayrollInputsPage'));
+const PayslipList           = lazy(() => import('@/pages/app/payroll/PayslipList'));
+const StatutorySettings     = lazy(() => import('@/pages/app/payroll/StatutorySettings'));
+const PayrollReportsPage    = lazy(() => import('@/pages/app/payroll/PayrollReportsPage'));
+const SalaryAssignmentPage  = lazy(() => import('@/pages/app/payroll/SalaryAssignmentPage'));
+
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function P({ perm, anyOf, children }: { perm?: string; anyOf?: string[]; children: React.ReactNode }) {
@@ -170,6 +197,96 @@ const router = createBrowserRouter([
       {
         path: ROUTES.SETTINGS,
         element: <P perm="tenant.settings.view"><Settings /></P>,
+      },
+
+      // ── Payroll ──────────────────────────────────────────────────────────
+      {
+        path: ROUTES.PAYROLL_DASHBOARD,
+        element: <P anyOf={['payroll.run.view', 'payroll.payslip.view']}><PayrollDashboard /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_COMPONENTS,
+        element: <P perm="payroll.component.view"><SalaryComponentList /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_STRUCTURES,
+        element: <P perm="payroll.structure.view"><SalaryStructureList /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_CYCLES,
+        element: <P perm="payroll.cycle.manage"><PayrollCycleList /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_RUNS,
+        element: <P perm="payroll.run.view"><PayrollRunList /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_RUN_DETAIL,
+        element: <P perm="payroll.run.view"><PayrollRunDetail /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_INPUTS,
+        element: <P perm="payroll.run.edit"><PayrollInputsPage /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_PAYSLIPS,
+        element: <P anyOf={['payroll.payslip.view', 'payroll.run.view']}><PayslipList /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_STATUTORY,
+        element: <P perm="payroll.statutory.manage"><StatutorySettings /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_REPORTS,
+        element: <P perm="payroll.run.view"><PayrollReportsPage /></P>,
+      },
+      {
+        path: ROUTES.EMPLOYEE_SALARY,
+        element: <P perm="employee.salary.view"><SalaryAssignmentPage /></P>,
+      },
+
+      // ── Phase 5 ──────────────────────────────────────────────────────────
+      {
+        path: ROUTES.SHIFTS,
+        element: <P perm="attendance.log.view"><ShiftList /></P>,
+      },
+      {
+        path: ROUTES.OVERTIME,
+        element: <P perm="attendance.overtime.view"><OvertimeList /></P>,
+      },
+      {
+        path: ROUTES.EXPENSE_CLAIMS,
+        element: <P perm="expense.claim.view"><ExpenseClaimList /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_LOANS,
+        element: <P perm="payroll.loan.view"><LoanList /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_FNF,
+        element: <P perm="payroll.fnf.view"><FnFPage /></P>,
+      },
+
+      // ── Phase 6 ──────────────────────────────────────────────────────────
+      {
+        path: ROUTES.REPORTS,
+        element: <P perm="reports.standard.view"><ReportsPage /></P>,
+      },
+      {
+        path: ROUTES.ANALYTICS,
+        element: <P perm="reports.analytics.view"><AnalyticsDashboard /></P>,
+      },
+      {
+        path: ROUTES.INTEGRATIONS,
+        element: <P perm="integrations.api_client.manage"><ApiClientList /></P>,
+      },
+      {
+        path: ROUTES.WEBHOOKS,
+        element: <P perm="integrations.webhook.manage"><WebhookList /></P>,
+      },
+      {
+        path: ROUTES.PAYROLL_ACCOUNTING,
+        element: <P perm="payroll.run.view"><AccountingMappings /></P>,
       },
     ],
   },

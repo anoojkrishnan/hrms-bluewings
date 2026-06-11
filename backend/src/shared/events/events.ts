@@ -45,6 +45,11 @@ export const EVENTS = {
   FORM_SUBMITTED: 'form.submitted',
 
   AUDIT_WRITE: 'audit.write',
+
+  PAYROLL_RUN_CREATED: 'payroll.run.created',
+  PAYROLL_RUN_PROCESSED: 'payroll.run.processed',
+  PAYROLL_RUN_FINALIZED: 'payroll.run.finalized',
+  PAYROLL_PAYSLIPS_PUBLISHED: 'payroll.payslips.published',
 } as const;
 
 export type EventName = (typeof EVENTS)[keyof typeof EVENTS];

@@ -3,10 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { organizationApi } from '@/lib/api/organization.api';
 import type { Department, CreateDepartmentDto } from '@/lib/api/organization.api';
 import { Modal } from '@/components/ui/Modal';
+import { SetupGuide } from '@/components/ui/SetupGuide';
+import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
 
 interface DeptForm {
   name: string;
@@ -173,12 +174,9 @@ export default function DepartmentList() {
       )}
 
       {!isLoading && !isError && departments.length === 0 && (
-        <EmptyState
-          title="No departments yet"
-          description="Add departments to structure your organisation."
-          cta={<Button onClick={openAdd}>Add Department</Button>}
-        />
+        <SetupGuide content={SETUP['departments']} />
       )}
+
 
       {!isLoading && !isError && departments.length > 0 && (
         <div className="table-wrapper">

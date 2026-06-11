@@ -157,8 +157,11 @@ export class RbacRepository {
     grantedBy: string,
   ): Promise<void> {
     await RolePermissionModel.deleteMany({ tenantId, rolePublicId });
-    if (permissionCodes.length > 0) {
-      const docs = permissionCodes.map((permissionCode) => ({
+    // Deduplicate codes before insert — prevents 11000 duplicate-key errors if the
+    // permissions list accidentally contains the same code twice.
+    const unique = [...new Set(permissionCodes)];
+    if (unique.length > 0) {
+      const docs = unique.map((permissionCode) => ({
         tenantId,
         rolePublicId,
         permissionCode,

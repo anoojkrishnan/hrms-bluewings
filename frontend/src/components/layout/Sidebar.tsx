@@ -28,7 +28,7 @@ const NAV: NavSection[] = [
   {
     title: 'People',
     items: [
-      { label: 'Employees', path: ROUTES.EMPLOYEES, icon: '◎', anyOf: ['employee.profile.view'] },
+      { label: 'Employees', path: ROUTES.EMPLOYEES, icon: '◎', anyOf: ['employee.profile.create'] },
     ],
   },
   {
@@ -45,6 +45,24 @@ const NAV: NavSection[] = [
       { label: 'Mark',       path: ROUTES.ATTENDANCE,            icon: '●', anyOf: ['attendance.log.view'] },
       { label: 'Logs',       path: ROUTES.ATTENDANCE_LOGS,       icon: '≡', anyOf: ['attendance.log.view'] },
       { label: 'Exceptions', path: ROUTES.ATTENDANCE_EXCEPTIONS, icon: '⚠', anyOf: ['attendance.exception.view', 'attendance.regularization.approve'] },
+      { label: 'Shifts',     path: ROUTES.SHIFTS,                icon: '🕐', anyOf: ['attendance.log.view'] },
+      { label: 'Overtime',   path: ROUTES.OVERTIME,              icon: '⏱', anyOf: ['attendance.overtime.view'] },
+    ],
+  },
+  {
+    title: 'Payroll',
+    items: [
+      { label: 'Overview',   path: ROUTES.PAYROLL_DASHBOARD,  icon: '₹', anyOf: ['payroll.run.view', 'payroll.payslip.view'] },
+      { label: 'Runs',       path: ROUTES.PAYROLL_RUNS,        icon: '▶', anyOf: ['payroll.run.view'] },
+      { label: 'Payslips',   path: ROUTES.PAYROLL_PAYSLIPS,    icon: '◧', anyOf: ['payroll.payslip.view', 'payroll.run.view'] },
+      { label: 'Salary',     path: ROUTES.PAYROLL_COMPONENTS,  icon: '≡', anyOf: ['payroll.component.view'] },
+      { label: 'Structures', path: ROUTES.PAYROLL_STRUCTURES,  icon: '◫', anyOf: ['payroll.structure.view'] },
+      { label: 'Cycles',     path: ROUTES.PAYROLL_CYCLES,      icon: '◑', anyOf: ['payroll.cycle.manage'] },
+      { label: 'Statutory',  path: ROUTES.PAYROLL_STATUTORY,   icon: '⚖', anyOf: ['payroll.statutory.manage'] },
+      { label: 'Reports',     path: ROUTES.PAYROLL_REPORTS,     icon: '📊', anyOf: ['payroll.run.view'] },
+      { label: 'Loans',       path: ROUTES.PAYROLL_LOANS,       icon: '💳', anyOf: ['payroll.loan.view'] },
+      { label: 'FnF',         path: ROUTES.PAYROLL_FNF,         icon: '📋', anyOf: ['payroll.fnf.view'] },
+      { label: 'Accounting',  path: ROUTES.PAYROLL_ACCOUNTING,  icon: '🏦', anyOf: ['payroll.run.view'] },
     ],
   },
   {
@@ -52,6 +70,7 @@ const NAV: NavSection[] = [
     items: [
       { label: 'Queue',         path: ROUTES.APPROVAL_QUEUE, icon: '✓', anyOf: ['workflow.instance.approve'] },
       { label: 'Notifications', path: ROUTES.NOTIFICATIONS,  icon: '◉', anyOf: ['notification.view'] },
+      { label: 'Expenses',      path: ROUTES.EXPENSE_CLAIMS, icon: '🧾', anyOf: ['expense.claim.view'] },
     ],
   },
   {
@@ -69,6 +88,20 @@ const NAV: NavSection[] = [
       { label: 'Workflows', path: ROUTES.WORKFLOWS, icon: '⇄', anyOf: ['workflow.configure'] },
       { label: 'Rule Sets', path: ROUTES.RULE_SETS, icon: '⚖', anyOf: ['rule.configure'] },
       { label: 'Forms',     path: ROUTES.FORMS,     icon: '☰', anyOf: ['form.configure'] },
+    ],
+  },
+  {
+    title: 'Reports',
+    items: [
+      { label: 'All Reports', path: ROUTES.REPORTS,   icon: '📄', anyOf: ['reports.standard.view'] },
+      { label: 'Analytics',   path: ROUTES.ANALYTICS, icon: '📈', anyOf: ['reports.analytics.view'] },
+    ],
+  },
+  {
+    title: 'Integrations',
+    items: [
+      { label: 'API Clients', path: ROUTES.INTEGRATIONS, icon: '🔑', anyOf: ['integrations.api_client.manage'] },
+      { label: 'Webhooks',    path: ROUTES.WEBHOOKS,     icon: '🔗', anyOf: ['integrations.webhook.manage'] },
     ],
   },
   {
@@ -101,7 +134,14 @@ function NavItemLink({ item, collapsed }: { item: NavItem; collapsed: boolean })
 }
 
 function SectionBlock({ section, collapsed }: { section: NavSection; collapsed: boolean }) {
-  // Sections without a permission filter are always shown; we rely on items to hide themselves
+  // Build visibility checks for every item in this section
+  const visibilities = section.items.map((item) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useAnyPermission(...(item.anyOf ?? ['*']));
+  });
+  const anyVisible = section.items.some((item, i) => !item.anyOf || visibilities[i]);
+  if (!anyVisible) return null;
+
   return (
     <div className={styles.section}>
       {!collapsed && section.title && (

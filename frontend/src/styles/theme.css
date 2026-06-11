@@ -1,70 +1,111 @@
 :root {
-  /* ── Brand ─────────────────────────────────────────────── */
-  --color-primary:        #1A56DB;
-  --color-primary-hover:  #1447C0;
-  --color-primary-light:  #EBF2FF;
-  --color-primary-ring:   rgba(26, 86, 219, 0.18);
+  /* ── Brand (monday.com violet) ─────────────────────────── */
+  --color-primary:        #6161ff;
+  --color-primary-hover:  #4e4eff;
+  --color-primary-light:  #e7ecff;
+  --color-primary-ring:   rgba(97, 97, 255, 0.18);
+
+  /* ── monday.com full palette ───────────────────────────── */
+  --color-monday-violet:    #6161ff;
+  --color-ink:              #333333;
+  --color-slate:            #535768;
+  --color-iron:             #808080;
+  --color-fog:              #cacbcd;
+  --color-mist:             #d0d4e4;
+  --color-pebble:           #dddfeb;
+  --color-cloud:            #f5f6f8;
+  --color-snow:             #ffffff;
+  --color-shadow-dust:      #e6e7ea;
+  --color-mint:             #bcfe90;
+  --color-sky:              #abf0ff;
+  --color-apricot:          #ff8940;
+  --color-lavender:         #eddff7;
+  --color-periwinkle:       #e7ecff;
+  --color-cornflower:       #93beff;
+  --color-aqua:             #d1faff;
+  --color-cotton-candy:     #e98dfe;
+  --color-ultra-violet:     #9450fd;
+  --color-electric-cyan:    #3ac9ff;
+  --color-forest:           #2a5c4e;
+  --color-peony:            #fcd0f8;
+  --color-periwinkle-wash:  #dbdbff;
 
   /* ── Backgrounds ───────────────────────────────────────── */
-  --color-bg:             #F0F2F5;
-  --color-surface:        #FFFFFF;
-  --color-surface-raised: #FFFFFF;
+  --color-bg:             #f5f6f8;
+  --color-surface:        #ffffff;
+  --color-surface-raised: #ffffff;
 
-  /* ── Sidebar ───────────────────────────────────────────── */
-  --color-sidebar-bg:       #070D1A;
-  --color-sidebar-border:   rgba(255,255,255,0.06);
-  --color-sidebar-text:     #8A9BB8;
-  --color-sidebar-text-hover: #C8D3E8;
-  --color-sidebar-active-bg:  rgba(26,86,219,0.18);
-  --color-sidebar-active-text: #C8D5F8;
-  --color-sidebar-label:    #3A4863;
+  /* ── Sidebar (light) ───────────────────────────────────── */
+  --color-sidebar-bg:          #f5f6f8;
+  --color-sidebar-border:      #d0d4e4;
+  --color-sidebar-text:        #535768;
+  --color-sidebar-text-hover:  #333333;
+  --color-sidebar-active-bg:   #e7ecff;
+  --color-sidebar-active-text: #6161ff;
+  --color-sidebar-label:       #808080;
 
   /* ── Text ──────────────────────────────────────────────── */
-  --color-text-primary:   #0D1117;
-  --color-text-secondary: #5A6882;
-  --color-text-muted:     #8A9BB8;
-  --color-text-disabled:  #B8C4D6;
+  --color-text-primary:   #333333;
+  --color-text-secondary: #535768;
+  --color-text-muted:     #808080;
+  --color-text-disabled:  #cacbcd;
 
   /* ── Borders ───────────────────────────────────────────── */
-  --color-border:         #E2E7EF;
-  --color-border-strong:  #C8D0DC;
+  --color-border:         #d0d4e4;
+  --color-border-strong:  #cacbcd;
 
   /* ── Status ────────────────────────────────────────────── */
   --color-green:          #12A150;
-  --color-green-bg:       #EDFAF3;
+  --color-green-bg:       #edfaf3;
   --color-green-text:     #0D7A3C;
   --color-amber:          #C4720A;
-  --color-amber-bg:       #FEF5E7;
+  --color-amber-bg:       #fef5e7;
   --color-amber-text:     #9A5608;
   --color-red:            #C81E1E;
-  --color-red-bg:         #FEF0F0;
+  --color-red-bg:         #fef0f0;
   --color-red-text:       #9B1C1C;
   --color-blue:           #1A56DB;
-  --color-blue-bg:        #EBF2FF;
+  --color-blue-bg:        #ebf2ff;
   --color-blue-text:      #1447C0;
   --color-purple:         #6B21A8;
-  --color-purple-bg:      #F4EFFE;
+  --color-purple-bg:      #f4effe;
   --color-purple-text:    #5B189A;
   --color-teal:           #0E7490;
-  --color-teal-bg:        #ECFEFF;
+  --color-teal-bg:        #ecfeff;
   --color-teal-text:      #0C5E75;
 
   /* ── Layout ────────────────────────────────────────────── */
-  --sidebar-width:        252px;
-  --topbar-height:        58px;
+  --sidebar-width:  240px;
+  --topbar-height:  58px;
 
   /* ── Radius ────────────────────────────────────────────── */
-  --radius-xs:   4px;
-  --radius-sm:   6px;
-  --radius-md:   8px;
-  --radius-lg:   12px;
-  --radius-xl:   16px;
-  --radius-pill: 9999px;
+  --radius-xs:      4px;
+  --radius-sm:      6px;
+  --radius-md:      8px;
+  --radius-lg:      24px;
+  --radius-xl:      24px;
+  --radius-pill:    9999px;
+  --radius-nav:     6px;
+  --radius-cards:   24px;
+  --radius-badges:  6px;
+  --radius-inputs:  6px;
+  --radius-buttons: 160px;
 
-  /* ── Shadows ───────────────────────────────────────────── */
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-raised: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
-  --shadow-modal: 0 20px 60px rgba(0,0,0,0.16), 0 4px 16px rgba(0,0,0,0.08);
+  /* ── Shadows (soft lavender) ───────────────────────────── */
+  --shadow-card:   rgba(205, 208, 223, 0.4) 0px 2px 48px 0px;
+  --shadow-raised: rgba(0, 0, 0, 0.15) 0px 5px 45px 0px;
+  --shadow-modal:  rgba(0, 0, 0, 0.15) 0px 4px 40px 0px;
+
+  /* ── Spacing ───────────────────────────────────────────── */
+  --spacing-8:  8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
 
   /* ── Transitions ───────────────────────────────────────── */
   --t-fast: 120ms ease;
@@ -72,26 +113,33 @@
 }
 
 [data-theme="dark"] {
-  --color-primary:        #4F83F7;
-  --color-primary-hover:  #6B97F9;
-  --color-primary-light:  #0F1F40;
-  --color-primary-ring:   rgba(79,131,247,0.22);
-  --color-bg:             #080C14;
-  --color-surface:        #0F1520;
-  --color-surface-raised: #161D2E;
-  --color-text-primary:   #E8EDF5;
-  --color-text-secondary: #8A9BB8;
-  --color-text-muted:     #4A5568;
-  --color-text-disabled:  #2D3748;
-  --color-border:         #1E2A40;
-  --color-border-strong:  #2D3E57;
-  --color-green-bg:       #0A2318;  --color-green-text:  #4ADE80;
-  --color-amber-bg:       #1F1205;  --color-amber-text:  #FBBF24;
-  --color-red-bg:         #1F0808;  --color-red-text:    #F87171;
-  --color-blue-bg:        #0A1730;  --color-blue-text:   #93C5FD;
-  --color-purple-bg:      #1A0A2E;  --color-purple-text: #C4B5FD;
-  --color-teal-bg:        #042020;  --color-teal-text:   #67E8F9;
-  --shadow-card:   0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
-  --shadow-raised: 0 4px 16px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.2);
-  --shadow-modal:  0 20px 60px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.3);
+  --color-primary:        #8181ff;
+  --color-primary-hover:  #9a9aff;
+  --color-primary-light:  #1a1a3e;
+  --color-primary-ring:   rgba(129, 129, 255, 0.22);
+  --color-bg:             #0d0f14;
+  --color-surface:        #161820;
+  --color-surface-raised: #1e2030;
+  --color-sidebar-bg:          #161820;
+  --color-sidebar-border:      #2a2d3e;
+  --color-sidebar-text:        #8a8fa8;
+  --color-sidebar-text-hover:  #c8ccde;
+  --color-sidebar-active-bg:   rgba(97, 97, 255, 0.15);
+  --color-sidebar-active-text: #9a9aff;
+  --color-sidebar-label:       #4a4e65;
+  --color-text-primary:   #e8eaf0;
+  --color-text-secondary: #8a8fa8;
+  --color-text-muted:     #4a4e65;
+  --color-text-disabled:  #2d3044;
+  --color-border:         #2a2d3e;
+  --color-border-strong:  #3a3e55;
+  --color-green-bg:       #0a2318;  --color-green-text: #4ADE80;
+  --color-amber-bg:       #1f1205;  --color-amber-text: #FBBF24;
+  --color-red-bg:         #1f0808;  --color-red-text:   #F87171;
+  --color-blue-bg:        #0a1730;  --color-blue-text:  #93C5FD;
+  --color-purple-bg:      #1a0a2e;  --color-purple-text: #C4B5FD;
+  --color-teal-bg:        #042020;  --color-teal-text:  #67E8F9;
+  --shadow-card:   rgba(0, 0, 0, 0.35) 0px 2px 32px 0px;
+  --shadow-raised: rgba(0, 0, 0, 0.4) 0px 5px 45px 0px;
+  --shadow-modal:  rgba(0, 0, 0, 0.5) 0px 8px 60px 0px;
 }

@@ -91,7 +91,6 @@ export default function AttendanceDashboard() {
                 </div>
               </div>
             </div>
-
             {punchError && (
               <div className="alert alert-danger" style={{ marginBottom: 12, fontSize: 13 }}>
                 {punchError}

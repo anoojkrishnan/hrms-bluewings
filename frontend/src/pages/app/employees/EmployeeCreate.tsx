@@ -253,13 +253,13 @@ export default function EmployeeCreate() {
           <div>
             <h2 style={{ marginBottom: 24 }}>Review</h2>
             <dl className="detail-list">
-              <dt>Company</dt><dd>{form.companyId}</dd>
+              <dt>Company</dt><dd>{companies.find(c => c.publicId === form.companyId)?.name ?? form.companyId}</dd>
               {form.workEmail && <><dt>Work Email</dt><dd>{form.workEmail}</dd></>}
               <dt>Joining Date</dt><dd>{form.joiningDate}</dd>
               <dt>Employment Type</dt><dd>{form.employmentType.replace(/_/g, ' ')}</dd>
-              {form.departmentId && <><dt>Department</dt><dd>{form.departmentId}</dd></>}
-              {form.designationId && <><dt>Designation</dt><dd>{form.designationId}</dd></>}
-              {form.locationId && <><dt>Location</dt><dd>{form.locationId}</dd></>}
+              {form.departmentId && <><dt>Department</dt><dd>{departments.find(d => d.publicId === form.departmentId)?.name ?? form.departmentId}</dd></>}
+              {form.designationId && <><dt>Designation</dt><dd>{designations.find(d => d.publicId === form.designationId)?.name ?? form.designationId}</dd></>}
+              {form.locationId && <><dt>Location</dt><dd>{locations.find(l => l.publicId === form.locationId)?.name ?? form.locationId}</dd></>}
               {form.reportingManagerId && <><dt>Reports To</dt><dd>{form.reportingManagerId}</dd></>}
               <dt>Notice Period</dt><dd>{form.noticePeriodDays} days</dd>
             </dl>

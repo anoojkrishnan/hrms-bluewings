@@ -3,10 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { organizationApi } from '@/lib/api/organization.api';
 import type { Designation, CreateDesignationDto } from '@/lib/api/organization.api';
 import { Modal } from '@/components/ui/Modal';
+import { SetupGuide } from '@/components/ui/SetupGuide';
+import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
 
 interface DesignationForm {
   name: string;
@@ -122,12 +123,9 @@ export default function DesignationList() {
       )}
 
       {!isLoading && !isError && designations.length === 0 && (
-        <EmptyState
-          title="No designations yet"
-          description="Add job titles and designations for your employees."
-          cta={<Button onClick={openAdd}>Add Designation</Button>}
-        />
+        <SetupGuide content={SETUP['designations']} />
       )}
+
 
       {!isLoading && !isError && designations.length > 0 && (
         <div className="table-wrapper">

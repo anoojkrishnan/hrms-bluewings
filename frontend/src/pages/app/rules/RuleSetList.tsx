@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ruleEngineApi } from '@/lib/api/rule-engine.api';
 import type { RuleSet } from '@/lib/api/rule-engine.api';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { SetupGuide } from '@/components/ui/SetupGuide';
+import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
@@ -62,7 +63,6 @@ export default function RuleSetList() {
           <Button onClick={() => setShowCreate(true)}>Create Rule Set</Button>
         </div>
       </div>
-
       {isLoading ? (
         Array.from({ length: 5 }).map((_, i) => (
           <div key={i} style={{ marginBottom: 8 }}>
@@ -70,11 +70,7 @@ export default function RuleSetList() {
           </div>
         ))
       ) : ruleSets.length === 0 ? (
-        <EmptyState
-          title="No rule sets configured"
-          description="Create rule sets to define business logic for leave, attendance, payroll, and more."
-          cta={<Button onClick={() => setShowCreate(true)}>Create Rule Set</Button>}
-        />
+        <SetupGuide content={SETUP['rule-sets']} />
       ) : (
         <>
           <div className="table-wrapper">

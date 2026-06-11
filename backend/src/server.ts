@@ -25,6 +25,10 @@ async function bootstrap(): Promise<void> {
     activeTenants.map((t) => rbacService.seedSystemRoles(t.publicId, 'system').catch(() => {})),
   );
 
+  // Start BullMQ workers
+  const { PayrollProcessingWorker } = await import('./workers/payroll.worker');
+  const payrollWorker = new PayrollProcessingWorker();
+
   const app = createApp();
 
   const server = app.listen(PORT, () => {
@@ -44,6 +48,7 @@ async function bootstrap(): Promise<void> {
 
     server.close(async () => {
       try {
+        await payrollWorker.close();
         await disconnectDatabase();
         await disconnectRedis();
         logger.info('Graceful shutdown complete');

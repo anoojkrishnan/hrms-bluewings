@@ -8,7 +8,7 @@ import { LEAVE_PERMISSIONS as P } from './leave.permissions';
 import {
   createLeaveTypeSchema, updateLeaveTypeSchema,
   applyLeaveSchema, approveRejectSchema, revokeSchema,
-  adjustBalanceSchema,
+  adjustBalanceSchema, bulkAdjustBalanceSchema,
   createHolidayListSchema, createHolidaySchema, weekendPolicySchema,
 } from './leave.validator';
 
@@ -33,9 +33,12 @@ router.patch('/leave/applications/:publicId/revoke', requirePermission(P.APPLICA
 
 // ── Leave Balances ────────────────────────────────────────────────────────────
 router.get('/leave/balances', requirePermission(P.BALANCE_VIEW), ctrl.getMyBalance);
+// Static sub-paths must come before the /:employeeCode param route
+router.get('/leave/balances/all', requirePermission(P.BALANCE_ADJUST), (req, res, next) => { void ctrl.listAllBalances(req, res, next); });
+router.post('/leave/balances/init', requirePermission(P.POLICY_CONFIGURE), (req, res, next) => { void ctrl.initAllBalances(req, res, next); });
+router.post('/leave/balances/bulk-adjust', requirePermission(P.BALANCE_ADJUST), validate(bulkAdjustBalanceSchema), (req, res, next) => { void ctrl.bulkAdjustBalance(req, res, next); });
 router.get('/leave/balances/:employeeCode', requirePermission(P.BALANCE_VIEW), ctrl.getBalance);
 router.put('/leave/balances/:employeeCode/adjust', requirePermission(P.BALANCE_ADJUST), validate(adjustBalanceSchema), ctrl.adjustBalance);
-router.post('/leave/balances/init', requirePermission(P.POLICY_CONFIGURE), (req, res, next) => { void ctrl.initAllBalances(req, res, next); });
 
 // ── Calendar ──────────────────────────────────────────────────────────────────
 router.get('/leave/calendar', requirePermission(P.APPLICATION_VIEW), ctrl.getCalendar);

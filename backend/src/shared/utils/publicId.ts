@@ -36,4 +36,15 @@ export const generateRuleSetPublicId      = () => generatePublicId('rs');
 export const generateRulePublicId         = () => generatePublicId('rule');
 export const generateFormPublicId         = () => generatePublicId('form');
 export const generateSubmissionPublicId   = () => generatePublicId('sub');
-export const generateNotificationPublicId = () => generatePublicId('ntf');
+export const generateNotificationPublicId    = () => generatePublicId('ntf');
+
+// Payroll
+export const generateSalaryComponentPublicId = () => generatePublicId('sc');
+export const generateSalaryStructurePublicId = () => generatePublicId('ss');
+export const generateEmployeeSalaryPublicId  = () => generatePublicId('empsal');
+export const generatePayrollCyclePublicId    = () => generatePublicId('pcycle');
+export const generatePayrollRunPublicId      = () => generatePublicId('prun');
+export const generatePayrollRunItemPublicId  = () => generatePublicId('pri');
+export const generatePayslipPublicId         = () => generatePublicId('pslip');
+export const generateStatutoryPublicId       = () => generatePublicId('stat');
+export const generatePayrollInputPublicId    = () => generatePublicId('pinput');

@@ -78,6 +78,8 @@ export const requireAuth = async (
 
     req.user = {
       userId: payload.userId,
+      firstName: userRaw.name?.first,
+      lastName: userRaw.name?.last,
       tenantId: payload.tenantId,
       organizationId: payload.organizationId,
       sessionId: payload.sessionId,

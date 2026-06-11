@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import type { AttendanceLog, RawSwipe, AttendanceException, Shift } from './attendance.types';
+import type { AttendanceLog, RawSwipe, AttendanceException, Shift, OvertimeRecord, CompOffRecord, ShiftAssignment } from './attendance.types';
 import type { PaginatedResult } from '@/shared/types/common';
 import { buildPaginationMeta } from '@/shared/utils/pagination';
 
@@ -121,10 +121,68 @@ function getOrCreateModel(name: string, schema: Schema) {
   return mongoose.models[name] ?? mongoose.model(name, schema);
 }
 
+// ── Overtime & CompOff Schemas ────────────────────────────────────────────────
+
+const overtimeSchema = new Schema({
+  publicId:       { type: String, required: true, unique: true },
+  tenantId:       { type: String, required: true },
+  organizationId: String,
+  employeeId:     { type: String, required: true },
+  companyId:      String,
+  date:           { type: Date, required: true },
+  overtimeHours:  { type: Number, required: true },
+  reason:         { type: String, required: true },
+  status:         { type: String, default: 'pending' },
+  compOffGranted: Boolean,
+  reviewedBy:     String,
+  reviewedAt:     Date,
+  rejectionNote:  String,
+  isActive:       { type: Boolean, default: true },
+  createdBy:      String,
+  updatedBy:      String,
+  deletedAt:      { type: Date, default: null },
+}, { collection: 'overtime_records', timestamps: true });
+overtimeSchema.index({ tenantId: 1, employeeId: 1, status: 1 });
+
+const compOffSchema = new Schema({
+  publicId:     { type: String, required: true, unique: true },
+  tenantId:     { type: String, required: true },
+  employeeId:   { type: String, required: true },
+  overtimeId:   String,
+  creditedDays: { type: Number, required: true },
+  expiryDate:   { type: Date, required: true },
+  usedDays:     { type: Number, default: 0 },
+  isActive:     { type: Boolean, default: true },
+  createdBy:    String,
+  updatedBy:    String,
+  deletedAt:    { type: Date, default: null },
+}, { collection: 'comp_off_records', timestamps: true });
+compOffSchema.index({ tenantId: 1, employeeId: 1 });
+
+// ── Shift Assignment Schema ────────────────────────────────────────────────────
+
+const shiftAssignmentSchema = new Schema({
+  publicId:       { type: String, required: true, unique: true },
+  tenantId:       { type: String, required: true },
+  organizationId: String,
+  employeeId:     { type: String, required: true },
+  shiftId:        { type: String, required: true },
+  effectiveFrom:  { type: Date, required: true },
+  effectiveTo:    Date,
+  isActive:       { type: Boolean, default: true },
+  createdBy:      String,
+  updatedBy:      String,
+  deletedAt:      { type: Date, default: null },
+}, { collection: 'shift_assignments', timestamps: true });
+shiftAssignmentSchema.index({ tenantId: 1, employeeId: 1, shiftId: 1 });
+
 const AttendanceLogModel = getOrCreateModel('AttendanceLog', attendanceLogSchema);
 const RawSwipeModel = getOrCreateModel('RawSwipe', rawSwipeSchema);
 const AttendanceExceptionModel = getOrCreateModel('AttendanceException', attendanceExceptionSchema);
 const ShiftModel = getOrCreateModel('Shift', shiftSchema);
+const OvertimeModel       = getOrCreateModel('OvertimeRecord', overtimeSchema);
+const CompOffModel        = getOrCreateModel('CompOffRecord', compOffSchema);
+const ShiftAssignmentModel = getOrCreateModel('ShiftAssignment', shiftAssignmentSchema);
 
 // ─── Repository ───────────────────────────────────────────────────────────────
 
@@ -175,6 +233,16 @@ export class AttendanceRepository {
       AttendanceLogModel.countDocuments(query),
     ]);
     return { data: docs as unknown as AttendanceLog[], meta: buildPaginationMeta(page, limit, total) };
+  }
+
+  async countAbsentDays(employeeId: string, tenantId: string, month: number, year: number): Promise<number> {
+    const from = new Date(year, month - 1, 1);
+    const to   = new Date(year, month, 0); // last day of month
+    return AttendanceLogModel.countDocuments({
+      tenantId, employeeId,
+      date: { $gte: from, $lte: to },
+      status: 'absent',
+    });
   }
 
   async lockLogs(tenantId: string, companyId: string, date: Date): Promise<void> {
@@ -267,5 +335,72 @@ export class AttendanceRepository {
       { new: true },
     ).lean();
     return doc as unknown as Shift | null;
+  }
+
+  // ── Overtime ──────────────────────────────────────────────────────────────
+
+  async createOvertime(data: Omit<OvertimeRecord, '_id' | 'createdAt' | 'updatedAt'>): Promise<OvertimeRecord> {
+    const doc = await OvertimeModel.create(data);
+    return doc.toObject() as unknown as OvertimeRecord;
+  }
+
+  async findOvertimeByPublicId(publicId: string, tenantId: string): Promise<OvertimeRecord | null> {
+    const doc = await OvertimeModel.findOne({ tenantId, publicId, deletedAt: null }).lean();
+    return doc as unknown as OvertimeRecord | null;
+  }
+
+  async findOvertimeRecords(tenantId: string, employeeId?: string, status?: string): Promise<OvertimeRecord[]> {
+    const query: Record<string, unknown> = { tenantId, deletedAt: null };
+    if (employeeId) query.employeeId = employeeId;
+    if (status) query.status = status;
+    const docs = await OvertimeModel.find(query).sort({ date: -1 }).lean();
+    return docs as unknown as OvertimeRecord[];
+  }
+
+  async updateOvertime(publicId: string, tenantId: string, patch: Partial<OvertimeRecord>): Promise<OvertimeRecord | null> {
+    const doc = await OvertimeModel.findOneAndUpdate(
+      { tenantId, publicId, deletedAt: null },
+      { $set: { ...patch, updatedAt: new Date() } },
+      { new: true },
+    ).lean();
+    return doc as unknown as OvertimeRecord | null;
+  }
+
+  // ── Comp-Off ──────────────────────────────────────────────────────────────
+
+  async createCompOff(data: Omit<CompOffRecord, '_id' | 'createdAt' | 'updatedAt'>): Promise<CompOffRecord> {
+    const doc = await CompOffModel.create(data);
+    return doc.toObject() as unknown as CompOffRecord;
+  }
+
+  async findCompOffBalance(employeeId: string, tenantId: string): Promise<number> {
+    const docs = await CompOffModel.find({ tenantId, employeeId, deletedAt: null, isActive: true }).lean() as unknown as CompOffRecord[];
+    return docs.reduce((sum, r) => sum + (r.creditedDays - (r.usedDays ?? 0)), 0);
+  }
+
+  async findCompOffRecords(employeeId: string, tenantId: string): Promise<CompOffRecord[]> {
+    const docs = await CompOffModel.find({ tenantId, employeeId, deletedAt: null }).sort({ createdAt: -1 }).lean();
+    return docs as unknown as CompOffRecord[];
+  }
+
+  // ── Shift Assignments ─────────────────────────────────────────────────────
+
+  async createShiftAssignment(data: Omit<ShiftAssignment, '_id' | 'createdAt' | 'updatedAt'>): Promise<ShiftAssignment> {
+    const doc = await ShiftAssignmentModel.create(data);
+    return doc.toObject() as unknown as ShiftAssignment;
+  }
+
+  async findShiftAssignments(shiftId: string, tenantId: string): Promise<ShiftAssignment[]> {
+    const docs = await ShiftAssignmentModel.find({ tenantId, shiftId, deletedAt: null }).lean();
+    return docs as unknown as ShiftAssignment[];
+  }
+
+  async findEffectiveShiftForEmployee(employeeId: string, tenantId: string, date: Date): Promise<ShiftAssignment | null> {
+    const doc = await ShiftAssignmentModel.findOne({
+      tenantId, employeeId, deletedAt: null,
+      effectiveFrom: { $lte: date },
+      $or: [{ effectiveTo: null }, { effectiveTo: { $gte: date } }],
+    }).sort({ effectiveFrom: -1 }).lean();
+    return doc as unknown as ShiftAssignment | null;
   }
 }

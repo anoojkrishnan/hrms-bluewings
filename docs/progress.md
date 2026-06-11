@@ -5,7 +5,7 @@
 
 ## Current Phase
 
-**Phase 3: Workflow + Rule Engine, Dynamic Forms, Notifications** — 🟢 Complete (backend + frontend)
+**Phase 7: SaaS commercial (public website, billing, subscriptions, limits, flags)** — 🔴 Not Started
 
 ## Phases
 
@@ -14,9 +14,9 @@
 | 1 | Foundation (multi-tenancy, auth, RBAC, tenant/company, employee, audit) | 🟢 |
 | 2 | ESS, Leave, Attendance foundation | 🟢 |
 | 3 | Workflow + Rule engine, dynamic forms, notifications | 🟢 |
-| 4 | Payroll core | 🔴 |
-| 5 | Advanced attendance + payroll (biometric, shifts, OT/comp-off, claims, loans, FnF) | 🔴 |
-| 6 | Reports, analytics, integrations, accounting, bank payout | 🔴 |
+| 4 | Payroll core | 🟢 |
+| 5 | Advanced attendance + payroll (biometric, shifts, OT/comp-off, claims, loans, FnF) | 🟢 |
+| 6 | Reports, analytics, integrations, accounting, bank payout | 🟢 |
 | 7 | SaaS commercial (public website, billing, subscriptions, limits, flags) | 🔴 |
 
 🔴 Not Started · 🟡 In Progress · 🟢 Complete · ⚠️ Needs Review
@@ -39,8 +39,8 @@
 | rule-engine | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | 🟢 |
 | dynamic-forms | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | 🟢 |
 | notifications | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | 🟢 |
-| payroll | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | 🔴 |
-| statutory | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | 🔴 |
+| payroll | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | 🟢 |
+| statutory | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | 🟢 |
 | documents | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | 🔴 |
 | policies | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | 🔴 |
 | assets | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | 🔴 |
@@ -109,3 +109,6 @@ R=routes C=controller S=service
 | 2026-05-30 | Phase 1 complete: backend (config, shared, middleware, audit, tenant, user, rbac, auth, organization, app.ts, server.ts, BullMQ workers) + frontend scaffold (styles, types, store, api, hooks, components, guards, pages, router). Backend: 0 tsc errors, 0 lint errors, tests pass. Frontend: 0 tsc errors, 0 lint errors. |
 | 2026-05-30 | Phase 2 complete: backend (employee, leave + holiday sub-module, attendance modules — routes, controllers, services, repositories, types, validators, permissions). Frontend: employee.api.ts, leave.api.ts, attendance.api.ts + all Phase 2 pages (EmployeeList, EmployeeDetail, EmployeeCreate, LeaveApplicationList, LeaveBalance, LeaveTypeList, AttendanceDashboard, AttendanceList, AttendanceExceptionList). Sidebar updated with People/Leave/Attendance sections. Backend: 0 tsc errors, 0 lint errors. Frontend: 0 tsc errors, 0 lint errors. |
 | 2026-05-31 | Phase 3 complete: 4 backend modules (workflow, rule-engine, dynamic-forms, notifications — 7 files each). Leave service updated: PENDING_APPROVAL status, systemApprove/systemReject, workflow integration in applyLeave, workflow listener registration. Email service: sendRaw added. RBAC: 16 new Phase 3 permissions. Worker registry: WORKFLOW_ESCALATION queue. App.ts: all 4 new routers mounted + event listeners. Frontend: 4 API clients, 5 pages (NotificationList, ApprovalQueue, WorkflowList, RuleSetList, FormList), TopBar bell with unread badge, Sidebar Approvals+Settings sections, 6 new route constants. Backend: 0 tsc errors, 0 lint errors. Frontend: 0 tsc errors, 0 lint errors. Also fixed email verification bug: axios interceptor now skips redirect on public paths (/verify-email etc). |
+| 2026-06-01 | Phase 6 complete: Reports module (8 standard templates — employee-directory, leave-summary, attendance-summary, payroll-salary-register, payroll-payout-register, loan-report, expense-claims, overtime-report; CSV export; job tracking). Analytics endpoints (headcount, attrition, payroll-cost) + AnalyticsDashboard.tsx with KPI cards + dept bar chart. Integrations module (API clients with SHA-256 key hashing, webhooks with HMAC-SHA256 delivery, delivery logs, test endpoint). Accounting export (GL ledger mappings, JV CSV generation per payroll run). Frontend: ReportsPage.tsx, AnalyticsDashboard.tsx, ApiClientList.tsx, WebhookList.tsx, AccountingMappings.tsx; "↓ JV Export" button on PayrollRunDetail. New sidebar sections: Reports, Integrations. Backend: reports + integrations modules (6 files each) + payroll accounting extensions. 11 new RBAC permissions. Phase 6 → 🟢. 0 tsc errors, 0 lint errors. |
+| 2026-06-01 | Phase 5 complete: Loans (request/approve/reject/EMI schedule/payroll deduction), OT+Comp-Off (submit/approve/convert, balance tracking), FnF (initiate/calculate/approve — notice pay/leave encashment/gratuity/loan recovery), Shift Assignments (assign shift to employees), Expense/Claims module (full backend+frontend). Backend: attendance.repository.ts+service.ts+controller.ts+routes.ts extended; payroll.types.ts+repository.ts+service.ts+controller.ts+routes.ts extended; expense module (6 new files); rbac updated with 14 new permissions. Frontend: LoanList.tsx, OvertimeList.tsx, FnFPage.tsx, ShiftList.tsx (extended with assign modal), ExpenseClaimList.tsx, expense.api.ts. Phase 5 → 🟢. 0 tsc errors, 0 lint errors on changed files. |
+| 2026-06-01 | Comprehensive Playwright testing + bug fixes (9 bugs fixed): route ordering for /leave/balances/all, payroll runs list company filter, 401 token refresh in axios interceptor, manual override modal, dashboard name from publicId→firstName, employee avatar + header name, sidebar empty section headers, raw publicIds in employee/leave displays, employee create review step. Phase 4 payroll complete: added salary assignment UI (SalaryAssignmentPage.tsx), payroll inputs UI (PayrollInputsPage.tsx), LOP auto-fetch from attendance, bank file generation endpoint, salary register + payout register reports, PayrollReportsPage.tsx. Backend: 0 tsc errors. Frontend: 0 tsc errors, 0 lint errors. Phase 4 → 🟢. Phase 5 → 🟡 started. |

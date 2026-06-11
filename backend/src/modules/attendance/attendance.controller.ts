@@ -127,4 +127,68 @@ export class AttendanceController {
       res.json(success(shift));
     } catch (err) { next(err); }
   };
+
+  // ── Overtime ──────────────────────────────────────────────────────────────
+
+  submitOvertime = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, organizationId, userId, employeePublicId } = req.user;
+      const empId = employeePublicId ?? userId;
+      const ot = await this.service.submitOvertime(req.body, tenantId, organizationId, empId, userId);
+      res.status(201).json(success(ot));
+    } catch (err) { next(err); }
+  };
+
+  listOvertime = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, permissions, employeePublicId, userId } = req.user;
+      const isHr = permissions.includes('attendance.overtime.approve');
+      const empId = isHr ? undefined : (employeePublicId ?? userId);
+      const records = await this.service.listOvertime(tenantId, empId, req.query.status as string | undefined);
+      res.json(success(records));
+    } catch (err) { next(err); }
+  };
+
+  approveOvertime = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, organizationId, userId } = req.user;
+      const ot = await this.service.approveOvertime(
+        req.params.publicId, req.body.convertToCompOff ?? false, tenantId, organizationId, userId,
+      );
+      res.json(success(ot));
+    } catch (err) { next(err); }
+  };
+
+  rejectOvertime = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, userId } = req.user;
+      const ot = await this.service.rejectOvertime(req.params.publicId, req.body.note ?? 'Rejected', tenantId, userId);
+      res.json(success(ot));
+    } catch (err) { next(err); }
+  };
+
+  getCompOffBalance = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, employeePublicId, userId } = req.user;
+      const result = await this.service.getCompOffBalance(employeePublicId ?? userId, tenantId);
+      res.json(success(result));
+    } catch (err) { next(err); }
+  };
+
+  // ── Shift Assignments ─────────────────────────────────────────────────────
+
+  assignShift = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, organizationId, userId } = req.user;
+      const assignments = await this.service.assignShift(req.params.publicId, req.body, tenantId, organizationId, userId);
+      res.status(201).json(success(assignments));
+    } catch (err) { next(err); }
+  };
+
+  listShiftAssignments = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const assignments = await this.service.listShiftAssignments(req.params.publicId, req.user.tenantId);
+      res.json(success(assignments));
+    } catch (err) { next(err); }
+  };
 }

@@ -43,6 +43,7 @@ export interface Shift {
   fullDayHours: number;
   isNightShift: boolean;
   isFlexible: boolean;
+  isActive: boolean;
 }
 
 export const attendanceApi = {
@@ -100,4 +101,19 @@ export const attendanceApi = {
   // Lock
   lockDate: (companyId: string, date: string) =>
     post<void>('/attendance/lock', { companyId, date }),
+
+  // Shift assignments
+  listShiftAssignments: (shiftPublicId: string) => get<unknown[]>(`/attendance/shifts/${shiftPublicId}/assignments`),
+  assignShift: (shiftPublicId: string, dto: { employeeIds: string[]; effectiveFrom: string; effectiveTo?: string }) =>
+    post<unknown[]>(`/attendance/shifts/${shiftPublicId}/assign`, dto),
+
+  // Overtime & Comp-Off
+  listOvertime: (params?: Record<string, unknown>) => get<unknown[]>('/attendance/overtime', { params }),
+  submitOvertime: (dto: { date: string; overtimeHours: number; reason: string; companyId?: string }) =>
+    post<unknown>('/attendance/overtime', dto),
+  approveOvertime: (publicId: string, convertToCompOff: boolean) =>
+    patch<unknown>(`/attendance/overtime/${publicId}/approve`, { convertToCompOff }),
+  rejectOvertime: (publicId: string, note?: string) =>
+    patch<unknown>(`/attendance/overtime/${publicId}/reject`, { note }),
+  getCompOffBalance: () => get<{ balance: number; records: unknown[] }>('/attendance/comp-off'),
 };

@@ -1,8 +1,8 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(7,13,26,0.55);
-  backdrop-filter: blur(3px);
+  background: rgba(51, 51, 51, 0.4);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,9 +14,9 @@
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
+  background: var(--color-snow);
+  border-radius: var(--radius-cards);
+  border: 1px solid var(--color-mist);
   box-shadow: var(--shadow-modal);
   display: flex;
   flex-direction: column;
@@ -39,31 +39,31 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--color-border);
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--color-mist);
 }
 
-.title { font-size: 0.9375rem; font-weight: 700; letter-spacing: -0.02em; color: var(--color-text-primary); }
+.title { font-size: 1rem; font-weight: 600; letter-spacing: -0.02em; color: var(--color-ink); }
 
 .closeBtn {
   width: 30px; height: 30px;
   display: flex; align-items: center; justify-content: center;
   background: none; border: none;
   border-radius: var(--radius-sm);
-  color: var(--color-text-muted);
+  color: var(--color-iron);
   font-size: 1rem;
   transition: background var(--t-fast), color var(--t-fast);
 }
-.closeBtn:hover { background: var(--color-bg); color: var(--color-text-primary); }
+.closeBtn:hover { background: var(--color-cloud); color: var(--color-ink); }
 
-.body   { padding: 20px 24px; overflow-y: auto; flex: 1; }
+.body { padding: 24px; overflow-y: auto; flex: 1; }
 
 .footer {
-  padding: 14px 24px;
-  border-top: 1px solid var(--color-border);
+  padding: 16px 24px;
+  border-top: 1px solid var(--color-mist);
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  background: var(--color-bg);
-  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  background: var(--color-cloud);
+  border-radius: 0 0 var(--radius-cards) var(--radius-cards);
 }

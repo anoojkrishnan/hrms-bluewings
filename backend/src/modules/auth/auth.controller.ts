@@ -145,6 +145,8 @@ export class AuthController {
     try {
       res.json(success({
         userId: req.user.userId,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
         employeePublicId: req.user.employeePublicId,
         tenantId: req.user.tenantId,
         organizationId: req.user.organizationId,

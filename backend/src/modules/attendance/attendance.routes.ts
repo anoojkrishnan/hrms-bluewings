@@ -9,6 +9,7 @@ import {
   punchSchema, manualOverrideSchema, regularizeSchema,
   createExceptionSchema, reviewExceptionSchema, lockDateSchema,
   createShiftSchema, updateShiftSchema,
+  submitOvertimeSchema, approveOvertimeSchema, assignShiftSchema,
 } from './attendance.validator';
 
 const router = Router();
@@ -42,5 +43,14 @@ router.post('/attendance/lock', requirePermission(P.LOCK), validate(lockDateSche
 router.get('/attendance/shifts', requirePermission(P.SHIFT_VIEW), ctrl.listShifts);
 router.post('/attendance/shifts', requirePermission(P.SHIFT_CONFIGURE), validate(createShiftSchema), ctrl.createShift);
 router.put('/attendance/shifts/:publicId', requirePermission(P.SHIFT_CONFIGURE), validate(updateShiftSchema), ctrl.updateShift);
+router.get('/attendance/shifts/:publicId/assignments',  requirePermission(P.SHIFT_VIEW),      (req, res, next) => { void ctrl.listShiftAssignments(req, res, next); });
+router.post('/attendance/shifts/:publicId/assign',      requirePermission(P.SHIFT_CONFIGURE), validate(assignShiftSchema), (req, res, next) => { void ctrl.assignShift(req, res, next); });
+
+// ── Overtime & Comp-Off ───────────────────────────────────────────────────────
+router.get('/attendance/overtime',                          requirePermission(P.OVERTIME_VIEW),    (req, res, next) => { void ctrl.listOvertime(req, res, next); });
+router.post('/attendance/overtime',                         requirePermission(P.OVERTIME_SUBMIT),  validate(submitOvertimeSchema), (req, res, next) => { void ctrl.submitOvertime(req, res, next); });
+router.patch('/attendance/overtime/:publicId/approve',      requirePermission(P.OVERTIME_APPROVE), validate(approveOvertimeSchema), (req, res, next) => { void ctrl.approveOvertime(req, res, next); });
+router.patch('/attendance/overtime/:publicId/reject',       requirePermission(P.OVERTIME_APPROVE), (req, res, next) => { void ctrl.rejectOvertime(req, res, next); });
+router.get('/attendance/comp-off',                          requirePermission(P.OVERTIME_VIEW),    (req, res, next) => { void ctrl.getCompOffBalance(req, res, next); });
 
 export { router as attendanceRouter };

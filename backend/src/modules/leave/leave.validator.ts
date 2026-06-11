@@ -4,6 +4,7 @@ export const createLeaveTypeSchema = z.object({
   body: z.object({
     name: z.string().min(1),
     code: z.string().min(1).toUpperCase(),
+    defaultAnnualDays: z.number().int().min(0).optional(),
     isCarryForward: z.boolean().optional(),
     maxCarryForwardDays: z.number().int().min(0).optional(),
     isEncashable: z.boolean().optional(),
@@ -17,6 +18,7 @@ export const createLeaveTypeSchema = z.object({
 export const updateLeaveTypeSchema = z.object({
   body: z.object({
     name: z.string().min(1).optional(),
+    defaultAnnualDays: z.number().int().min(0).optional(),
     isCarryForward: z.boolean().optional(),
     maxCarryForwardDays: z.number().int().min(0).optional(),
     isEncashable: z.boolean().optional(),
@@ -89,5 +91,14 @@ export const weekendPolicySchema = z.object({
     secondSaturdayOff: z.boolean().optional(),
     thirdSaturdayOff: z.boolean().optional(),
     fourthSaturdayOff: z.boolean().optional(),
+  }),
+});
+
+export const bulkAdjustBalanceSchema = z.object({
+  body: z.object({
+    leaveTypeCode: z.string().min(1),
+    days: z.number().min(0),
+    field: z.enum(["opening", "granted"]),
+    reason: z.string().min(1),
   }),
 });

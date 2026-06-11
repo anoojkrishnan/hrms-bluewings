@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { workflowApi } from '@/lib/api/workflow.api';
 import type { Workflow } from '@/lib/api/workflow.api';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { SetupGuide } from '@/components/ui/SetupGuide';
+import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
@@ -92,7 +93,6 @@ export default function WorkflowList() {
           <Button onClick={() => setShowCreate(true)}>Create Workflow</Button>
         </div>
       </div>
-
       {isLoading ? (
         Array.from({ length: 5 }).map((_, i) => (
           <div key={i} style={{ marginBottom: 8 }}>
@@ -100,11 +100,7 @@ export default function WorkflowList() {
           </div>
         ))
       ) : workflows.length === 0 ? (
-        <EmptyState
-          title="No workflows configured"
-          description="Create workflows to automate approval processes across modules."
-          cta={<Button onClick={() => setShowCreate(true)}>Create Workflow</Button>}
-        />
+        <SetupGuide content={SETUP['workflows']} />
       ) : (
         <>
           <div className="table-wrapper">

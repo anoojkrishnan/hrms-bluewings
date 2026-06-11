@@ -4,6 +4,7 @@ export interface LeaveType {
   publicId: string;
   name: string;
   code: string;
+  defaultAnnualDays?: number;
   isCarryForward: boolean;
   maxCarryForwardDays?: number;
   isEncashable: boolean;
@@ -48,6 +49,9 @@ export interface LeaveBalance {
   encashed: number;
   lapsed: number;
   closingBalance: number;
+  // Enriched fields present when returned from /leave/balances/all
+  leaveTypeName?: string;
+  leaveTypeCode?: string;
 }
 
 export interface Holiday {
@@ -60,6 +64,7 @@ export interface Holiday {
 }
 
 export interface ApplyLeaveDto {
+  employeeCode?: string;
   leaveTypeCode: string;
   startDate: string;
   endDate: string;
@@ -111,6 +116,16 @@ export const leaveApi = {
   }) => put<void>(`/leave/balances/${employeeCode}/adjust`, dto),
 
   initAllBalances: () => post<{ created: number }>('/leave/balances/init', {}),
+
+  getAllBalances: (year?: number) =>
+    get<LeaveBalance[]>('/leave/balances/all', { params: year ? { year } : undefined }),
+
+  bulkAdjustBalance: (dto: {
+    leaveTypeCode: string;
+    days: number;
+    field: 'opening' | 'granted';
+    reason: string;
+  }) => post<{ updated: number }>('/leave/balances/bulk-adjust', dto),
 
   // Calendar
   getCalendar: (companyId: string, month: number, year: number) =>

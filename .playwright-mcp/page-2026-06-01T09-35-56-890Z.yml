@@ -1,0 +1,176 @@
+- generic [ref=e5]:
+  - complementary [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]: HR
+      - generic [ref=e9]: HRMS
+    - navigation "Main navigation" [ref=e10]:
+      - link "⊞ Dashboard" [ref=e12] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e13]: ⊞
+        - generic [ref=e14]: Dashboard
+      - generic [ref=e15]:
+        - generic [ref=e16]: People
+        - link "◎ Employees" [ref=e17] [cursor=pointer]:
+          - /url: /employees
+          - generic [ref=e18]: ◎
+          - generic [ref=e19]: Employees
+      - generic [ref=e20]:
+        - generic [ref=e21]: Time Off
+        - link "◷ Applications" [ref=e22] [cursor=pointer]:
+          - /url: /leave/applications
+          - generic [ref=e23]: ◷
+          - generic [ref=e24]: Applications
+        - link "◑ My Balance" [ref=e25] [cursor=pointer]:
+          - /url: /leave/balance
+          - generic [ref=e26]: ◑
+          - generic [ref=e27]: My Balance
+        - link "≡ Leave Types" [ref=e28] [cursor=pointer]:
+          - /url: /leave/types
+          - generic [ref=e29]: ≡
+          - generic [ref=e30]: Leave Types
+      - generic [ref=e31]:
+        - generic [ref=e32]: Attendance
+        - link "● Mark" [ref=e33] [cursor=pointer]:
+          - /url: /attendance
+          - generic [ref=e34]: ●
+          - generic [ref=e35]: Mark
+        - link "≡ Logs" [ref=e36] [cursor=pointer]:
+          - /url: /attendance/logs
+          - generic [ref=e37]: ≡
+          - generic [ref=e38]: Logs
+        - link "⚠ Exceptions" [ref=e39] [cursor=pointer]:
+          - /url: /attendance/exceptions
+          - generic [ref=e40]: ⚠
+          - generic [ref=e41]: Exceptions
+      - generic [ref=e42]:
+        - generic [ref=e43]: Payroll
+        - link "₹ Overview" [ref=e44] [cursor=pointer]:
+          - /url: /payroll
+          - generic [ref=e45]: ₹
+          - generic [ref=e46]: Overview
+        - link "▶ Runs" [ref=e47] [cursor=pointer]:
+          - /url: /payroll/runs
+          - generic [ref=e48]: ▶
+          - generic [ref=e49]: Runs
+        - link "◧ Payslips" [ref=e50] [cursor=pointer]:
+          - /url: /payroll/payslips
+          - generic [ref=e51]: ◧
+          - generic [ref=e52]: Payslips
+        - link "≡ Salary" [ref=e53] [cursor=pointer]:
+          - /url: /payroll/components
+          - generic [ref=e54]: ≡
+          - generic [ref=e55]: Salary
+        - link "◫ Structures" [ref=e56] [cursor=pointer]:
+          - /url: /payroll/structures
+          - generic [ref=e57]: ◫
+          - generic [ref=e58]: Structures
+        - link "◑ Cycles" [ref=e59] [cursor=pointer]:
+          - /url: /payroll/cycles
+          - generic [ref=e60]: ◑
+          - generic [ref=e61]: Cycles
+        - link "⚖ Statutory" [ref=e62] [cursor=pointer]:
+          - /url: /payroll/statutory-settings
+          - generic [ref=e63]: ⚖
+          - generic [ref=e64]: Statutory
+      - generic [ref=e65]:
+        - generic [ref=e66]: Approvals
+        - link "✓ Queue" [ref=e67] [cursor=pointer]:
+          - /url: /approvals
+          - generic [ref=e68]: ✓
+          - generic [ref=e69]: Queue
+        - link "◉ Notifications" [ref=e70] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e71]: ◉
+          - generic [ref=e72]: Notifications
+      - generic [ref=e73]:
+        - generic [ref=e74]: Organisation
+        - link "⬡ Companies" [ref=e75] [cursor=pointer]:
+          - /url: /settings/companies
+          - generic [ref=e76]: ⬡
+          - generic [ref=e77]: Companies
+        - link "◫ Departments" [ref=e78] [cursor=pointer]:
+          - /url: /settings/departments
+          - generic [ref=e79]: ◫
+          - generic [ref=e80]: Departments
+        - link "◧ Designations" [ref=e81] [cursor=pointer]:
+          - /url: /settings/designations
+          - generic [ref=e82]: ◧
+          - generic [ref=e83]: Designations
+        - link "◎ Locations" [ref=e84] [cursor=pointer]:
+          - /url: /settings/locations
+          - generic [ref=e85]: ◎
+          - generic [ref=e86]: Locations
+      - generic [ref=e87]:
+        - generic [ref=e88]: Configuration
+        - link "⇄ Workflows" [ref=e89] [cursor=pointer]:
+          - /url: /settings/workflows
+          - generic [ref=e90]: ⇄
+          - generic [ref=e91]: Workflows
+        - link "⚖ Rule Sets" [ref=e92] [cursor=pointer]:
+          - /url: /settings/rules
+          - generic [ref=e93]: ⚖
+          - generic [ref=e94]: Rule Sets
+        - link "☰ Forms" [ref=e95] [cursor=pointer]:
+          - /url: /settings/forms
+          - generic [ref=e96]: ☰
+          - generic [ref=e97]: Forms
+      - generic [ref=e98]:
+        - generic [ref=e99]: Admin
+        - link "◈ Users" [ref=e100] [cursor=pointer]:
+          - /url: /admin/users
+          - generic [ref=e101]: ◈
+          - generic [ref=e102]: Users
+        - link "◆ Roles" [ref=e103] [cursor=pointer]:
+          - /url: /roles
+          - generic [ref=e104]: ◆
+          - generic [ref=e105]: Roles
+        - link "⚙ Settings" [ref=e106] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e107]: ⚙
+          - generic [ref=e108]: Settings
+  - generic [ref=e109]:
+    - banner [ref=e110]:
+      - button "Toggle sidebar" [ref=e112] [cursor=pointer]: ☰
+      - generic [ref=e113]:
+        - button "Notifications" [ref=e114] [cursor=pointer]: 🔔
+        - button "Toggle theme" [ref=e115] [cursor=pointer]: 🌙
+        - generic [ref=e117]:
+          - generic [ref=e118]: CM
+          - generic [ref=e119]: cMigl3JFwx
+          - button "Sign out" [ref=e120] [cursor=pointer]: ⏏
+    - main [ref=e121]:
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - heading "Departments" [level=1] [ref=e124]
+          - button "+ Add Department" [active] [ref=e126] [cursor=pointer]
+        - combobox [ref=e128] [cursor=pointer]:
+          - option "All Companies" [selected]
+          - option "HRMS Test Co Pvt Ltd"
+        - generic [ref=e129]:
+          - heading "No departments yet" [level=3] [ref=e130]
+          - paragraph [ref=e131]: Add departments to structure your organisation.
+          - button "Add Department" [ref=e133] [cursor=pointer]
+        - dialog "Add Department" [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e136]:
+              - heading "Add Department" [level=2] [ref=e137]
+              - button "Close modal" [ref=e138] [cursor=pointer]: ✕
+            - generic [ref=e139]:
+              - generic [ref=e140]:
+                - generic [ref=e141]: Name *
+                - textbox "Engineering" [ref=e142]
+              - generic [ref=e143]:
+                - generic [ref=e144]: Code *
+                - textbox "ENG" [ref=e145]
+              - generic [ref=e146]:
+                - generic [ref=e147]: Company *
+                - combobox [ref=e148] [cursor=pointer]:
+                  - option "Select company…" [selected]
+                  - option "HRMS Test Co Pvt Ltd"
+              - generic [ref=e149]:
+                - generic [ref=e150]: Parent Department
+                - combobox [ref=e151] [cursor=pointer]:
+                  - option "None" [selected]
+            - generic [ref=e153]:
+              - button "Cancel" [ref=e154] [cursor=pointer]
+              - button "Create" [ref=e155] [cursor=pointer]

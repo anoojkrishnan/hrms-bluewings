@@ -5,12 +5,12 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon --exec tsx src/server.ts",
-    "build": "tsc --project tsconfig.json",
+    "build": "node esbuild.config.mjs",
     "start": "node dist/server.js",
     "test": "jest --forceExit --detectOpenHandles",
     "test:coverage": "jest --forceExit --detectOpenHandles --coverage",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint src --ext .ts --max-warnings 0",
+    "typecheck": "NODE_OPTIONS=--max-old-space-size=4096 tsc --noEmit",
+    "lint": "NODE_OPTIONS=--max-old-space-size=4096 eslint src --ext .ts --max-warnings 0",
     "lint:fix": "eslint src --ext .ts --fix",
     "db:reset": "tsx scripts/reset-db.ts",
     "db:reset:dry": "tsx scripts/reset-db.ts -- --dry-run"

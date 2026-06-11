@@ -15,6 +15,7 @@ const leaveTypeSchema = new Schema(
     organizationId: String,
     name: { type: String, required: true },
     code: { type: String, required: true },
+    defaultAnnualDays: Number,
     isCarryForward: { type: Boolean, default: false },
     maxCarryForwardDays: Number,
     isEncashable: { type: Boolean, default: false },
@@ -240,11 +241,12 @@ export class LeaveRepository {
 
   async findApplicationsByStatus(
     tenantId: string,
-    status: string,
+    status: string | undefined,
     page: number,
     limit: number,
   ): Promise<PaginatedResult<LeaveApplication>> {
-    const query = { tenantId, status };
+    const query: Record<string, unknown> = { tenantId };
+    if (status) query.status = status;
     const [docs, total] = await Promise.all([
       LeaveApplicationModel.find(query).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
       LeaveApplicationModel.countDocuments(query),
@@ -283,6 +285,11 @@ export class LeaveRepository {
 
   async getBalancesByEmployee(employeeId: string, tenantId: string, year: number): Promise<LeaveBalance[]> {
     const docs = await LeaveBalanceModel.find({ tenantId, employeeId, leaveYear: year }).lean();
+    return docs as unknown as LeaveBalance[];
+  }
+
+  async findAllBalances(tenantId: string, leaveYear: number): Promise<LeaveBalance[]> {
+    const docs = await LeaveBalanceModel.find({ tenantId, leaveYear }).lean();
     return docs as unknown as LeaveBalance[];
   }
 

@@ -5,6 +5,7 @@ import { validate } from '@/shared/validators/common.schemas';
 import { updateProfileSchema, changePasswordSchema } from './user.validator';
 import { requireAuth } from '@/middleware/auth.middleware';
 import { requireTenantContext } from '@/middleware/tenantContext.middleware';
+import { requirePermission } from '@/middleware/permission.middleware';
 
 const service = new UserService();
 const controller = new UserController(service);
@@ -12,10 +13,10 @@ const controller = new UserController(service);
 export const userRouter = Router();
 
 // Admin: list users, update status
-userRouter.get('/users', requireAuth, requireTenantContext, (req, res, next) => {
+userRouter.get('/users', requireAuth, requireTenantContext, requirePermission('rbac.role.view'), (req, res, next) => {
   void controller.listUsers(req, res, next);
 });
-userRouter.put('/users/:userId/status', requireAuth, requireTenantContext, (req, res, next) => {
+userRouter.put('/users/:userId/status', requireAuth, requireTenantContext, requirePermission('rbac.role.view'), (req, res, next) => {
   void controller.updateUserStatus(req, res, next);
 });
 

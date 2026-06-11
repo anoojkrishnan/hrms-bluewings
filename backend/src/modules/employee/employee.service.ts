@@ -80,22 +80,23 @@ export class EmployeeService {
       const leaveTypes = await leaveRepo.findLeaveTypes(tenantId);
       const year = new Date().getFullYear();
       await Promise.all(
-        leaveTypes.map((lt) =>
-          leaveRepo.upsertBalance({
+        leaveTypes.map((lt) => {
+          const opening = lt.defaultAnnualDays ?? 0;
+          return leaveRepo.upsertBalance({
             tenantId,
             employeeId,
             leaveTypeId: lt.publicId,
             leaveYear: year,
-            openingBalance: 0,
+            openingBalance: opening,
             accrued: 0,
             granted: 0,
             taken: 0,
             encashed: 0,
             lapsed: 0,
-            closingBalance: 0,
+            closingBalance: opening,
             lastUpdatedAt: new Date(),
-          }),
-        ),
+          });
+        }),
       );
     } catch {
       // Non-critical

@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { attendanceApi } from '@/lib/api/attendance.api';
+import { employeeApi } from '@/lib/api/employee.api';
 import { PermissionGuard } from '@/components/guards/PermissionGuard';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { SetupGuide } from '@/components/ui/SetupGuide';
+import { SETUP } from '@/lib/help/helpContent';
 import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 
 function formatTime(iso?: string) {
   if (!iso) return '—';
@@ -21,27 +25,76 @@ const STATUS_VARIANTS: Record<string, 'success' | 'warning' | 'danger' | 'info' 
   work_from_home: 'success',
 };
 
+const STATUSES = ['present', 'absent', 'half_day', 'on_leave', 'holiday', 'weekend', 'work_from_home'];
+
+interface OverrideForm {
+  employeeCode: string;
+  date: string;
+  firstInTime: string;
+  lastOutTime: string;
+  status: string;
+  remarks: string;
+}
+
+const EMPTY_OVERRIDE: OverrideForm = {
+  employeeCode: '',
+  date: '',
+  firstInTime: '',
+  lastOutTime: '',
+  status: 'present',
+  remarks: '',
+};
+
 export default function AttendanceList() {
+  const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const today = new Date();
   const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
   const [from, setFrom] = useState(firstOfMonth);
   const [to, setTo] = useState(today.toISOString().split('T')[0]);
+  const [overrideOpen, setOverrideOpen] = useState(false);
+  const [overrideForm, setOverrideForm] = useState<OverrideForm>(EMPTY_OVERRIDE);
 
   const { data, isLoading } = useQuery({
     queryKey: ['attendance-list', page, from, to],
     queryFn: () => attendanceApi.list({ page: String(page), from, to }),
   });
 
+  const { data: employeesData } = useQuery({
+    queryKey: ['employees-list'],
+    queryFn: () => employeeApi.list({ limit: '200', status: 'active' }),
+  });
+  const employees = employeesData?.data ?? [];
+
+  const overrideMutation = useMutation({
+    mutationFn: () => attendanceApi.override({
+      employeeCode: overrideForm.employeeCode,
+      date: overrideForm.date,
+      inTime: overrideForm.firstInTime ? new Date(`${overrideForm.date}T${overrideForm.firstInTime}`).toISOString() : undefined,
+      outTime: overrideForm.lastOutTime ? new Date(`${overrideForm.date}T${overrideForm.lastOutTime}`).toISOString() : undefined,
+      status: overrideForm.status,
+      reason: overrideForm.remarks || undefined,
+    }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['attendance-list'] });
+      setOverrideOpen(false);
+      setOverrideForm(EMPTY_OVERRIDE);
+    },
+  });
+
   const logs = data?.data ?? [];
   const meta = data?.meta;
+  const set = (k: keyof OverrideForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    setOverrideForm(p => ({ ...p, [k]: e.target.value }));
 
   return (
     <div className="page-container">
       <div className="page-header">
         <h1 className="page-title">Attendance Logs</h1>
         <PermissionGuard permission="attendance.log.override">
-          <button className="btn btn-secondary">Manual Override</button>
+          <Button variant="secondary" onClick={() => { setOverrideForm(EMPTY_OVERRIDE); setOverrideOpen(true); }}>
+            Manual Override
+          </Button>
         </PermissionGuard>
       </div>
 
@@ -55,12 +108,11 @@ export default function AttendanceList() {
           <input type="date" className="input" value={to} onChange={(e) => { setTo(e.target.value); setPage(1); }} />
         </div>
       </div>
-
       {isLoading ? (
         Array.from({ length: 6 }).map((_, i) => <div key={i} style={{ marginBottom: 8 }}><Skeleton height={48} /></div>)
       ) : logs.length === 0 ? (
-        <EmptyState title="No attendance records" description="No logs found for the selected date range." />
-      ) : (
+        <SetupGuide content={SETUP['attendance-logs']} />
+) : (
         <>
           <div className="table-wrapper">
             <table className="table">
@@ -78,7 +130,7 @@ export default function AttendanceList() {
               <tbody>
                 {logs.map((log) => (
                   <tr key={log.publicId}>
-                    <td>{log.employeeId}</td>
+                    <td>{employees.find(e => e.publicId === log.employeeId)?.employeeCode ?? log.employeeId}</td>
                     <td>{new Date(log.date).toLocaleDateString()}</td>
                     <td>{formatTime(log.firstInTime)}</td>
                     <td>{formatTime(log.lastOutTime)}</td>
@@ -108,6 +160,64 @@ export default function AttendanceList() {
           )}
         </>
       )}
+
+      <Modal
+        open={overrideOpen}
+        onClose={() => setOverrideOpen(false)}
+        title="Manual Attendance Override"
+        size="sm"
+        footer={
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Button variant="secondary" onClick={() => setOverrideOpen(false)}>Cancel</Button>
+            <Button
+              loading={overrideMutation.isPending}
+              disabled={!overrideForm.employeeCode || !overrideForm.date}
+              onClick={() => overrideMutation.mutate()}
+            >
+              Save Override
+            </Button>
+          </div>
+        }
+      >
+        {overrideMutation.isError && (
+          <div className="alert alert-danger">
+            {(overrideMutation.error as { message?: string }).message ?? 'Failed to save override'}
+          </div>
+        )}
+        <div className="form-group">
+          <label className="form-label">Employee *</label>
+          <select className="select" value={overrideForm.employeeCode} onChange={set('employeeCode')}>
+            <option value="">Select employee…</option>
+            {employees.map(e => (
+              <option key={e.publicId} value={e.employeeCode}>{e.employeeCode}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Date *</label>
+          <input type="date" className="input" value={overrideForm.date} onChange={set('date')} />
+        </div>
+        <div className="form-grid">
+          <div className="form-group">
+            <label className="form-label">Check In Time</label>
+            <input type="time" className="input" value={overrideForm.firstInTime} onChange={set('firstInTime')} />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Check Out Time</label>
+            <input type="time" className="input" value={overrideForm.lastOutTime} onChange={set('lastOutTime')} />
+          </div>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Status</label>
+          <select className="select" value={overrideForm.status} onChange={set('status')}>
+            {STATUSES.map(s => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Remarks</label>
+          <textarea className="input" rows={2} value={overrideForm.remarks} onChange={set('remarks')} placeholder="Reason for override…" />
+        </div>
+      </Modal>
     </div>
   );
 }

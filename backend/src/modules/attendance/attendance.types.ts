@@ -132,3 +132,60 @@ export interface CreateShiftDto {
 }
 
 export interface UpdateShiftDto extends Partial<Omit<CreateShiftDto, 'code' | 'companyId'>> {}
+
+// ── Overtime & Comp-Off ───────────────────────────────────────────────────────
+
+export enum OTStatus {
+  PENDING   = 'pending',
+  APPROVED  = 'approved',
+  REJECTED  = 'rejected',
+  CONVERTED = 'converted',
+}
+
+export interface OvertimeRecord extends BaseDocument {
+  employeeId:      string;
+  companyId?:      string;
+  date:            Date;
+  overtimeHours:   number;
+  reason:          string;
+  status:          OTStatus;
+  compOffGranted?: boolean;
+  reviewedBy?:     string;
+  reviewedAt?:     Date;
+  rejectionNote?:  string;
+}
+
+export interface CompOffRecord extends BaseDocument {
+  employeeId:    string;
+  overtimeId?:   string;
+  creditedDays:  number;
+  expiryDate:    Date;
+  usedDays:      number;
+  isActive:      boolean;
+}
+
+export interface SubmitOvertimeDto {
+  date:          string;
+  overtimeHours: number;
+  reason:        string;
+  companyId?:    string;
+}
+
+export interface ApproveOvertimeDto {
+  convertToCompOff?: boolean;
+}
+
+// ── Shift Assignment ─────────────────────────────────────────────────────────
+
+export interface ShiftAssignment extends BaseDocument {
+  employeeId:    string;
+  shiftId:       string;
+  effectiveFrom: Date;
+  effectiveTo?:  Date;
+}
+
+export interface AssignShiftDto {
+  employeeIds:   string[];
+  effectiveFrom: string;
+  effectiveTo?:  string;
+}

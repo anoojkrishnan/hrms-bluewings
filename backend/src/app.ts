@@ -22,6 +22,10 @@ import { workflowRouter } from './modules/workflow/workflow.routes';
 import { notificationRouter } from './modules/notifications/notification.routes';
 import { notificationService } from './modules/notifications/notification.service';
 import { dynamicFormsRouter } from './modules/dynamic-forms/dynamic-forms.routes';
+import { payrollRouter } from './modules/payroll/payroll.routes';
+import { expenseRouter } from './modules/expense/expense.routes';
+import { reportsRouter } from './modules/reports/reports.routes';
+import { integrationsRouter } from './modules/integrations/integrations.routes';
 import { LeaveService } from './modules/leave/leave.service';
 
 export function createApp(): express.Application {
@@ -77,6 +81,10 @@ export function createApp(): express.Application {
   api.use('/', workflowRouter);
   api.use('/', notificationRouter);
   api.use('/', dynamicFormsRouter);
+  api.use('/', payrollRouter);
+  api.use('/', expenseRouter);
+  api.use('/', reportsRouter);
+  api.use('/', integrationsRouter);
 
   // Register cross-module event listeners
   notificationService.registerEventListeners();

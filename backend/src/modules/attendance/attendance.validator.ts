@@ -82,3 +82,32 @@ export const updateShiftSchema = z.object({
     isFlexible: z.boolean().optional(),
   }),
 });
+
+// ── Overtime ─────────────────────────────────────────────────────────────────
+
+export const submitOvertimeSchema = z.object({
+  body: z.object({
+    date:          z.string().datetime(),
+    overtimeHours: z.number().min(0.5).max(24),
+    reason:        z.string().min(5).max(500),
+    companyId:     z.string().optional(),
+  }),
+});
+
+export const approveOvertimeSchema = z.object({
+  params: z.object({ publicId: z.string().min(1) }),
+  body: z.object({
+    convertToCompOff: z.boolean().default(false),
+  }),
+});
+
+// ── Shift Assignment ──────────────────────────────────────────────────────────
+
+export const assignShiftSchema = z.object({
+  params: z.object({ publicId: z.string().min(1) }),
+  body: z.object({
+    employeeIds:   z.array(z.string().min(1)).min(1),
+    effectiveFrom: z.string().datetime(),
+    effectiveTo:   z.string().datetime().optional(),
+  }),
+});

@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { attendanceApi } from '@/lib/api/attendance.api';
 import { PermissionGuard } from '@/components/guards/PermissionGuard';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { SetupGuide } from '@/components/ui/SetupGuide';
+import { SETUP } from '@/lib/help/helpContent';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -62,8 +63,8 @@ export default function AttendanceExceptionList() {
       {isLoading ? (
         Array.from({ length: 5 }).map((_, i) => <div key={i} style={{ marginBottom: 8 }}><Skeleton height={48} /></div>)
       ) : exceptions.length === 0 ? (
-        <EmptyState title="No exceptions" description="No attendance exceptions found." />
-      ) : (
+        <SetupGuide content={SETUP['attendance-exceptions']} />
+) : (
         <>
           <div className="table-wrapper">
             <table className="table">

@@ -54,15 +54,23 @@ export const ALL_SYSTEM_PERMISSIONS: Array<{
   { code: 'attendance.shift.view', module: 'attendance', action: 'view', description: 'View shifts' },
   { code: 'attendance.shift.configure', module: 'attendance', action: 'configure', description: 'Configure shifts' },
   // Payroll
-  { code: 'payroll.run.view', module: 'payroll', action: 'view', description: 'View payroll runs' },
-  { code: 'payroll.run.create', module: 'payroll', action: 'create', description: 'Create payroll runs' },
-  { code: 'payroll.run.finalize', module: 'payroll', action: 'finalize', description: 'Finalize payroll' },
-  { code: 'payroll.run.approve', module: 'payroll', action: 'approve', description: 'Approve payroll' },
-  { code: 'payroll.payslip.view', module: 'payroll', action: 'view', description: 'View payslips' },
-  { code: 'payroll.payslip.publish', module: 'payroll', action: 'publish', description: 'Publish payslips' },
-  // Reports
-  { code: 'reports.standard.view', module: 'reports', action: 'view', description: 'View standard reports' },
-  { code: 'reports.standard.export', module: 'reports', action: 'export', description: 'Export reports' },
+  { code: 'payroll.component.view',         module: 'payroll', action: 'view',     description: 'View salary components' },
+  { code: 'payroll.component.manage',       module: 'payroll', action: 'manage',   description: 'Create and edit salary components' },
+  { code: 'payroll.structure.view',         module: 'payroll', action: 'view',     description: 'View salary structures' },
+  { code: 'payroll.structure.manage',       module: 'payroll', action: 'manage',   description: 'Create and edit salary structures' },
+  { code: 'payroll.employee_salary.view',   module: 'payroll', action: 'view',     description: 'View employee salary details' },
+  { code: 'payroll.employee_salary.assign', module: 'payroll', action: 'assign',   description: 'Assign salary structure to employee' },
+  { code: 'payroll.employee_salary.revise', module: 'payroll', action: 'revise',   description: 'Revise employee salary' },
+  { code: 'payroll.cycle.manage',           module: 'payroll', action: 'manage',   description: 'Manage pay cycles' },
+  { code: 'payroll.inputs.manage',          module: 'payroll', action: 'manage',   description: 'Enter payroll inputs (LOP/bonus)' },
+  { code: 'payroll.run.view',               module: 'payroll', action: 'view',     description: 'View payroll runs' },
+  { code: 'payroll.run.create',             module: 'payroll', action: 'create',   description: 'Create payroll runs' },
+  { code: 'payroll.run.finalize',           module: 'payroll', action: 'finalize', description: 'Finalize payroll' },
+  { code: 'payroll.run.approve',            module: 'payroll', action: 'approve',  description: 'Approve payroll' },
+  { code: 'payroll.run.rollback',           module: 'payroll', action: 'rollback', description: 'Rollback a payroll run' },
+  { code: 'payroll.payslip.view',           module: 'payroll', action: 'view',     description: 'View payslips' },
+  { code: 'payroll.payslip.publish',        module: 'payroll', action: 'publish',  description: 'Publish payslips' },
+  { code: 'payroll.statutory.manage',       module: 'payroll', action: 'manage',   description: 'Configure statutory settings (PF/ESI/PT/TDS)' },
   { code: 'reports.sensitive.export', module: 'reports', action: 'export', description: 'Export sensitive reports' },
   // RBAC
   { code: 'rbac.role.view', module: 'rbac', action: 'view', description: 'View roles' },
@@ -125,4 +133,31 @@ export const ALL_SYSTEM_PERMISSIONS: Array<{
   // Dynamic forms
   { code: 'form.view', module: 'dynamic-forms', action: 'view', description: 'View forms' },
   { code: 'form.configure', module: 'dynamic-forms', action: 'configure', description: 'Configure forms' },
+  // Loans
+  { code: 'payroll.loan.view',    module: 'payroll', action: 'view',    description: 'View loan requests' },
+  { code: 'payroll.loan.create',  module: 'payroll', action: 'create',  description: 'Request a loan' },
+  { code: 'payroll.loan.approve', module: 'payroll', action: 'approve', description: 'Approve/reject loan requests' },
+  // FnF
+  { code: 'payroll.fnf.view',     module: 'payroll', action: 'view',     description: 'View FnF settlements' },
+  { code: 'payroll.fnf.initiate', module: 'payroll', action: 'initiate', description: 'Initiate FnF for an employee' },
+  { code: 'payroll.fnf.approve',  module: 'payroll', action: 'approve',  description: 'Approve FnF settlement' },
+  // Overtime
+  { code: 'attendance.overtime.view',    module: 'attendance', action: 'view',    description: 'View overtime records' },
+  { code: 'attendance.overtime.submit',  module: 'attendance', action: 'submit',  description: 'Submit overtime request' },
+  { code: 'attendance.overtime.approve', module: 'attendance', action: 'approve', description: 'Approve overtime requests' },
+  // Expense & Claims
+  { code: 'expense.claim.view', module: 'expense', action: 'view', description: 'View expense claims' },
+  { code: 'expense.claim.create', module: 'expense', action: 'create', description: 'Create expense claims' },
+  { code: 'expense.claim.submit', module: 'expense', action: 'submit', description: 'Submit expense claims for approval' },
+  { code: 'expense.claim.approve', module: 'expense', action: 'approve', description: 'Approve expense claims' },
+  { code: 'expense.claim.reject', module: 'expense', action: 'reject', description: 'Reject expense claims' },
+  { code: 'expense.category.view', module: 'expense', action: 'view', description: 'View expense categories' },
+  { code: 'expense.category.configure', module: 'expense', action: 'configure', description: 'Configure expense categories' },
+  // Reports & Analytics
+  { code: 'reports.standard.view',   module: 'reports', action: 'view',    description: 'View and generate standard reports' },
+  { code: 'reports.standard.export', module: 'reports', action: 'export',  description: 'Export reports as CSV' },
+  { code: 'reports.analytics.view',  module: 'reports', action: 'view',    description: 'View analytics dashboard' },
+  // Integrations
+  { code: 'integrations.api_client.manage', module: 'integrations', action: 'manage', description: 'Create and manage API clients' },
+  { code: 'integrations.webhook.manage',    module: 'integrations', action: 'manage', description: 'Create and manage webhooks' },
 ];

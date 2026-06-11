@@ -3,10 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { organizationApi } from '@/lib/api/organization.api';
 import type { Company, CreateCompanyDto, UpdateCompanyDto } from '@/lib/api/organization.api';
 import { Modal } from '@/components/ui/Modal';
+import { SetupGuide } from '@/components/ui/SetupGuide';
+import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
 
 interface CompanyForm {
   name: string;
@@ -166,12 +167,9 @@ export default function CompanyList() {
       )}
 
       {!isLoading && !isError && companies.length === 0 && (
-        <EmptyState
-          title="No companies yet"
-          description="Add your first legal entity to get started."
-          cta={<Button onClick={openAdd}>Add Company</Button>}
-        />
+        <SetupGuide content={SETUP['companies']} />
       )}
+
 
       {!isLoading && !isError && companies.length > 0 && (
         <div className="table-wrapper">

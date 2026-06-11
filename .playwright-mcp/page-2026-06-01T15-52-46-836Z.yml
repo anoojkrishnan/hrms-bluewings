@@ -1,0 +1,122 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link [ref=e7] [cursor=pointer]:
+        - /url: .
+      - navigation [ref=e8]:
+        - generic [ref=e10]:
+          - link " Home" [ref=e11] [cursor=pointer]:
+            - /url: .
+            - generic [ref=e12]: 
+            - text: Home
+          - link " Donate" [ref=e13] [cursor=pointer]:
+            - /url: donate
+            - generic [ref=e14]: 
+            - text: Donate
+          - link " Domains" [ref=e15] [cursor=pointer]:
+            - /url: add-domain
+            - generic [ref=e16]: 
+            - text: Domains
+          - link " Random" [ref=e17] [cursor=pointer]:
+            - /url: email-generator
+            - generic [ref=e18]: 
+            - text: Random
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - img "Temporary Email" [ref=e26]
+            - text: English
+          - generic [ref=e28]: 
+  - main [ref=e32]:
+    - generic [ref=e34]:
+      - generic [ref=e35]: hrms-emp-v3@yopmail.com
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - text: Alias
+          - button "" [ref=e38] [cursor=pointer]:
+            - generic [ref=e39]: 
+          - text: ":"
+        - generic [ref=e40]:
+          - emphasis [ref=e41]: alt.fm-4o8s12xx
+          - text: "@yopmail.com"
+        - button "" [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]: 
+    - generic [ref=e45]:
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - button "" [ref=e50] [cursor=pointer]:
+            - generic [ref=e51]: 
+          - button "" [disabled] [ref=e53]:
+            - generic [ref=e54]: 
+          - button "" [ref=e57] [cursor=pointer]:
+            - generic [ref=e58]: 
+          - generic [ref=e59]:
+            - button "" [disabled] [ref=e61]:
+              - generic [ref=e62]: 
+            - generic [ref=e63]: page 1
+            - button "" [disabled] [ref=e65]:
+              - generic [ref=e66]: 
+          - generic [ref=e68]: 1 mail
+          - button "" [ref=e70] [cursor=pointer]:
+            - generic [ref=e71]: 
+        - iframe [ref=e73]:
+          - generic [ref=f172e2]:
+            - generic [ref=f172e3]: today
+            - generic [ref=f172e4]:
+              - checkbox [ref=f172e6]
+              - button "21:52 no-reply@bluewings.in You've been invited to HRMS Employee Self-Service" [ref=f172e7] [cursor=pointer]:
+                - generic [ref=f172e8]:
+                  - generic [ref=f172e9]: 21:52
+                  - generic [ref=f172e10]: no-reply@bluewings.in
+                - generic [ref=f172e11]: You've been invited to HRMS Employee Self-Service
+      - iframe [ref=e79]:
+        - generic [active] [ref=f174e1]:
+          - banner [ref=f174e2]:
+            - generic [ref=f174e3]:
+              - generic [ref=f174e4]:
+                - button " Deliverability" [ref=f174e5] [cursor=pointer]:
+                  - generic [ref=f174e6]: 
+                  - generic [ref=f174e7]: Deliverability
+                - generic [ref=f174e8]:
+                  - button " Reply" [ref=f174e9] [cursor=pointer]:
+                    - generic [ref=f174e10]: 
+                    - generic [ref=f174e11]: Reply
+                  - button " Forward" [ref=f174e12] [cursor=pointer]:
+                    - generic [ref=f174e13]: 
+                    - generic [ref=f174e14]: Forward
+              - button " Print" [ref=f174e15] [cursor=pointer]:
+                - generic [ref=f174e16]: 
+                - generic [ref=f174e17]: Print
+              - button " Delete" [ref=f174e18] [cursor=pointer]:
+                - generic [ref=f174e19]: 
+                - generic [ref=f174e20]: Delete
+              - button "" [ref=f174e21] [cursor=pointer]:
+                - generic [ref=f174e22]: 
+            - generic [ref=f174e23]:
+              - generic [ref=f174e24]: You've been invited to HRMS Employee Self-Service
+              - generic [ref=f174e25]:
+                - generic [ref=f174e26]: 
+                - generic [ref=f174e27]: <no-reply@bluewings.in>
+              - generic [ref=f174e28]:
+                - generic [ref=f174e29]: 
+                - generic [ref=f174e30]: Monday, June 1, 2026 9:52:19 PM
+          - main [ref=f174e31]:
+            - generic [ref=f174e35]:
+              - generic [ref=f174e36]:
+                - heading "Welcome to HRMS" [level=1] [ref=f174e37]
+                - paragraph [ref=f174e38]: Employee Self-Service Portal
+              - paragraph [ref=f174e39]:
+                - text: Hi
+                - strong [ref=f174e40]: John
+                - text: ","
+              - paragraph [ref=f174e41]: Your HR team has set up an Employee Self-Service account for you. You can now view your payslips, apply for leave, check your attendance, and manage your profile — all in one place.
+              - paragraph [ref=f174e42]: "Your login email:"
+              - paragraph [ref=f174e43]: hrms-emp-v3@yopmail.com
+              - link "Set Your Password & Login" [ref=f174e44] [cursor=pointer]:
+                - /url: http://localhost:5173/reset-password?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmNzdnMUxDRVNWIiwicHVycG9zZSI6InBhc3N3b3JkX3Jlc2V0IiwiaWF0IjoxNzgwMzI5MTMzLCJleHAiOjE3ODAzMzI3MzN9._q7Fd8RxW_O4zqf3Hq8HGJaB0NeMDQ2cnFkYjB196Zs
+              - paragraph [ref=f174e45]:
+                - text: This link expires in
+                - strong [ref=f174e46]: 24 hours
+                - text: . If you didn't expect this email, please ignore it or contact your HR team.
+              - separator [ref=f174e47]
+              - paragraph [ref=f174e48]: "Tenant ID: tBxJ0XEe2P · HRMS Platform"
+  - contentinfo [ref=e82]

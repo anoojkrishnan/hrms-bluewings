@@ -35,5 +35,29 @@ export const ROUTES = {
   LOCATIONS: '/settings/locations',
   // Admin
   USERS_MGMT: '/admin/users',
+  // Payroll
+  PAYROLL_DASHBOARD:  '/payroll',
+  PAYROLL_COMPONENTS: '/payroll/components',
+  PAYROLL_STRUCTURES: '/payroll/structures',
+  PAYROLL_CYCLES:     '/payroll/cycles',
+  PAYROLL_RUNS:       '/payroll/runs',
+  PAYROLL_RUN_DETAIL: '/payroll/runs/:publicId',
+  PAYROLL_INPUTS:     '/payroll/runs/:publicId/inputs',
+  PAYROLL_PAYSLIPS:   '/payroll/payslips',
+  PAYROLL_STATUTORY:  '/payroll/statutory-settings',
+  PAYROLL_REPORTS:    '/payroll/reports',
+  EMPLOYEE_SALARY:    '/employees/:employeeCode/salary',
+  // Phase 5
+  SHIFTS:             '/attendance/shifts',
+  OVERTIME:           '/attendance/overtime',
+  EXPENSE_CLAIMS:     '/expense/claims',
+  PAYROLL_LOANS:      '/payroll/loans',
+  PAYROLL_FNF:        '/payroll/fnf',
+  // Phase 6
+  REPORTS:            '/reports',
+  ANALYTICS:          '/reports/analytics',
+  INTEGRATIONS:       '/integrations',
+  WEBHOOKS:           '/integrations/webhooks',
+  PAYROLL_ACCOUNTING: '/payroll/accounting',
   NOT_FOUND: '*',
 } as const;

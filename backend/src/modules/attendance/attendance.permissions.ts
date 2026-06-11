@@ -9,4 +9,7 @@ export const ATTENDANCE_PERMISSIONS = {
   BULK_IMPORT: 'attendance.bulk_import',
   SHIFT_CONFIGURE: 'attendance.shift.configure',
   SHIFT_VIEW: 'attendance.shift.view',
+  OVERTIME_VIEW:    'attendance.overtime.view',
+  OVERTIME_SUBMIT:  'attendance.overtime.submit',
+  OVERTIME_APPROVE: 'attendance.overtime.approve',
 } as const;

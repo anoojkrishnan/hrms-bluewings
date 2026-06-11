@@ -1,0 +1,127 @@
+- generic [ref=e334]:
+  - complementary [ref=e335]:
+    - generic [ref=e336]:
+      - generic [ref=e337]: HR
+      - generic [ref=e338]: HRMS
+    - navigation "Main navigation" [ref=e339]:
+      - link "⊞ Dashboard" [ref=e341] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e342]: ⊞
+        - generic [ref=e343]: Dashboard
+      - generic [ref=e344]:
+        - generic [ref=e345]: People
+        - link "◎ Employees" [ref=e346] [cursor=pointer]:
+          - /url: /employees
+          - generic [ref=e347]: ◎
+          - generic [ref=e348]: Employees
+      - generic [ref=e349]:
+        - generic [ref=e350]: Time Off
+        - link "◷ Applications" [ref=e351] [cursor=pointer]:
+          - /url: /leave/applications
+          - generic [ref=e352]: ◷
+          - generic [ref=e353]: Applications
+        - link "◑ My Balance" [ref=e354] [cursor=pointer]:
+          - /url: /leave/balance
+          - generic [ref=e355]: ◑
+          - generic [ref=e356]: My Balance
+      - generic [ref=e357]:
+        - generic [ref=e358]: Attendance
+        - link "● Mark" [ref=e359] [cursor=pointer]:
+          - /url: /attendance
+          - generic [ref=e360]: ●
+          - generic [ref=e361]: Mark
+        - link "≡ Logs" [ref=e362] [cursor=pointer]:
+          - /url: /attendance/logs
+          - generic [ref=e363]: ≡
+          - generic [ref=e364]: Logs
+        - link "🕐 Shifts" [ref=e365] [cursor=pointer]:
+          - /url: /attendance/shifts
+          - generic [ref=e366]: 🕐
+          - generic [ref=e367]: Shifts
+        - link "⏱ Overtime" [ref=e368] [cursor=pointer]:
+          - /url: /attendance/overtime
+          - generic [ref=e369]: ⏱
+          - generic [ref=e370]: Overtime
+      - generic [ref=e371]:
+        - generic [ref=e372]: Payroll
+        - link "₹ Overview" [ref=e373] [cursor=pointer]:
+          - /url: /payroll
+          - generic [ref=e374]: ₹
+          - generic [ref=e375]: Overview
+        - link "◧ Payslips" [ref=e376] [cursor=pointer]:
+          - /url: /payroll/payslips
+          - generic [ref=e377]: ◧
+          - generic [ref=e378]: Payslips
+        - link "💳 Loans" [ref=e379] [cursor=pointer]:
+          - /url: /payroll/loans
+          - generic [ref=e380]: 💳
+          - generic [ref=e381]: Loans
+      - generic [ref=e382]:
+        - generic [ref=e383]: Approvals
+        - link "◉ Notifications" [ref=e384] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e385]: ◉
+          - generic [ref=e386]: Notifications
+        - link "🧾 Expenses" [ref=e387] [cursor=pointer]:
+          - /url: /expense/claims
+          - generic [ref=e388]: 🧾
+          - generic [ref=e389]: Expenses
+  - generic [ref=e390]:
+    - banner [ref=e391]:
+      - button "Toggle sidebar" [ref=e393] [cursor=pointer]: ☰
+      - generic [ref=e394]:
+        - button "Notifications" [ref=e395] [cursor=pointer]: 🔔
+        - button "Toggle theme" [ref=e396] [cursor=pointer]: 🌙
+        - generic [ref=e398]:
+          - generic [ref=e399]: F7
+          - generic [ref=e400]: f77g1LCESV
+          - button "Sign out" [ref=e401] [cursor=pointer]: ⏏
+    - main [ref=e402]:
+      - generic [ref=e403]:
+        - generic [ref=e405]:
+          - heading "Good morning, John" [level=1] [ref=e406]
+          - generic [ref=e407]: Tuesday, 2 June 2026
+        - generic [ref=e408]:
+          - generic [ref=e409]:
+            - generic [ref=e410]:
+              - generic [ref=e411]: Get started — configure your HRMS
+              - generic [ref=e412]:
+                - text: "0 of 1 steps complete · Next:"
+                - strong [ref=e413]: Employees
+            - generic [ref=e414]:
+              - generic [ref=e415]: 0%
+              - generic [ref=e416]: complete
+          - generic [ref=e419] [cursor=pointer]:
+            - generic [ref=e420]:
+              - generic [ref=e422]: "1"
+              - img [ref=e423]
+            - generic [ref=e425]: Employees
+            - generic [ref=e426]: People in the system
+          - generic [ref=e428]:
+            - 'link "Continue: Employees" [ref=e429] [cursor=pointer]':
+              - /url: /employees
+              - text: "Continue: Employees"
+              - img [ref=e430]
+            - generic [ref=e432]: Complete setup to unlock payroll, leave, and attendance workflows
+        - generic [ref=e434]:
+          - generic [ref=e435]:
+            - generic [ref=e436]: Headcount by Department
+            - link "Full analytics →" [ref=e437] [cursor=pointer]:
+              - /url: /reports/analytics
+          - generic [ref=e438]:
+            - generic "dept__xs7jJDIgmF" [ref=e439]
+            - generic [ref=e442]: "2"
+            - generic [ref=e443]: 100%
+        - generic [ref=e445]:
+          - generic [ref=e446]: Quick Access
+          - generic [ref=e447]:
+            - link "Apply Leave" [ref=e448] [cursor=pointer]:
+              - /url: /leave/applications
+              - img [ref=e450]
+              - text: Apply Leave
+              - img [ref=e453]
+            - link "Attendance Logs" [ref=e455] [cursor=pointer]:
+              - /url: /attendance/logs
+              - img [ref=e457]
+              - text: Attendance Logs
+              - img [ref=e460]

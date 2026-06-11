@@ -1,7 +1,7 @@
 .topbar {
   height: var(--topbar-height);
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+  background: var(--color-snow);
+  border-bottom: 1px solid var(--color-mist);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,14 +22,14 @@
   justify-content: center;
   background: none;
   border: none;
-  border-radius: var(--radius-md);
-  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  color: var(--color-slate);
   font-size: 1rem;
   transition: background var(--t-fast), color var(--t-fast);
 }
 .menuBtn:hover {
-  background: var(--color-bg);
-  color: var(--color-text-primary);
+  background: var(--color-cloud);
+  color: var(--color-ink);
 }
 
 .iconBtn {
@@ -41,14 +41,14 @@
   justify-content: center;
   background: none;
   border: none;
-  border-radius: var(--radius-md);
-  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  color: var(--color-slate);
   font-size: 0.9375rem;
   transition: background var(--t-fast), color var(--t-fast);
 }
 .iconBtn:hover {
-  background: var(--color-bg);
-  color: var(--color-text-primary);
+  background: var(--color-cloud);
+  color: var(--color-ink);
 }
 
 .badge {
@@ -58,7 +58,7 @@
   min-width: 16px;
   height: 16px;
   border-radius: 99px;
-  background: var(--color-red);
+  background: var(--color-monday-violet);
   color: #fff;
   font-size: 0.625rem;
   font-weight: 700;
@@ -72,7 +72,7 @@
 .sep {
   width: 1px;
   height: 20px;
-  background: var(--color-border);
+  background: var(--color-mist);
   margin: 0 6px;
 }
 
@@ -80,18 +80,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 10px 4px 4px;
+  padding: 4px 12px 4px 4px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg);
+  border: 1px solid var(--color-pebble);
+  background: var(--color-cloud);
   cursor: default;
 }
 
 .avatar {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: var(--color-primary);
+  background: var(--color-monday-violet);
   color: #fff;
   font-size: 0.6875rem;
   font-weight: 700;
@@ -104,8 +104,8 @@
 
 .userName {
   font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-weight: 500;
+  color: var(--color-ink);
   letter-spacing: -0.01em;
   max-width: 120px;
   overflow: hidden;
@@ -121,10 +121,10 @@
   justify-content: center;
   background: none;
   border: none;
-  border-radius: var(--radius-md);
-  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+  color: var(--color-iron);
   font-size: 0.875rem;
   transition: background var(--t-fast), color var(--t-fast);
   margin-left: 2px;
 }
-.logoutBtn:hover { background: var(--color-bg); color: var(--color-red); }
+.logoutBtn:hover { background: var(--color-cloud); color: var(--color-red); }

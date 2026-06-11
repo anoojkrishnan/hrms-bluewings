@@ -55,9 +55,12 @@ export class LeaveController {
 
   listApplications = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { tenantId } = req.user;
-      const { employeeId, status, ...query } = req.query as Record<string, string>;
-      const result = await this.service.listApplications(tenantId, employeeId, status, query);
+      const { tenantId, permissions, employeePublicId } = req.user;
+      const { employeeId: queryEmployeeId, status, ...query } = req.query as Record<string, string>;
+      const isHR = permissions.includes('leave.application.approve');
+      // Non-HR users (employees) are scoped to their own applications only
+      const scopedEmployeeCode = isHR ? (queryEmployeeId ?? undefined) : (employeePublicId ?? undefined);
+      const result = await this.service.listApplications(tenantId, scopedEmployeeCode, status, query);
       res.json(successList(result.data, result.meta));
     } catch (err) { next(err); }
   };
@@ -190,6 +193,22 @@ export class LeaveController {
     try {
       const { tenantId, organizationId } = req.user;
       const result = await this.service.initAllBalances(tenantId, organizationId);
+      res.json(success(result));
+    } catch (err) { next(err); }
+  };
+
+  listAllBalances = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const year = req.query.year ? Number(req.query.year) : undefined;
+      const balances = await this.service.listAllBalances(req.user.tenantId, year);
+      res.json(success(balances));
+    } catch (err) { next(err); }
+  };
+
+  bulkAdjustBalance = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, organizationId, userId } = req.user;
+      const result = await this.service.bulkAdjustBalance(req.body, tenantId, organizationId, userId);
       res.json(success(result));
     } catch (err) { next(err); }
   };

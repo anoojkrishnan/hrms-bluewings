@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { employeeApi } from '@/lib/api/employee.api';
 import { organizationApi } from '@/lib/api/organization.api';
@@ -9,6 +9,8 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
+import { PermissionGuard } from '@/components/guards/PermissionGuard';
+import { ROUTES } from '@/router/routes';
 
 type Tab = 'overview' | 'personal' | 'bank' | 'documents' | 'timeline';
 
@@ -118,10 +120,10 @@ export default function EmployeeDetail() {
     enabled: !!employeeCode && activeTab === 'timeline',
   });
 
-  const { data: companiesData }    = useQuery({ queryKey: ['companies'],    queryFn: () => organizationApi.listCompanies({ limit: '100' }),    enabled: editOverviewOpen });
-  const { data: departmentsData }  = useQuery({ queryKey: ['departments'],  queryFn: () => organizationApi.listDepartments({ limit: '100' }),  enabled: editOverviewOpen });
-  const { data: designationsData } = useQuery({ queryKey: ['designations'], queryFn: () => organizationApi.listDesignations({ limit: '100' }), enabled: editOverviewOpen });
-  const { data: locationsData }    = useQuery({ queryKey: ['locations'],    queryFn: () => organizationApi.listLocations({ limit: '100' }),    enabled: editOverviewOpen });
+  const { data: companiesData }    = useQuery({ queryKey: ['companies'],    queryFn: () => organizationApi.listCompanies({ limit: '100' }) });
+  const { data: departmentsData }  = useQuery({ queryKey: ['departments'],  queryFn: () => organizationApi.listDepartments({ limit: '100' }) });
+  const { data: designationsData } = useQuery({ queryKey: ['designations'], queryFn: () => organizationApi.listDesignations({ limit: '100' }) });
+  const { data: locationsData }    = useQuery({ queryKey: ['locations'],    queryFn: () => organizationApi.listLocations({ limit: '100' }) });
 
   const companies    = companiesData?.data ?? [];
   const departments  = departmentsData?.data ?? [];
@@ -201,6 +203,7 @@ export default function EmployeeDetail() {
     }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['employee-personal', employeeCode] });
+      qc.invalidateQueries({ queryKey: ['employee', employeeCode] });
       setEditPersonalOpen(false);
     },
   });
@@ -321,10 +324,14 @@ export default function EmployeeDetail() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.04em',
             }}>
-              {employee.employeeCode.slice(0, 2).toUpperCase()}
+              {personal
+                ? `${personal.firstName?.charAt(0) ?? ''}${personal.lastName?.charAt(0) ?? ''}`.toUpperCase() || employee.employeeCode.slice(0, 2).toUpperCase()
+                : employee.employeeCode.slice(0, 2).toUpperCase()}
             </div>
             <div>
-              <h1 className="page-title">{employee.employeeCode}</h1>
+              <h1 className="page-title">
+                {personal ? `${personal.firstName ?? ''} ${personal.lastName ?? ''}`.trim() || employee.employeeCode : employee.employeeCode}
+              </h1>
               <div style={{ display: 'flex', gap: 8, marginTop: 4, alignItems: 'center' }}>
                 <Badge variant={employee.status === 'active' ? 'success' : employee.status === 'probation' ? 'warning' : 'default'}>
                   {employee.status.replace(/_/g, ' ')}
@@ -381,7 +388,17 @@ export default function EmployeeDetail() {
           <div style={cardStyle}>
             <div style={sectionHead}>
               <h3 style={{ margin: 0 }}>Employment</h3>
-              <button className="btn btn-ghost btn-sm" onClick={openOverview}>Edit</button>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <PermissionGuard permission="employee.salary.view">
+                  <Link
+                    to={ROUTES.EMPLOYEE_SALARY.replace(':employeeCode', employee.employeeCode)}
+                    className="btn btn-ghost btn-sm"
+                  >
+                    💰 Salary
+                  </Link>
+                </PermissionGuard>
+                <button className="btn btn-ghost btn-sm" onClick={openOverview}>Edit</button>
+              </div>
             </div>
             <FieldGrid>
               <Field label="Work Email"      value={
@@ -409,11 +426,11 @@ export default function EmployeeDetail() {
               <button className="btn btn-ghost btn-sm" onClick={openOverview}>Edit</button>
             </div>
             <FieldGrid>
-              <Field label="Company"         value={employee.companyId} />
-              <Field label="Department"      value={employee.departmentId} />
-              <Field label="Designation"     value={employee.designationId} />
-              <Field label="Location"        value={employee.locationId} />
-              <Field label="Reports To"      value={employee.reportingManagerId} />
+              <Field label="Company"     value={companies.find(c => c.publicId === employee.companyId)?.name ?? employee.companyId} />
+              <Field label="Department"  value={departments.find(d => d.publicId === employee.departmentId)?.name ?? employee.departmentId} />
+              <Field label="Designation" value={designations.find(d => d.publicId === employee.designationId)?.name ?? employee.designationId} />
+              <Field label="Location"    value={locations.find(l => l.publicId === employee.locationId)?.name ?? employee.locationId} />
+              <Field label="Reports To"  value={employee.reportingManagerId} />
             </FieldGrid>
           </div>
         </div>

@@ -1,0 +1,243 @@
+- generic [ref=e39]:
+  - complementary [ref=e40]:
+    - generic [ref=e41]:
+      - generic [ref=e42]: HR
+      - generic [ref=e43]: HRMS
+    - navigation "Main navigation" [ref=e44]:
+      - link "⊞ Dashboard" [ref=e46] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e47]: ⊞
+        - generic [ref=e48]: Dashboard
+      - generic [ref=e49]:
+        - generic [ref=e50]: People
+        - link "◎ Employees" [ref=e51] [cursor=pointer]:
+          - /url: /employees
+          - generic [ref=e52]: ◎
+          - generic [ref=e53]: Employees
+      - generic [ref=e54]:
+        - generic [ref=e55]: Time Off
+        - link "◷ Applications" [ref=e56] [cursor=pointer]:
+          - /url: /leave/applications
+          - generic [ref=e57]: ◷
+          - generic [ref=e58]: Applications
+        - link "◑ My Balance" [ref=e59] [cursor=pointer]:
+          - /url: /leave/balance
+          - generic [ref=e60]: ◑
+          - generic [ref=e61]: My Balance
+        - link "≡ Leave Types" [ref=e62] [cursor=pointer]:
+          - /url: /leave/types
+          - generic [ref=e63]: ≡
+          - generic [ref=e64]: Leave Types
+      - generic [ref=e65]:
+        - generic [ref=e66]: Attendance
+        - link "● Mark" [ref=e67] [cursor=pointer]:
+          - /url: /attendance
+          - generic [ref=e68]: ●
+          - generic [ref=e69]: Mark
+        - link "≡ Logs" [ref=e70] [cursor=pointer]:
+          - /url: /attendance/logs
+          - generic [ref=e71]: ≡
+          - generic [ref=e72]: Logs
+        - link "⚠ Exceptions" [ref=e73] [cursor=pointer]:
+          - /url: /attendance/exceptions
+          - generic [ref=e74]: ⚠
+          - generic [ref=e75]: Exceptions
+        - link "🕐 Shifts" [ref=e76] [cursor=pointer]:
+          - /url: /attendance/shifts
+          - generic [ref=e77]: 🕐
+          - generic [ref=e78]: Shifts
+        - link "⏱ Overtime" [ref=e79] [cursor=pointer]:
+          - /url: /attendance/overtime
+          - generic [ref=e80]: ⏱
+          - generic [ref=e81]: Overtime
+      - generic [ref=e82]:
+        - generic [ref=e83]: Payroll
+        - link "₹ Overview" [ref=e84] [cursor=pointer]:
+          - /url: /payroll
+          - generic [ref=e85]: ₹
+          - generic [ref=e86]: Overview
+        - link "▶ Runs" [ref=e87] [cursor=pointer]:
+          - /url: /payroll/runs
+          - generic [ref=e88]: ▶
+          - generic [ref=e89]: Runs
+        - link "◧ Payslips" [ref=e90] [cursor=pointer]:
+          - /url: /payroll/payslips
+          - generic [ref=e91]: ◧
+          - generic [ref=e92]: Payslips
+        - link "≡ Salary" [ref=e93] [cursor=pointer]:
+          - /url: /payroll/components
+          - generic [ref=e94]: ≡
+          - generic [ref=e95]: Salary
+        - link "◫ Structures" [ref=e96] [cursor=pointer]:
+          - /url: /payroll/structures
+          - generic [ref=e97]: ◫
+          - generic [ref=e98]: Structures
+        - link "◑ Cycles" [ref=e99] [cursor=pointer]:
+          - /url: /payroll/cycles
+          - generic [ref=e100]: ◑
+          - generic [ref=e101]: Cycles
+        - link "⚖ Statutory" [ref=e102] [cursor=pointer]:
+          - /url: /payroll/statutory-settings
+          - generic [ref=e103]: ⚖
+          - generic [ref=e104]: Statutory
+        - link "📊 Reports" [ref=e105] [cursor=pointer]:
+          - /url: /payroll/reports
+          - generic [ref=e106]: 📊
+          - generic [ref=e107]: Reports
+        - link "💳 Loans" [ref=e108] [cursor=pointer]:
+          - /url: /payroll/loans
+          - generic [ref=e109]: 💳
+          - generic [ref=e110]: Loans
+        - link "📋 FnF" [ref=e111] [cursor=pointer]:
+          - /url: /payroll/fnf
+          - generic [ref=e112]: 📋
+          - generic [ref=e113]: FnF
+        - link "🏦 Accounting" [ref=e114] [cursor=pointer]:
+          - /url: /payroll/accounting
+          - generic [ref=e115]: 🏦
+          - generic [ref=e116]: Accounting
+      - generic [ref=e117]:
+        - generic [ref=e118]: Approvals
+        - link "✓ Queue" [ref=e119] [cursor=pointer]:
+          - /url: /approvals
+          - generic [ref=e120]: ✓
+          - generic [ref=e121]: Queue
+        - link "◉ Notifications" [ref=e122] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e123]: ◉
+          - generic [ref=e124]: Notifications
+        - link "🧾 Expenses" [ref=e125] [cursor=pointer]:
+          - /url: /expense/claims
+          - generic [ref=e126]: 🧾
+          - generic [ref=e127]: Expenses
+      - generic [ref=e128]:
+        - generic [ref=e129]: Organisation
+        - link "⬡ Companies" [ref=e130] [cursor=pointer]:
+          - /url: /settings/companies
+          - generic [ref=e131]: ⬡
+          - generic [ref=e132]: Companies
+        - link "◫ Departments" [ref=e133] [cursor=pointer]:
+          - /url: /settings/departments
+          - generic [ref=e134]: ◫
+          - generic [ref=e135]: Departments
+        - link "◧ Designations" [ref=e136] [cursor=pointer]:
+          - /url: /settings/designations
+          - generic [ref=e137]: ◧
+          - generic [ref=e138]: Designations
+        - link "◎ Locations" [ref=e139] [cursor=pointer]:
+          - /url: /settings/locations
+          - generic [ref=e140]: ◎
+          - generic [ref=e141]: Locations
+      - generic [ref=e142]:
+        - generic [ref=e143]: Configuration
+        - link "⇄ Workflows" [ref=e144] [cursor=pointer]:
+          - /url: /settings/workflows
+          - generic [ref=e145]: ⇄
+          - generic [ref=e146]: Workflows
+        - link "⚖ Rule Sets" [ref=e147] [cursor=pointer]:
+          - /url: /settings/rules
+          - generic [ref=e148]: ⚖
+          - generic [ref=e149]: Rule Sets
+        - link "☰ Forms" [ref=e150] [cursor=pointer]:
+          - /url: /settings/forms
+          - generic [ref=e151]: ☰
+          - generic [ref=e152]: Forms
+      - generic [ref=e153]:
+        - generic [ref=e154]: Reports
+        - link "📄 All Reports" [ref=e155] [cursor=pointer]:
+          - /url: /reports
+          - generic [ref=e156]: 📄
+          - generic [ref=e157]: All Reports
+        - link "📈 Analytics" [ref=e158] [cursor=pointer]:
+          - /url: /reports/analytics
+          - generic [ref=e159]: 📈
+          - generic [ref=e160]: Analytics
+      - generic [ref=e161]:
+        - generic [ref=e162]: Integrations
+        - link "🔑 API Clients" [ref=e163] [cursor=pointer]:
+          - /url: /integrations
+          - generic [ref=e164]: 🔑
+          - generic [ref=e165]: API Clients
+        - link "🔗 Webhooks" [ref=e166] [cursor=pointer]:
+          - /url: /integrations/webhooks
+          - generic [ref=e167]: 🔗
+          - generic [ref=e168]: Webhooks
+      - generic [ref=e169]:
+        - generic [ref=e170]: Admin
+        - link "◈ Users" [ref=e171] [cursor=pointer]:
+          - /url: /admin/users
+          - generic [ref=e172]: ◈
+          - generic [ref=e173]: Users
+        - link "◆ Roles" [ref=e174] [cursor=pointer]:
+          - /url: /roles
+          - generic [ref=e175]: ◆
+          - generic [ref=e176]: Roles
+        - link "⚙ Settings" [ref=e177] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e178]: ⚙
+          - generic [ref=e179]: Settings
+  - generic [ref=e180]:
+    - banner [ref=e181]:
+      - button "Toggle sidebar" [ref=e183] [cursor=pointer]: ☰
+      - generic [ref=e184]:
+        - button "Notifications" [ref=e185] [cursor=pointer]: 🔔
+        - button "Toggle theme" [ref=e186] [cursor=pointer]: 🌙
+        - generic [ref=e188]:
+          - generic [ref=e189]: AB
+          - generic [ref=e190]: AB0cBCJ8O1
+          - button "Sign out" [ref=e191] [cursor=pointer]: ⏏
+    - main [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - generic [ref=e8]:
+            - heading "Shifts" [level=1] [ref=e9]
+            - paragraph [ref=e10]: Define working shifts and time windows
+          - button "+ Add Shift" [ref=e11] [cursor=pointer]
+        - table [ref=e13]:
+          - rowgroup [ref=e14]:
+            - row "Name Code Start End Grace (min) Night Shift Status" [ref=e15]:
+              - columnheader "Name" [ref=e16]
+              - columnheader "Code" [ref=e17]
+              - columnheader "Start" [ref=e18]
+              - columnheader "End" [ref=e19]
+              - columnheader "Grace (min)" [ref=e20]
+              - columnheader "Night Shift" [ref=e21]
+              - columnheader "Status" [ref=e22]
+              - columnheader [ref=e23]
+          - rowgroup [ref=e24]:
+            - row "Morning Shift MORN 09:00 18:00 10 — Active Edit Assign" [ref=e25]:
+              - cell "Morning Shift" [ref=e26]
+              - cell "MORN" [ref=e27]:
+                - code [ref=e28]: MORN
+              - cell "09:00" [ref=e29]
+              - cell "18:00" [ref=e30]
+              - cell "10" [ref=e31]
+              - cell "—" [ref=e32]
+              - cell "Active" [ref=e33]:
+                - generic [ref=e34]: Active
+              - cell "Edit Assign" [ref=e35]:
+                - generic [ref=e36]:
+                  - button "Edit" [ref=e37] [cursor=pointer]
+                  - button "Assign" [active] [ref=e38] [cursor=pointer]
+        - dialog "Assign Shift to Employees" [ref=e192]:
+          - generic [ref=e193]:
+            - generic [ref=e194]:
+              - heading "Assign Shift to Employees" [level=2] [ref=e195]
+              - button "Close modal" [ref=e196] [cursor=pointer]: ✕
+            - generic [ref=e197]:
+              - generic [ref=e198]:
+                - generic [ref=e199]: Effective From *
+                - textbox [ref=e200]
+              - generic [ref=e201]:
+                - generic [ref=e202]: Select Employees *
+                - generic [ref=e203]:
+                  - generic [ref=e204] [cursor=pointer]:
+                    - checkbox "EMP-0002" [ref=e205]
+                    - text: EMP-0002
+                  - generic [ref=e206] [cursor=pointer]:
+                    - checkbox "EMP-0001" [ref=e207]
+                    - text: EMP-0001
+                - generic [ref=e208]: 0 selected
+            - generic [ref=e210]:
+              - button "Cancel" [ref=e211] [cursor=pointer]
+              - button "Assign" [disabled] [ref=e212]

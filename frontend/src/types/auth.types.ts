@@ -1,5 +1,7 @@
 export interface AuthUser {
   userId: string;
+  firstName?: string;
+  lastName?: string;
   employeePublicId?: string;
   tenantId: string;
   organizationId: string;

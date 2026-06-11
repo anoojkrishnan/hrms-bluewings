@@ -13,6 +13,7 @@ export enum LeaveApplicationStatus {
 export interface LeaveType extends BaseDocument {
   name: string;
   code: string;
+  defaultAnnualDays?: number;
   isCarryForward: boolean;
   maxCarryForwardDays?: number;
   isEncashable: boolean;
@@ -94,6 +95,7 @@ export interface WeekendPolicy extends BaseDocument {
 export interface CreateLeaveTypeDto {
   name: string;
   code: string;
+  defaultAnnualDays?: number;
   isCarryForward?: boolean;
   maxCarryForwardDays?: number;
   isEncashable?: boolean;
@@ -119,6 +121,13 @@ export interface AdjustBalanceDto {
   leaveTypeCode: string;
   days: number;
   field: 'granted' | 'accrued' | 'opening';
+  reason: string;
+}
+
+export interface BulkAdjustBalanceDto {
+  leaveTypeCode: string;
+  days: number;
+  field: 'opening' | 'granted';
   reason: string;
 }
 
