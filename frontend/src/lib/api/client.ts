@@ -34,7 +34,6 @@ export function createApiClient(): AxiosInstance {
 
   apiClient = axios.create({
     baseURL: apiBase,
-    withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -77,8 +76,10 @@ export function createApiClient(): AxiosInstance {
         isRefreshing = true;
 
         try {
-          const refreshRes = await apiClient!.post<{ success: true; data: { expiresIn: number; accessToken: string } }>('/auth/refresh');
-          useAuthStore.getState().setAccessToken(refreshRes.data.data.accessToken);
+          const { refreshToken } = useAuthStore.getState();
+          const refreshRes = await apiClient!.post<{ success: true; data: { expiresIn: number; accessToken: string; refreshToken: string } }>('/auth/refresh', { refreshToken });
+          const { accessToken: newAccess, refreshToken: newRefresh } = refreshRes.data.data;
+          useAuthStore.getState().setTokens(newAccess, newRefresh);
           refreshSubscribers.forEach((cb) => cb(true));
           refreshSubscribers = [];
           isRefreshing = false;

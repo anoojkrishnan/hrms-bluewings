@@ -3,15 +3,6 @@ import { AuthService } from './auth.service';
 import { UserService } from '@/modules/user/user.service';
 import { success } from '@/shared/utils/response';
 
-const isProd = process.env.NODE_ENV === 'production';
-
-const COOKIE_OPTS_BASE = {
-  httpOnly: true,
-  secure: isProd,
-  // SameSite=None required for cross-origin (Firebase hosting → CloudFront backend)
-  // SameSite=Strict works for same-origin (local dev via Vite proxy)
-  sameSite: (isProd ? 'none' : 'strict') as 'none' | 'strict',
-};
 
 export class AuthController {
   private readonly authService: AuthService;
@@ -26,22 +17,13 @@ export class AuthController {
       const userAgent = req.headers['user-agent'] ?? '';
       const result = await this.authService.login(req.body, ipAddress, userAgent);
 
-      res.cookie('accessToken', result.accessToken, {
-        ...COOKIE_OPTS_BASE,
-        maxAge: result.expiresIn * 1000,
-      });
-      res.cookie('refreshToken', result.refreshToken, {
-        ...COOKIE_OPTS_BASE,
-        path: '/api/v1/auth/refresh',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
       res.json(success({
         userId: result.userId,
         tenantId: result.tenantId,
         organizationId: result.organizationId,
         expiresIn: result.expiresIn,
         accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
       }));
     } catch (err) {
       next(err);
@@ -53,8 +35,6 @@ export class AuthController {
       const ipAddress = (req.ip ?? req.socket.remoteAddress) as string;
       const userAgent = req.headers['user-agent'] ?? '';
       await this.authService.logout(req.user.sessionId, req.user.userId, req.user.tenantId, ipAddress, userAgent);
-      res.clearCookie('accessToken', COOKIE_OPTS_BASE);
-      res.clearCookie('refreshToken', { ...COOKIE_OPTS_BASE, path: '/api/v1/auth/refresh' });
       res.json(success({ message: 'Logged out successfully' }));
     } catch (err) {
       next(err);
@@ -63,7 +43,7 @@ export class AuthController {
 
   refresh = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const refreshToken = req.cookies?.refreshToken as string | undefined;
+      const refreshToken = (req.body?.refreshToken ?? req.cookies?.refreshToken) as string | undefined;
       if (!refreshToken) {
         res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Refresh token required' } });
         return;
@@ -72,17 +52,11 @@ export class AuthController {
       const userAgent = req.headers['user-agent'] ?? '';
       const tokens = await this.authService.refresh(refreshToken, ipAddress, userAgent);
 
-      res.cookie('accessToken', tokens.accessToken, {
-        ...COOKIE_OPTS_BASE,
-        maxAge: tokens.expiresIn * 1000,
-      });
-      res.cookie('refreshToken', tokens.refreshToken, {
-        ...COOKIE_OPTS_BASE,
-        path: '/api/v1/auth/refresh',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
-      res.json(success({ expiresIn: tokens.expiresIn, accessToken: tokens.accessToken }));
+      res.json(success({
+        expiresIn: tokens.expiresIn,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+      }));
     } catch (err) {
       next(err);
     }
@@ -101,8 +75,6 @@ export class AuthController {
   resetPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       await this.authService.resetPassword(req.body.token, req.body.newPassword);
-      res.clearCookie('accessToken', COOKIE_OPTS_BASE);
-      res.clearCookie('refreshToken', { ...COOKIE_OPTS_BASE, path: '/api/v1/auth/refresh' });
       res.json(success({ message: 'Password reset successfully. Please log in again.' }));
     } catch (err) {
       next(err);
@@ -192,8 +164,6 @@ export class AuthController {
       const { UserService } = await import('@/modules/user/user.service');
       const userService = new UserService();
       await userService.revokeAllSessions(req.user.userId, req.user.tenantId);
-      res.clearCookie('accessToken', COOKIE_OPTS_BASE);
-      res.clearCookie('refreshToken', { ...COOKIE_OPTS_BASE, path: '/api/v1/auth/refresh' });
       res.json(success({ message: 'All sessions revoked.' }));
     } catch (err) {
       next(err);

@@ -3,10 +3,15 @@ import { authApi } from '@/lib/api/auth.api';
 import { useAuthStore } from '@/lib/store/auth.store';
 
 export function useSessionCheck() {
-  const { setUser, setLoading } = useAuthStore();
+  const { accessToken, setUser, setLoading } = useAuthStore();
 
   useEffect(() => {
     let cancelled = false;
+
+    if (!accessToken) {
+      setLoading(false);
+      return;
+    }
 
     authApi.me()
       .then((user) => {
@@ -20,5 +25,5 @@ export function useSessionCheck() {
       });
 
     return () => { cancelled = true; };
-  }, [setUser, setLoading]);
+  }, [accessToken, setUser, setLoading]);
 }

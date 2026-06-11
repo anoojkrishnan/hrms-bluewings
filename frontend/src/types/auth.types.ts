@@ -23,6 +23,7 @@ export interface LoginResponse {
   organizationId: string;
   expiresIn: number;
   accessToken: string;
+  refreshToken: string;
 }
 
 export interface SignupDto {

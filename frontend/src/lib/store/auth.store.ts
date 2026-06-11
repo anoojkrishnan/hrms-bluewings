@@ -5,10 +5,12 @@ import type { AuthUser } from '@/types/auth.types';
 interface AuthState {
   user: AuthUser | null;
   accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   activeOrganizationId: string | null;
   isLoading: boolean;
   setUser: (user: AuthUser | null) => void;
+  setTokens: (accessToken: string, refreshToken: string) => void;
   setAccessToken: (token: string | null) => void;
   setActiveOrganizationId: (orgId: string) => void;
   setLoading: (loading: boolean) => void;
@@ -20,6 +22,7 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       accessToken: null,
+      refreshToken: null,
       isAuthenticated: false,
       activeOrganizationId: null,
       isLoading: true,
@@ -30,6 +33,9 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: user != null,
           activeOrganizationId: user?.organizationId ?? null,
         }),
+
+      setTokens: (accessToken, refreshToken) =>
+        set({ accessToken, refreshToken }),
 
       setAccessToken: (token) => set({ accessToken: token }),
 
@@ -42,13 +48,14 @@ export const useAuthStore = create<AuthState>()(
 
       clearAuth: () => {
         localStorage.removeItem('hrms_active_org');
-        set({ user: null, accessToken: null, isAuthenticated: false, activeOrganizationId: null });
+        set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false, activeOrganizationId: null });
       },
     }),
     {
       name: 'hrms-auth',
-      // Only persist activeOrganizationId — never tokens
       partialize: (state) => ({
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
         activeOrganizationId: state.activeOrganizationId,
       }),
     },

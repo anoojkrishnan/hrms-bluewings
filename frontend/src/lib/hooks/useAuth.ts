@@ -5,13 +5,13 @@ import { useMutation } from '@tanstack/react-query';
 import type { LoginDto } from '@/types/auth.types';
 
 export function useAuth() {
-  const { user, isAuthenticated, isLoading, setUser, setAccessToken, clearAuth } = useAuthStore();
+  const { user, isAuthenticated, isLoading, setUser, setTokens, clearAuth } = useAuthStore();
   const navigate = useNavigate();
 
   const loginMutation = useMutation({
     mutationFn: async (dto: LoginDto) => {
       const loginResult = await authApi.login(dto);
-      setAccessToken(loginResult.accessToken);
+      setTokens(loginResult.accessToken, loginResult.refreshToken);
       const me = await authApi.me();
       setUser(me);
       return me;
