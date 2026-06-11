@@ -22,6 +22,7 @@ export interface LoginResponse {
   tenantId: string;
   organizationId: string;
   expiresIn: number;
+  accessToken: string;
 }
 
 export interface SignupDto {

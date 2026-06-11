@@ -1,0 +1,2 @@
+import{j as t}from"./index-DDFgPDE5.js";const r="_skeleton_9crbl_6",l={skeleton:r};function a({width:e,height:s="1rem",borderRadius:n,className:o=""}){return t.jsxDEV("span",{className:`${l.skeleton} ${o}`,style:{width:e??"100%",height:s,borderRadius:n??"var(--radius-md)"},"aria-hidden":"true"},void 0,!1,{fileName:"/Users/anoojkrishnang/Development/synclovis/AI_Products/hrms/frontend/src/components/ui/Skeleton.tsx",lineNumber:12,columnNumber:5},this)}export{a as S};
+//# sourceMappingURL=Skeleton-DU42mNt7.js.map

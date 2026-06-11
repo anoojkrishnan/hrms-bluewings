@@ -1,0 +1,2 @@
+import{p as t,e as a,g as i,c as p,f as c}from"./index-DDFgPDE5.js";const r={listCategories:()=>i("/expense/categories"),createCategory:e=>a("/expense/categories",e),updateCategory:(e,s)=>c(`/expense/categories/${e}`,s),listClaims:e=>p("/expense/claims",{params:e}),getClaim:e=>i(`/expense/claims/${e}`),createClaim:e=>a("/expense/claims",e),submitClaim:e=>a(`/expense/claims/${e}/submit`),approveClaim:e=>t(`/expense/claims/${e}/approve`),rejectClaim:(e,s)=>t(`/expense/claims/${e}/reject`,{rejectionReason:s})};export{r as e};
+//# sourceMappingURL=expense.api-C0j4ViKp.js.map

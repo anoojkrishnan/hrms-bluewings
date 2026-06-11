@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { PaginatedResponse, PaginationMeta } from '@/types/api.types';
+import { useAuthStore } from '@/lib/store/auth.store';
 
 let apiClient: AxiosInstance | null = null;
 let isRefreshing = false;
@@ -27,8 +28,12 @@ function redirectToLogin(): void {
 export function createApiClient(): AxiosInstance {
   if (apiClient) return apiClient;
 
+  const apiBase = import.meta.env.VITE_API_BASE_URL
+    ? `${import.meta.env.VITE_API_BASE_URL}/api/v1`
+    : '/api/v1';
+
   apiClient = axios.create({
-    baseURL: '/api/v1',
+    baseURL: apiBase,
     withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
@@ -40,6 +45,10 @@ export function createApiClient(): AxiosInstance {
     const orgId = getOrganizationId();
     if (orgId) {
       config.headers['X-Organization-ID'] = orgId;
+    }
+    const { accessToken } = useAuthStore.getState();
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
     return config;
   });
@@ -68,7 +77,8 @@ export function createApiClient(): AxiosInstance {
         isRefreshing = true;
 
         try {
-          await apiClient!.post('/auth/refresh');
+          const refreshRes = await apiClient!.post<{ success: true; data: { expiresIn: number; accessToken: string } }>('/auth/refresh');
+          useAuthStore.getState().setAccessToken(refreshRes.data.data.accessToken);
           refreshSubscribers.forEach((cb) => cb(true));
           refreshSubscribers = [];
           isRefreshing = false;

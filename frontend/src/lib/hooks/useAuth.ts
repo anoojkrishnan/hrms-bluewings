@@ -5,14 +5,13 @@ import { useMutation } from '@tanstack/react-query';
 import type { LoginDto } from '@/types/auth.types';
 
 export function useAuth() {
-  const { user, isAuthenticated, isLoading, setUser, clearAuth } = useAuthStore();
+  const { user, isAuthenticated, isLoading, setUser, setAccessToken, clearAuth } = useAuthStore();
   const navigate = useNavigate();
 
   const loginMutation = useMutation({
     mutationFn: async (dto: LoginDto) => {
-      // 1. Login → sets httpOnly cookie
-      await authApi.login(dto);
-      // 2. Immediately fetch /auth/me to get real roles + permissions
+      const loginResult = await authApi.login(dto);
+      setAccessToken(loginResult.accessToken);
       const me = await authApi.me();
       setUser(me);
       return me;

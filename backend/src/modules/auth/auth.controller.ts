@@ -3,10 +3,14 @@ import { AuthService } from './auth.service';
 import { UserService } from '@/modules/user/user.service';
 import { success } from '@/shared/utils/response';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const COOKIE_OPTS_BASE = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'strict' as const,
+  secure: isProd,
+  // SameSite=None required for cross-origin (Firebase hosting → CloudFront backend)
+  // SameSite=Strict works for same-origin (local dev via Vite proxy)
+  sameSite: (isProd ? 'none' : 'strict') as 'none' | 'strict',
 };
 
 export class AuthController {
@@ -37,6 +41,7 @@ export class AuthController {
         tenantId: result.tenantId,
         organizationId: result.organizationId,
         expiresIn: result.expiresIn,
+        accessToken: result.accessToken,
       }));
     } catch (err) {
       next(err);
@@ -77,7 +82,7 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      res.json(success({ expiresIn: tokens.expiresIn }));
+      res.json(success({ expiresIn: tokens.expiresIn, accessToken: tokens.accessToken }));
     } catch (err) {
       next(err);
     }
