@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { EmployeeRepository } from './employee.repository';
 import type {
   Employee, EmployeePersonalDetails, EmployeeBankDetails, EmployeeDocument, EmployeeStatusHistory,
@@ -65,6 +66,16 @@ export class EmployeeService {
       });
     }
 
+    await this.repo.appendStatusHistory({
+      tenantId,
+      employeeId: employee.publicId,
+      fromStatus: EmployeeStatus.ACTIVE,
+      toStatus: employee.status as EmployeeStatus,
+      changedAt: new Date(),
+      changedBy: actorId,
+      reason: 'Employee created',
+    });
+
     eventBus.emit(EVENTS.EMPLOYEE_CREATED, { employeeCode, tenantId });
 
     auditService.writeAsync({
@@ -129,7 +140,8 @@ export class EmployeeService {
   ): Promise<PaginatedResult<Employee>> {
     const { page, limit } = buildPaginationOptions(query);
     const scopeFilter = rbacService.buildDataScopeFilter(user, tenantId);
-    return this.repo.findEmployees(tenantId, organizationId, { ...filter, ...scopeFilter }, page, limit);
+    const { _search, ...cleanFilter } = filter;
+    return this.repo.findEmployees(tenantId, organizationId, { ...cleanFilter, ...scopeFilter }, page, limit, _search as string | undefined);
   }
 
   async updateEmployee(employeeCode: string, dto: UpdateEmployeeDto, tenantId: string, actorId: string): Promise<Employee> {
@@ -317,6 +329,48 @@ export class EmployeeService {
     return s3Storage.generatePresignedUploadUrl({ s3Key, mimeType });
   }
 
+  async uploadDocument(
+    employeeCode: string,
+    tenantId: string,
+    tenantPublicId: string,
+    actorId: string,
+    organizationId: string,
+    fileName: string,
+    mimeType: string,
+    sizeBytes: number,
+    buffer: Buffer,
+    documentType?: string,
+    documentName?: string,
+    expiryDate?: string,
+  ): Promise<EmployeeDocument> {
+    const employee = await this.getEmployee(employeeCode, tenantId);
+    const s3Key = s3Storage.buildS3Key(tenantPublicId, S3Category.EMPLOYEE_DOCUMENTS, employee.publicId, `${Date.now()}-${fileName}`);
+
+    await s3Storage.uploadObject(s3Key, buffer, mimeType);
+
+    const checksum = crypto.createHash('sha256').update(buffer).digest('hex');
+    const publicId = generateDocumentPublicId();
+
+    const doc = await this.repo.createDocument({
+      publicId, tenantId, organizationId, employeeId: employee.publicId,
+      documentType: documentType || 'general', documentName: documentName || fileName,
+      s3Key, mimeType, sizeBytes, checksum,
+      expiryDate: expiryDate ? new Date(expiryDate) : undefined,
+      verificationStatus: 'pending', version: 1,
+      uploadedBy: actorId, isActive: true, createdBy: actorId, updatedBy: actorId, deletedAt: null,
+    });
+
+    auditService.writeAsync({
+      tenantId, actorId, action: AuditAction.CREATE,
+      module: 'employee', entityType: 'employee_document', entityPublicId: publicId,
+    });
+
+    const safeDoc = Object.fromEntries(
+      Object.entries(doc as unknown as Record<string, unknown>).filter(([k]) => k !== 's3Key'),
+    );
+    return safeDoc as unknown as EmployeeDocument;
+  }
+
   async confirmDocumentUpload(employeeCode: string, dto: ConfirmDocumentUploadDto, tenantId: string, organizationId: string, actorId: string): Promise<EmployeeDocument> {
     const employee = await this.getEmployee(employeeCode, tenantId);
     const publicId = generateDocumentPublicId();
@@ -356,6 +410,62 @@ export class EmployeeService {
       Object.entries(doc as unknown as Record<string, unknown>).filter(([k]) => k !== 's3Key'),
     );
     return safeDoc as unknown as EmployeeDocument;
+  }
+
+  async updateDocument(
+    docPublicId: string,
+    employeeCode: string,
+    tenantId: string,
+    actorId: string,
+    dto: {
+      documentName?: string;
+      documentType?: string;
+      expiryDate?: string | null;
+      verificationStatus?: 'pending' | 'verified' | 'rejected';
+    },
+  ): Promise<EmployeeDocument> {
+    await this.getEmployee(employeeCode, tenantId);
+    const existing = await this.repo.findDocumentByPublicId(docPublicId, tenantId);
+    if (!existing) throw new AppError(404, ErrorCodes.NOT_FOUND, 'Document not found');
+
+    const updates: Parameters<typeof this.repo.updateDocument>[3] = {};
+    if (dto.documentName) updates.documentName = dto.documentName;
+    if (dto.documentType) updates.documentType = dto.documentType;
+    if (dto.expiryDate !== undefined) updates.expiryDate = dto.expiryDate ? new Date(dto.expiryDate) : null;
+    if (dto.verificationStatus) {
+      updates.verificationStatus = dto.verificationStatus;
+      if (dto.verificationStatus !== 'pending') {
+        updates.verifiedBy = actorId;
+        updates.verifiedAt = new Date();
+      }
+    }
+
+    const doc = await this.repo.updateDocument(docPublicId, tenantId, actorId, updates);
+    if (!doc) throw new AppError(404, ErrorCodes.NOT_FOUND, 'Document not found');
+
+    auditService.writeAsync({
+      tenantId, actorId, action: AuditAction.UPDATE,
+      module: 'employee', entityType: 'employee_document', entityPublicId: docPublicId,
+    });
+
+    return doc;
+  }
+
+  async getDocumentDownloadUrl(docPublicId: string, employeeCode: string, tenantId: string): Promise<{ url: string }> {
+    await this.getEmployee(employeeCode, tenantId);
+    const doc = await this.repo.findDocumentByPublicId(docPublicId, tenantId);
+    if (!doc) throw new AppError(404, ErrorCodes.NOT_FOUND, 'Document not found');
+
+    const docRecord = doc as unknown as Record<string, unknown>;
+    const expiryDate = docRecord['expiryDate'] as Date | undefined;
+    if (expiryDate && new Date(expiryDate) < new Date()) {
+      throw new AppError(410, ErrorCodes.DOCUMENT_EXPIRED, 'This document has expired and cannot be accessed.');
+    }
+
+    const s3Key = docRecord['s3Key'] as string;
+    if (!s3Key) throw new AppError(404, ErrorCodes.NOT_FOUND, 'Document file not found');
+    const url = await s3Storage.generatePresignedDownloadUrl(s3Key);
+    return { url };
   }
 
   async deleteDocument(docPublicId: string, employeeCode: string, tenantId: string, actorId: string): Promise<void> {

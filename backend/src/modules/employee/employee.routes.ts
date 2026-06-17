@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, raw } from 'express';
 import { EmployeeController } from './employee.controller';
 import { requireAuth } from '@/middleware/auth.middleware';
 import { requireTenantContext } from '@/middleware/tenantContext.middleware';
@@ -32,8 +32,11 @@ router.get('/employees/:employeeCode/bank-details', requirePermission(P.BANK_DET
 router.put('/employees/:employeeCode/bank-details', requirePermission(P.BANK_DETAILS_EDIT), validate(upsertBankDetailsSchema), ctrl.upsertBankDetails);
 
 router.get('/employees/:employeeCode/documents', requirePermission(P.DOCUMENTS_VIEW), ctrl.getDocuments);
+router.post('/employees/:employeeCode/documents', requirePermission(P.DOCUMENTS_UPLOAD), raw({ type: '*/*', limit: '50mb' }), ctrl.uploadDocument);
 router.post('/employees/:employeeCode/documents/presign', requirePermission(P.DOCUMENTS_UPLOAD), validate(presignDocumentSchema), ctrl.presignDocument);
 router.post('/employees/:employeeCode/documents/confirm', requirePermission(P.DOCUMENTS_UPLOAD), validate(confirmDocumentSchema), ctrl.confirmDocument);
+router.get('/employees/:employeeCode/documents/:docPublicId/download', requirePermission(P.DOCUMENTS_VIEW), ctrl.downloadDocument);
+router.patch('/employees/:employeeCode/documents/:docPublicId', requirePermission(P.DOCUMENTS_UPLOAD), ctrl.updateDocument);
 router.delete('/employees/:employeeCode/documents/:docPublicId', requirePermission(P.DOCUMENTS_DELETE), ctrl.deleteDocument);
 
 router.get('/employees/:employeeCode/timeline', requirePermission(P.TIMELINE_VIEW), ctrl.getTimeline);

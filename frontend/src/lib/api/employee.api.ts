@@ -1,5 +1,22 @@
 import { get, getList, post, put, patch, del } from './client';
 
+export const DOCUMENT_TYPES = [
+  { value: 'general',            label: 'General' },
+  { value: 'id_proof',           label: 'ID Proof' },
+  { value: 'offer_letter',       label: 'Offer Letter' },
+  { value: 'appointment_letter', label: 'Appointment Letter' },
+  { value: 'educational',        label: 'Educational Certificate' },
+  { value: 'experience',         label: 'Experience Certificate' },
+  { value: 'pan_card',           label: 'PAN Card' },
+  { value: 'aadhaar_card',       label: 'Aadhaar Card' },
+  { value: 'passport',           label: 'Passport' },
+  { value: 'driving_license',    label: 'Driving License' },
+  { value: 'bank_statement',     label: 'Bank Statement' },
+  { value: 'salary_slip',        label: 'Salary Slip' },
+  { value: 'photo',              label: 'Photo' },
+  { value: 'other',              label: 'Other' },
+] as const;
+
 export interface Employee {
   publicId: string;
   employeeCode: string;
@@ -143,21 +160,41 @@ export const employeeApi = {
   getDocuments: (employeeCode: string) =>
     get<EmployeeDocument[]>(`/employees/${employeeCode}/documents`),
 
-  presignUpload: (employeeCode: string, fileName: string, mimeType: string) =>
-    post<{ uploadUrl: string; s3Key: string; expiresAt: string }>(
-      `/employees/${employeeCode}/documents/presign`,
-      { fileName, mimeType },
-    ),
+  uploadDocument: async (
+    employeeCode: string,
+    file: File,
+    documentName?: string,
+    documentType?: string,
+    expiryDate?: string,
+  ): Promise<EmployeeDocument> => {
+    const { getApiClient } = await import('./client');
+    const client = getApiClient();
+    const buffer = await file.arrayBuffer();
+    const res = await client.post<{ success: boolean; data: EmployeeDocument }>(
+      `/employees/${employeeCode}/documents`,
+      buffer,
+      {
+        headers: {
+          'Content-Type': file.type || 'application/octet-stream',
+          'X-File-Name': encodeURIComponent(file.name),
+          'X-File-Size': String(file.size),
+          ...(documentType && { 'X-Document-Type': documentType }),
+          ...(documentName && { 'X-Document-Name': encodeURIComponent(documentName) }),
+          ...(expiryDate && { 'X-Expiry-Date': expiryDate }),
+        },
+      },
+    );
+    return res.data.data;
+  },
 
-  confirmUpload: (employeeCode: string, data: {
-    s3Key: string;
-    documentType: string;
-    documentName: string;
-    mimeType: string;
-    sizeBytes: number;
-    checksum: string;
-    expiryDate?: string;
-  }) => post<EmployeeDocument>(`/employees/${employeeCode}/documents/confirm`, data),
+  updateDocument: (
+    employeeCode: string,
+    docPublicId: string,
+    dto: { documentName?: string; documentType?: string; expiryDate?: string | null; verificationStatus?: string },
+  ) => patch<EmployeeDocument>(`/employees/${employeeCode}/documents/${docPublicId}`, dto),
+
+  getDocumentDownloadUrl: (employeeCode: string, docPublicId: string) =>
+    get<{ url: string }>(`/employees/${employeeCode}/documents/${docPublicId}/download`),
 
   deleteDocument: (employeeCode: string, docPublicId: string) =>
     del<void>(`/employees/${employeeCode}/documents/${docPublicId}`),

@@ -20,11 +20,12 @@ export class EmployeeController {
   list = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { tenantId, organizationId } = req.user;
-      const { status, departmentId, locationId, ...query } = req.query as Record<string, string>;
+      const { status, departmentId, locationId, search, ...query } = req.query as Record<string, string>;
       const filter: Record<string, unknown> = {};
       if (status) filter.status = status;
       if (departmentId) filter.departmentId = departmentId;
       if (locationId) filter.locationId = locationId;
+      if (search) filter._search = search;
       const result = await this.service.listEmployees(tenantId, organizationId, filter, query, req.user);
       res.json(successList(result.data, result.meta));
     } catch (err) { next(err); }
@@ -104,6 +105,34 @@ export class EmployeeController {
     } catch (err) { next(err); }
   };
 
+  uploadDocument = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, organizationId, userId } = req.user;
+      const buffer = req.body as Buffer;
+      const fileName = decodeURIComponent((req.headers['x-file-name'] as string) || 'document');
+      const mimeType = (req.headers['content-type'] as string) || 'application/octet-stream';
+      const sizeBytes = parseInt((req.headers['x-file-size'] as string) || '0', 10);
+      const documentType = req.headers['x-document-type'] as string | undefined;
+      const documentName = req.headers['x-document-name'] ? decodeURIComponent(req.headers['x-document-name'] as string) : undefined;
+      const expiryDate = req.headers['x-expiry-date'] as string | undefined;
+      const doc = await this.service.uploadDocument(
+        req.params.employeeCode, tenantId, tenantId, userId, organizationId,
+        fileName, mimeType, sizeBytes, buffer, documentType, documentName, expiryDate,
+      );
+      res.status(201).json(success(doc));
+    } catch (err) { next(err); }
+  };
+
+  updateDocument = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, userId } = req.user;
+      const doc = await this.service.updateDocument(
+        req.params.docPublicId, req.params.employeeCode, tenantId, userId, req.body,
+      );
+      res.json(success(doc));
+    } catch (err) { next(err); }
+  };
+
   presignDocument = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { tenantId, userId } = req.user;
@@ -121,6 +150,16 @@ export class EmployeeController {
       const { tenantId, organizationId, userId } = req.user;
       const doc = await this.service.confirmDocumentUpload(req.params.employeeCode, req.body, tenantId, organizationId, userId);
       res.status(201).json(success(doc));
+    } catch (err) { next(err); }
+  };
+
+  downloadDocument = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId } = req.user;
+      const result = await this.service.getDocumentDownloadUrl(
+        req.params.docPublicId, req.params.employeeCode, tenantId,
+      );
+      res.json(success(result));
     } catch (err) { next(err); }
   };
 

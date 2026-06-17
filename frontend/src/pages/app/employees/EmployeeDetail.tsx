@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { employeeApi } from '@/lib/api/employee.api';
+import { employeeApi, DOCUMENT_TYPES, type Employee } from '@/lib/api/employee.api';
 import { organizationApi } from '@/lib/api/organization.api';
-import type { EmployeePersonalDetails, EmployeeBankDetails } from '@/lib/api/employee.api';
+import type { EmployeePersonalDetails, EmployeeBankDetails, EmployeeDocument } from '@/lib/api/employee.api';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Badge } from '@/components/ui/Badge';
@@ -32,6 +32,17 @@ function toIso(d: string) { return d ? new Date(d).toISOString() : undefined; }
 function toDateInput(iso?: string) {
   if (!iso) return '';
   return new Date(iso).toISOString().split('T')[0];
+}
+function formatLabel(s: string) {
+  return s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+function formatDate(iso?: string) {
+  if (!iso) return undefined;
+  return new Date(iso).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+function isExpired(iso?: string) {
+  if (!iso) return false;
+  return new Date(iso) < new Date();
 }
 
 // ── Shared styles ──────────────────────────────────────────────────────────
@@ -87,6 +98,17 @@ export default function EmployeeDetail() {
   const [editBankOpen, setEditBankOpen] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [viewingDocId, setViewingDocId] = useState<string | null>(null);
+
+  // Upload modal
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [uploadForm, setUploadForm] = useState({ documentName: '', documentType: 'general', expiryDate: '' });
+
+  // Edit document modal
+  const [editDocOpen, setEditDocOpen] = useState(false);
+  const [editingDoc, setEditingDoc] = useState<EmployeeDocument | null>(null);
+  const [editDocForm, setEditDocForm] = useState({ documentName: '', documentType: 'general', expiryDate: '', verificationStatus: 'pending' });
 
   // ── Queries ──────────────────────────────────────────────────────────────
 
@@ -99,16 +121,16 @@ export default function EmployeeDetail() {
   const { data: personal } = useQuery({
     queryKey: ['employee-personal', employeeCode],
     queryFn: () => employeeApi.getPersonal(employeeCode!),
-    enabled: !!employeeCode && (activeTab === 'personal' || editPersonalOpen),
+    enabled: !!employeeCode,
   });
 
-  const { data: bankDetails } = useQuery({
+  const { data: bankDetails, isFetching: bankFetching } = useQuery({
     queryKey: ['employee-bank', employeeCode],
     queryFn: () => employeeApi.getBankDetails(employeeCode!),
     enabled: !!employeeCode && activeTab === 'bank',
   });
 
-  const { data: documents } = useQuery({
+  const { data: documents, isFetching: docsFetching } = useQuery({
     queryKey: ['employee-documents', employeeCode],
     queryFn: () => employeeApi.getDocuments(employeeCode!),
     enabled: !!employeeCode && activeTab === 'documents',
@@ -125,12 +147,14 @@ export default function EmployeeDetail() {
   const { data: designationsData } = useQuery({ queryKey: ['designations'], queryFn: () => organizationApi.listDesignations({ limit: '100' }) });
   const { data: locationsData }    = useQuery({ queryKey: ['locations'],    queryFn: () => organizationApi.listLocations({ limit: '100' }) });
   const { data: gradesData }       = useQuery({ queryKey: ['grades'],       queryFn: () => organizationApi.listGrades({ limit: '100' }) });
+  const { data: allEmployeesData } = useQuery({ queryKey: ['employees', '1', '', ''], queryFn: () => employeeApi.list({ limit: '200' }) });
 
   const companies    = companiesData?.data ?? [];
   const departments  = departmentsData?.data ?? [];
   const designations = designationsData?.data ?? [];
   const locations    = locationsData?.data ?? [];
   const grades       = gradesData?.data ?? [];
+  const allEmployees: Employee[] = allEmployeesData?.data ?? [];
 
   // ── Overview form ────────────────────────────────────────────────────────
 
@@ -254,34 +278,33 @@ export default function EmployeeDetail() {
 
   // ── Document upload ──────────────────────────────────────────────────────
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !employeeCode) return;
+    if (!file) return;
+    setPendingFile(file);
+    setUploadForm({ documentName: file.name.replace(/\.[^.]+$/, ''), documentType: 'general', expiryDate: '' });
+    setUploadModalOpen(true);
+    if (fileRef.current) fileRef.current.value = '';
+  };
+
+  const handleUploadConfirm = async () => {
+    if (!pendingFile || !employeeCode) return;
     setUploadError('');
     setUploading(true);
+    setUploadModalOpen(false);
     try {
-      const { uploadUrl, s3Key } = await employeeApi.presignUpload(employeeCode, file.name, file.type);
-      const putRes = await fetch(uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } });
-      if (!putRes.ok) throw new Error('Upload failed');
-
-      const buffer = await file.arrayBuffer();
-      const hashBuf = await crypto.subtle.digest('SHA-256', buffer);
-      const checksum = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-
-      await employeeApi.confirmUpload(employeeCode, {
-        s3Key,
-        documentType: 'general',
-        documentName: file.name,
-        mimeType: file.type,
-        sizeBytes: file.size,
-        checksum,
-      });
+      await employeeApi.uploadDocument(
+        employeeCode, pendingFile,
+        uploadForm.documentName || pendingFile.name,
+        uploadForm.documentType,
+        uploadForm.expiryDate || undefined,
+      );
       qc.invalidateQueries({ queryKey: ['employee-documents', employeeCode] });
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : 'Upload failed. Please try again.');
     } finally {
       setUploading(false);
-      if (fileRef.current) fileRef.current.value = '';
+      setPendingFile(null);
     }
   };
 
@@ -289,6 +312,44 @@ export default function EmployeeDetail() {
     mutationFn: (docPublicId: string) => employeeApi.deleteDocument(employeeCode!, docPublicId),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['employee-documents', employeeCode] }),
   });
+
+  const updateDocMutation = useMutation({
+    mutationFn: (dto: { documentName?: string; documentType?: string; expiryDate?: string | null; verificationStatus?: string }) =>
+      employeeApi.updateDocument(employeeCode!, editingDoc!.publicId, dto),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['employee-documents', employeeCode] });
+      setEditDocOpen(false);
+      setEditingDoc(null);
+    },
+  });
+
+  const openEditDoc = (doc: EmployeeDocument) => {
+    setEditingDoc(doc);
+    setEditDocForm({
+      documentName: doc.documentName,
+      documentType: doc.documentType,
+      expiryDate: doc.expiryDate ? doc.expiryDate.split('T')[0] : '',
+      verificationStatus: doc.verificationStatus,
+    });
+    setEditDocOpen(true);
+  };
+
+  const handleViewDocument = async (doc: EmployeeDocument) => {
+    if (!employeeCode) return;
+    if (isExpired(doc.expiryDate)) {
+      alert('This document has expired and cannot be accessed. Update the expiry date or replace the document.');
+      return;
+    }
+    setViewingDocId(doc.publicId);
+    try {
+      const { url } = await employeeApi.getDocumentDownloadUrl(employeeCode, doc.publicId);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch {
+      alert('Could not load document. Please try again.');
+    } finally {
+      setViewingDocId(null);
+    }
+  };
 
   // ── Loading / error states ───────────────────────────────────────────────
 
@@ -340,10 +401,10 @@ export default function EmployeeDetail() {
               </h1>
               <div style={{ display: 'flex', gap: 8, marginTop: 4, alignItems: 'center' }}>
                 <Badge variant={employee.status === 'active' ? 'success' : employee.status === 'probation' ? 'warning' : 'default'}>
-                  {employee.status.replace(/_/g, ' ')}
+                  {formatLabel(employee.status)}
                 </Badge>
                 <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-secondary)' }}>
-                  {employee.employmentType.replace(/_/g, ' ')}
+                  {formatLabel(employee.employmentType)}
                 </span>
               </div>
             </div>
@@ -418,11 +479,11 @@ export default function EmployeeDetail() {
                     </span>
                   : <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic', fontSize: '0.875rem' }}>Not set — add email to enable ESS</span>
               } />
-              <Field label="Type"            value={employee.employmentType.replace(/_/g, ' ')} />
-              <Field label="Joining Date"    value={new Date(employee.joiningDate).toLocaleDateString('en-IN')} />
+              <Field label="Type"            value={formatLabel(employee.employmentType)} />
+              <Field label="Joining Date"    value={formatDate(employee.joiningDate)} />
               <Field label="Notice Period"   value={`${employee.noticePeriodDays} days`} />
               {employee.probationEndDate && (
-                <Field label="Probation End" value={new Date(employee.probationEndDate).toLocaleDateString('en-IN')} />
+                <Field label="Probation End" value={formatDate(employee.probationEndDate)} />
               )}
             </FieldGrid>
           </div>
@@ -436,7 +497,12 @@ export default function EmployeeDetail() {
               <Field label="Department"  value={departments.find(d => d.publicId === employee.departmentId)?.name ?? employee.departmentId} />
               <Field label="Designation" value={designations.find(d => d.publicId === employee.designationId)?.name ?? employee.designationId} />
               <Field label="Location"    value={locations.find(l => l.publicId === employee.locationId)?.name ?? employee.locationId} />
-              <Field label="Reports To"  value={employee.reportingManagerId} />
+              <Field label="Reports To"  value={(() => {
+                const mgr = allEmployees.find(e => e.publicId === employee.reportingManagerId);
+                return mgr
+                  ? (mgr.firstName || mgr.lastName ? `${mgr.firstName ?? ''} ${mgr.lastName ?? ''}`.trim() : mgr.employeeCode)
+                  : employee.reportingManagerId;
+              })()} />
             </FieldGrid>
           </div>
         </div>
@@ -454,7 +520,7 @@ export default function EmployeeDetail() {
               <Field label="First Name"     value={personal.firstName} />
               <Field label="Last Name"      value={personal.lastName} />
               <Field label="Middle Name"    value={personal.middleName} />
-              <Field label="Date of Birth"  value={personal.dateOfBirth ? new Date(personal.dateOfBirth).toLocaleDateString('en-IN') : undefined} />
+              <Field label="Date of Birth"  value={formatDate(personal.dateOfBirth)} />
               <Field label="Gender"         value={personal.gender} />
               <Field label="Marital Status" value={personal.maritalStatus} />
               <Field label="Nationality"    value={personal.nationality} />
@@ -477,11 +543,17 @@ export default function EmployeeDetail() {
         <div style={cardStyle}>
           <div style={sectionHead}>
             <h3 style={{ margin: 0 }}>Bank Details</h3>
-            <Button onClick={() => openBank()}>
-              {bankDetails && bankDetails.length > 0 ? 'Edit' : 'Add Account'}
-            </Button>
+            {!bankFetching && (
+              <Button onClick={() => openBank()}>Add Account</Button>
+            )}
           </div>
-          {bankDetails && bankDetails.length > 0 ? (
+          {bankFetching ? (
+            <div>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} style={{ marginBottom: 12 }}><Skeleton height={20} /></div>
+              ))}
+            </div>
+          ) : bankDetails && bankDetails.length > 0 ? (
             <div>
               {bankDetails.map((b, i) => (
                 <div key={i} style={{ padding: '16px 0', borderBottom: i < bankDetails.length - 1 ? '1px solid var(--color-border)' : 'none' }}>
@@ -539,7 +611,13 @@ export default function EmployeeDetail() {
             <div className="alert alert-danger">{uploadError}</div>
           )}
 
-          {documents && documents.length > 0 ? (
+          {docsFetching || uploading ? (
+            <div>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} style={{ marginBottom: 12 }}><Skeleton height={40} /></div>
+              ))}
+            </div>
+          ) : documents && documents.length > 0 ? (
             <div className="table-wrapper">
               <table className="table">
                 <thead>
@@ -553,10 +631,14 @@ export default function EmployeeDetail() {
                   </tr>
                 </thead>
                 <tbody>
-                  {documents.map((doc) => (
-                    <tr key={doc.publicId}>
+                  {documents.map((doc) => {
+                    const expired = isExpired(doc.expiryDate);
+                    return (
+                    <tr key={doc.publicId} style={expired ? { opacity: 0.75 } : undefined}>
                       <td style={{ fontWeight: 500 }}>{doc.documentName}</td>
-                      <td style={{ color: 'var(--color-text-secondary)' }}>{doc.documentType}</td>
+                      <td style={{ color: 'var(--color-text-secondary)' }}>
+                        {DOCUMENT_TYPES.find(t => t.value === doc.documentType)?.label ?? doc.documentType}
+                      </td>
                       <td>
                         <Badge variant={
                           doc.verificationStatus === 'verified' ? 'success' :
@@ -565,17 +647,41 @@ export default function EmployeeDetail() {
                           {doc.verificationStatus}
                         </Badge>
                       </td>
-                      <td style={{ color: 'var(--color-text-secondary)' }}>
-                        {doc.expiryDate ? new Date(doc.expiryDate).toLocaleDateString('en-IN') : '—'}
+                      <td>
+                        {doc.expiryDate ? (
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ color: expired ? 'var(--color-danger)' : 'var(--color-text-secondary)' }}>
+                              {formatDate(doc.expiryDate)}
+                            </span>
+                            {expired && <Badge variant="danger">Expired</Badge>}
+                          </span>
+                        ) : (
+                          <span style={{ color: 'var(--color-text-secondary)' }}>—</span>
+                        )}
                       </td>
                       <td style={{ color: 'var(--color-text-secondary)' }}>
-                        {new Date(doc.createdAt).toLocaleDateString('en-IN')}
+                        {formatDate(doc.createdAt)}
                       </td>
                       <td>
                         <div className="row-actions">
                           <button
                             className="btn btn-ghost btn-sm"
-                            style={{ color: 'var(--color-red)' }}
+                            onClick={() => handleViewDocument(doc)}
+                            disabled={viewingDocId === doc.publicId || expired}
+                            title={expired ? 'Document has expired' : 'View document'}
+                            style={expired ? { opacity: 0.4, cursor: 'not-allowed' } : undefined}
+                          >
+                            {viewingDocId === doc.publicId ? 'Loading…' : 'View'}
+                          </button>
+                          <button
+                            className="btn btn-ghost btn-sm"
+                            onClick={() => openEditDoc(doc)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="btn btn-ghost btn-sm"
+                            style={{ color: 'var(--color-danger)' }}
                             onClick={() => { if (confirm('Delete this document?')) deleteDocMutation.mutate(doc.publicId); }}
                           >
                             Delete
@@ -583,18 +689,17 @@ export default function EmployeeDetail() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           ) : (
-            !uploading && (
-              <EmptyState
-                title="No documents"
-                description="Upload ID proofs, certificates, or other relevant documents."
-                cta={<Button onClick={() => fileRef.current?.click()}>Upload Document</Button>}
-              />
-            )
+            <EmptyState
+              title="No documents"
+              description="Upload ID proofs, certificates, or other relevant documents."
+              cta={<Button onClick={() => fileRef.current?.click()}>Upload Document</Button>}
+            />
           )}
         </div>
       )}
@@ -621,12 +726,12 @@ export default function EmployeeDetail() {
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <Badge variant="default">{entry.fromStatus.replace(/_/g, ' ')}</Badge>
+                        <Badge variant="default">{formatLabel(entry.fromStatus)}</Badge>
                         <span style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>→</span>
-                        <Badge variant="success">{entry.toStatus.replace(/_/g, ' ')}</Badge>
+                        <Badge variant="success">{formatLabel(entry.toStatus)}</Badge>
                       </div>
                       <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-secondary)' }}>
-                        {new Date(entry.changedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        {formatDate(entry.changedAt)}
                       </span>
                     </div>
                     {entry.reason && (
@@ -680,7 +785,7 @@ export default function EmployeeDetail() {
           <div className="form-group">
             <label className="form-label">Employment Type</label>
             <select className="select" value={ov.employmentType} onChange={e => setOv(p => ({ ...p, employmentType: e.target.value }))}>
-              {EMPLOYMENT_TYPES.map(t => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
+              {EMPLOYMENT_TYPES.map(t => <option key={t} value={t}>{formatLabel(t)}</option>)}
             </select>
           </div>
           <div className="form-group">
@@ -712,8 +817,17 @@ export default function EmployeeDetail() {
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label">Reporting Manager ID</label>
-            <input className="input" value={ov.reportingManagerId} onChange={e => setOv(p => ({ ...p, reportingManagerId: e.target.value }))} placeholder="Employee public ID" />
+            <label className="form-label">Reporting Manager</label>
+            <select className="select" value={ov.reportingManagerId} onChange={e => setOv(p => ({ ...p, reportingManagerId: e.target.value }))}>
+              <option value="">None</option>
+              {allEmployees
+                .filter(e => e.employeeCode !== employeeCode)
+                .map(e => (
+                  <option key={e.publicId} value={e.publicId}>
+                    {e.firstName || e.lastName ? `${e.firstName ?? ''} ${e.lastName ?? ''}`.trim() : e.employeeCode} ({e.employeeCode})
+                  </option>
+                ))}
+            </select>
           </div>
           <div className="form-group">
             <label className="form-label">Notice Period (days)</label>
@@ -788,6 +902,123 @@ export default function EmployeeDetail() {
           <div className="form-group">
             <label className="form-label">Aadhaar Number</label>
             <input className="input" value={pf.aadhaarNumber ?? ''} onChange={e => setPf(p => ({ ...p, aadhaarNumber: e.target.value }))} placeholder="12-digit number" maxLength={12} />
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── Upload Document Modal ── */}
+      <Modal
+        open={uploadModalOpen}
+        onClose={() => { setUploadModalOpen(false); setPendingFile(null); }}
+        title="Upload Document"
+        footer={
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Button variant="secondary" onClick={() => { setUploadModalOpen(false); setPendingFile(null); }}>Cancel</Button>
+            <Button onClick={handleUploadConfirm} disabled={!pendingFile}>Upload</Button>
+          </div>
+        }
+      >
+        <div className="form-grid">
+          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <label className="form-label">Selected File</label>
+            <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', padding: '8px 12px', background: 'var(--color-background)', borderRadius: 8, border: '1px solid var(--color-border)' }}>
+              {pendingFile?.name ?? '—'}
+            </div>
+          </div>
+          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <label className="form-label">Document Name *</label>
+            <input
+              className="input"
+              value={uploadForm.documentName}
+              onChange={e => setUploadForm(p => ({ ...p, documentName: e.target.value }))}
+              placeholder="e.g. Rahul Sharma — PAN Card"
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Document Type *</label>
+            <select
+              className="select"
+              value={uploadForm.documentType}
+              onChange={e => setUploadForm(p => ({ ...p, documentType: e.target.value }))}
+            >
+              {DOCUMENT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Expiry Date (optional)</label>
+            <input
+              className="input"
+              type="date"
+              value={uploadForm.expiryDate}
+              onChange={e => setUploadForm(p => ({ ...p, expiryDate: e.target.value }))}
+            />
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── Edit Document Modal ── */}
+      <Modal
+        open={editDocOpen}
+        onClose={() => { setEditDocOpen(false); setEditingDoc(null); }}
+        title="Edit Document"
+        footer={
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Button variant="secondary" onClick={() => { setEditDocOpen(false); setEditingDoc(null); }}>Cancel</Button>
+            <Button
+              onClick={() => updateDocMutation.mutate({
+                documentName: editDocForm.documentName,
+                documentType: editDocForm.documentType,
+                expiryDate: editDocForm.expiryDate || null,
+                verificationStatus: editDocForm.verificationStatus,
+              })}
+              loading={updateDocMutation.isPending}
+            >
+              Save
+            </Button>
+          </div>
+        }
+      >
+        {updateDocMutation.isError && <div className="alert alert-danger">Failed to save. Please try again.</div>}
+        <div className="form-grid">
+          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <label className="form-label">Document Name *</label>
+            <input
+              className="input"
+              value={editDocForm.documentName}
+              onChange={e => setEditDocForm(p => ({ ...p, documentName: e.target.value }))}
+              placeholder="e.g. Rahul Sharma — PAN Card"
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Document Type *</label>
+            <select
+              className="select"
+              value={editDocForm.documentType}
+              onChange={e => setEditDocForm(p => ({ ...p, documentType: e.target.value }))}
+            >
+              {DOCUMENT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Expiry Date</label>
+            <input
+              className="input"
+              type="date"
+              value={editDocForm.expiryDate}
+              onChange={e => setEditDocForm(p => ({ ...p, expiryDate: e.target.value }))}
+            />
+          </div>
+          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <label className="form-label">Verification Status</label>
+            <select
+              className="select"
+              value={editDocForm.verificationStatus}
+              onChange={e => setEditDocForm(p => ({ ...p, verificationStatus: e.target.value }))}
+            >
+              <option value="pending">Pending</option>
+              <option value="verified">Verified</option>
+              <option value="rejected">Rejected</option>
+            </select>
           </div>
         </div>
       </Modal>

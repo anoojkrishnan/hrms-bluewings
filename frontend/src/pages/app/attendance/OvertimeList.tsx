@@ -72,8 +72,8 @@ export default function OvertimeList() {
         </div>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <select className="select" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+      <div style={{ marginBottom: 16, display: 'flex', gap: 12 }}>
+        <select className="select" style={{ width: 200 }} value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
           <option value="">All statuses</option>
           <option value="pending">Pending</option>
           <option value="approved">Approved</option>

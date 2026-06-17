@@ -194,8 +194,20 @@ export class EmployeeRepository {
     filter: Record<string, unknown>,
     page: number,
     limit: number,
+    search?: string,
   ): Promise<PaginatedResult<Employee>> {
-    const query = { ...this.baseFilter(tenantId, organizationId), ...filter };
+    const base = { ...this.baseFilter(tenantId, organizationId), ...filter };
+    const query = search
+      ? {
+          ...base,
+          $or: [
+            { firstName: { $regex: search, $options: 'i' } },
+            { lastName: { $regex: search, $options: 'i' } },
+            { employeeCode: { $regex: search, $options: 'i' } },
+            { workEmail: { $regex: search, $options: 'i' } },
+          ],
+        }
+      : base;
     const [docs, total] = await Promise.all([
       EmployeeModel.find(query)
         .sort({ createdAt: -1 })
@@ -273,6 +285,27 @@ export class EmployeeRepository {
 
   async findDocumentByPublicId(publicId: string, tenantId: string): Promise<EmployeeDocument | null> {
     const doc = await DocumentModel.findOne({ tenantId, publicId, deletedAt: null }).lean();
+    return doc as unknown as EmployeeDocument | null;
+  }
+
+  async updateDocument(
+    publicId: string,
+    tenantId: string,
+    actorId: string,
+    updates: {
+      documentName?: string;
+      documentType?: string;
+      expiryDate?: Date | null;
+      verificationStatus?: 'pending' | 'verified' | 'rejected';
+      verifiedBy?: string;
+      verifiedAt?: Date;
+    },
+  ): Promise<EmployeeDocument | null> {
+    const doc = await DocumentModel.findOneAndUpdate(
+      { publicId, tenantId, deletedAt: null },
+      { $set: { ...updates, updatedBy: actorId } },
+      { new: true, projection: { s3Key: 0 } },
+    ).lean();
     return doc as unknown as EmployeeDocument | null;
   }
 

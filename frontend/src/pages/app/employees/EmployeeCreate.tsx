@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { employeeApi } from '@/lib/api/employee.api';
+import { employeeApi, type Employee } from '@/lib/api/employee.api';
 import { organizationApi } from '@/lib/api/organization.api';
 import { Button } from '@/components/ui/Button';
 import { ROUTES } from '@/router/routes';
@@ -72,12 +72,17 @@ export default function EmployeeCreate() {
     queryKey: ['locations'],
     queryFn: () => organizationApi.listLocations({ limit: '100' }),
   });
+  const { data: employeesData } = useQuery({
+    queryKey: ['employees', '1', '', ''],
+    queryFn: () => employeeApi.list({ limit: '200' }),
+  });
 
   const companies = companiesData?.data ?? [];
   const departments = departmentsData?.data ?? [];
   const designations = designationsData?.data ?? [];
   const grades = gradesData?.data ?? [];
   const locations = locationsData?.data ?? [];
+  const employees: Employee[] = employeesData?.data ?? [];
 
   const toIso = (date: string) => date ? new Date(date).toISOString() : undefined;
 
@@ -251,8 +256,15 @@ export default function EmployeeCreate() {
               </select>
             </div>
             <div className="form-group">
-              <label className="form-label">Reporting Manager ID</label>
-              <input className="input" value={form.reportingManagerId} onChange={set('reportingManagerId')} placeholder="Employee public ID" />
+              <label className="form-label">Reporting Manager</label>
+              <select className="select" value={form.reportingManagerId} onChange={set('reportingManagerId')}>
+                <option value="">None</option>
+                {employees.map((e) => (
+                  <option key={e.publicId} value={e.publicId}>
+                    {e.firstName || e.lastName ? `${e.firstName ?? ''} ${e.lastName ?? ''}`.trim() : e.employeeCode} ({e.employeeCode})
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Probation End Date</label>
@@ -269,14 +281,18 @@ export default function EmployeeCreate() {
           <div>
             <h2 style={{ marginBottom: 24 }}>Review</h2>
             <dl className="detail-list">
+              {form.firstName && <><dt>First Name</dt><dd>{form.firstName}</dd></>}
+              {form.lastName && <><dt>Last Name</dt><dd>{form.lastName}</dd></>}
               <dt>Company</dt><dd>{companies.find(c => c.publicId === form.companyId)?.name ?? form.companyId}</dd>
               {form.workEmail && <><dt>Work Email</dt><dd>{form.workEmail}</dd></>}
-              <dt>Joining Date</dt><dd>{form.joiningDate}</dd>
-              <dt>Employment Type</dt><dd>{form.employmentType.replace(/_/g, ' ')}</dd>
+              <dt>Joining Date</dt><dd>{new Date(form.joiningDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })}</dd>
+              <dt>Employment Type</dt><dd>{form.employmentType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}</dd>
               {form.departmentId && <><dt>Department</dt><dd>{departments.find(d => d.publicId === form.departmentId)?.name ?? form.departmentId}</dd></>}
               {form.designationId && <><dt>Designation</dt><dd>{designations.find(d => d.publicId === form.designationId)?.name ?? form.designationId}</dd></>}
               {form.locationId && <><dt>Location</dt><dd>{locations.find(l => l.publicId === form.locationId)?.name ?? form.locationId}</dd></>}
-              {form.reportingManagerId && <><dt>Reports To</dt><dd>{form.reportingManagerId}</dd></>}
+              {form.reportingManagerId && <><dt>Reports To</dt><dd>{employees.find(e => e.publicId === form.reportingManagerId)?.firstName
+                ? `${employees.find(e => e.publicId === form.reportingManagerId)?.firstName ?? ''} ${employees.find(e => e.publicId === form.reportingManagerId)?.lastName ?? ''}`.trim()
+                : form.reportingManagerId}</dd></>}
               <dt>Notice Period</dt><dd>{form.noticePeriodDays} days</dd>
             </dl>
             {mutation.isError && (

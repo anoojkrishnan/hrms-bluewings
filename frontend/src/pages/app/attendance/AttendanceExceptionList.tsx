@@ -51,8 +51,8 @@ export default function AttendanceExceptionList() {
         <h1 className="page-title">Attendance Exceptions</h1>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <select className="select" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
+      <div style={{ marginBottom: 16, display: 'flex', gap: 12 }}>
+        <select className="select" style={{ width: 200 }} value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
           <option value="pending">Pending</option>
           <option value="approved">Approved</option>
           <option value="rejected">Rejected</option>

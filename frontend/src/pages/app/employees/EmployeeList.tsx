@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { employeeApi } from '@/lib/api/employee.api';
@@ -19,14 +19,36 @@ const STATUS_COLORS: Record<string, 'success' | 'warning' | 'danger' | 'info' | 
   pre_onboarding: 'info',
 };
 
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
 export default function EmployeeList() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  const searchRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearch(val);
+    clearTimeout(searchRef.current);
+    searchRef.current = setTimeout(() => {
+      setDebouncedSearch(val);
+      setPage(1);
+    }, 350);
+  };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['employees', page, status],
-    queryFn: () => employeeApi.list({ page: String(page), ...(status && { status }) }),
+    queryKey: ['employees', page, status, debouncedSearch],
+    queryFn: () => employeeApi.list({
+      page: String(page),
+      ...(status && { status }),
+      ...(debouncedSearch && { search: debouncedSearch }),
+    }),
   });
 
   if (isLoading) {
@@ -71,9 +93,17 @@ export default function EmployeeList() {
         </div>
       </div>
 
-      <div className="filters" style={{ marginBottom: 16, display: 'flex', gap: 12 }}>
+      <div className="filters" style={{ marginBottom: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+        <input
+          className="input"
+          style={{ width: 240 }}
+          placeholder="Search by name, code or email…"
+          value={search}
+          onChange={handleSearchChange}
+        />
         <select
           className="select"
+          style={{ width: 180 }}
           value={status}
           onChange={(e) => { setStatus(e.target.value); setPage(1); }}
         >
@@ -89,14 +119,20 @@ export default function EmployeeList() {
 
       {employees.length === 0 ? (
         <EmptyState
-          title="No employees found"
-          description="Add your first employee to get started."
+          title={status || debouncedSearch ? 'No employees match your filters' : 'No employees found'}
+          description={
+            status || debouncedSearch
+              ? 'Try adjusting your search or status filter.'
+              : 'Add your first employee to get started.'
+          }
           cta={
-            <PermissionGuard permission="employee.profile.create">
-              <Button onClick={() => navigate(ROUTES.EMPLOYEE_CREATE)}>
-                Add Employee
-              </Button>
-            </PermissionGuard>
+            !status && !debouncedSearch ? (
+              <PermissionGuard permission="employee.profile.create">
+                <Button onClick={() => navigate(ROUTES.EMPLOYEE_CREATE)}>
+                  Add Employee
+                </Button>
+              </PermissionGuard>
+            ) : undefined
           }
         />
       ) : (
@@ -133,8 +169,8 @@ export default function EmployeeList() {
                         {emp.status.replace(/_/g, ' ')}
                       </Badge>
                     </td>
-                    <td>{emp.employmentType.replace(/_/g, ' ')}</td>
-                    <td>{new Date(emp.joiningDate).toLocaleDateString()}</td>
+                    <td>{emp.employmentType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}</td>
+                    <td>{formatDate(emp.joiningDate)}</td>
                     <td>
                       <Badge variant={emp.essEnabled ? 'success' : 'default'}>
                         {emp.essEnabled ? 'Enabled' : 'Disabled'}

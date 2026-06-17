@@ -92,9 +92,8 @@
 .table tbody tr.clickable { cursor: pointer; }
 .table tbody tr.clickable:hover { background: var(--color-periwinkle); }
 
-/* Row action buttons — visible on hover */
-.row-actions         { display: flex; gap: 4px; opacity: 0; transition: opacity var(--t-fast); }
-.table tbody tr:hover .row-actions { opacity: 1; }
+/* Row action buttons — always visible */
+.row-actions         { display: flex; gap: 4px; }
 
 /* Avatar inside table rows */
 .table-avatar {

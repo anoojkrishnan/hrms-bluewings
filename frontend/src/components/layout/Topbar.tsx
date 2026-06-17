@@ -19,7 +19,12 @@ export function Topbar() {
   });
 
   const unreadCount = unreadData?.count ?? 0;
-  const initials = user?.userId.slice(0, 2).toUpperCase() ?? 'U';
+  const initials = user
+    ? (user.firstName ? user.firstName.charAt(0) : '') + (user.lastName ? user.lastName.charAt(0) : '') || user.userId.slice(0, 2)
+    : 'U';
+  const displayName = user
+    ? [user.firstName, user.lastName].filter(Boolean).join(' ') || user.userId.slice(0, 12)
+    : '';
 
   return (
     <header className={styles.topbar}>
@@ -60,7 +65,7 @@ export function Topbar() {
         {user && (
           <div className={styles.userChip}>
             <div className={styles.avatar}>{initials}</div>
-            <span className={styles.userName}>{user.userId.slice(0, 10)}</span>
+            <span className={styles.userName}>{displayName}</span>
             <button
               className={styles.logoutBtn}
               onClick={() => logout()}

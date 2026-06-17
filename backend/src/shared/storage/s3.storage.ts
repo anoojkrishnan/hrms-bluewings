@@ -80,6 +80,18 @@ export class S3Storage {
     );
   }
 
+  async uploadObject(s3Key: string, body: Buffer, contentType: string): Promise<void> {
+    const client = getS3Client();
+    await client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: s3Key,
+        Body: body,
+        ContentType: contentType,
+      }),
+    );
+  }
+
   async objectExists(s3Key: string): Promise<boolean> {
     const client = getS3Client();
     try {
