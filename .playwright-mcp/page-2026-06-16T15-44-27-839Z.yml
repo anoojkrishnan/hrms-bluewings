@@ -1,0 +1,281 @@
+- generic [ref=e61]:
+  - complementary [ref=e62]:
+    - generic [ref=e63]:
+      - generic [ref=e64]: HR
+      - generic [ref=e65]: HRMS
+    - navigation "Main navigation" [ref=e66]:
+      - link "⊞ Dashboard" [ref=e68] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e69]: ⊞
+        - generic [ref=e70]: Dashboard
+      - generic [ref=e71]:
+        - generic [ref=e72]: People
+        - link "◎ Employees" [ref=e73] [cursor=pointer]:
+          - /url: /employees
+          - generic [ref=e74]: ◎
+          - generic [ref=e75]: Employees
+      - generic [ref=e76]:
+        - generic [ref=e77]: Time Off
+        - link "◷ Applications" [ref=e78] [cursor=pointer]:
+          - /url: /leave/applications
+          - generic [ref=e79]: ◷
+          - generic [ref=e80]: Applications
+        - link "◑ My Balance" [ref=e81] [cursor=pointer]:
+          - /url: /leave/balance
+          - generic [ref=e82]: ◑
+          - generic [ref=e83]: My Balance
+        - link "≡ Leave Types" [ref=e84] [cursor=pointer]:
+          - /url: /leave/types
+          - generic [ref=e85]: ≡
+          - generic [ref=e86]: Leave Types
+      - generic [ref=e87]:
+        - generic [ref=e88]: Attendance
+        - link "● Mark" [ref=e89] [cursor=pointer]:
+          - /url: /attendance
+          - generic [ref=e90]: ●
+          - generic [ref=e91]: Mark
+        - link "≡ Logs" [ref=e92] [cursor=pointer]:
+          - /url: /attendance/logs
+          - generic [ref=e93]: ≡
+          - generic [ref=e94]: Logs
+        - link "⚠ Exceptions" [ref=e95] [cursor=pointer]:
+          - /url: /attendance/exceptions
+          - generic [ref=e96]: ⚠
+          - generic [ref=e97]: Exceptions
+        - link "🕐 Shifts" [ref=e98] [cursor=pointer]:
+          - /url: /attendance/shifts
+          - generic [ref=e99]: 🕐
+          - generic [ref=e100]: Shifts
+        - link "⏱ Overtime" [ref=e101] [cursor=pointer]:
+          - /url: /attendance/overtime
+          - generic [ref=e102]: ⏱
+          - generic [ref=e103]: Overtime
+      - generic [ref=e104]:
+        - generic [ref=e105]: Payroll
+        - link "₹ Overview" [ref=e106] [cursor=pointer]:
+          - /url: /payroll
+          - generic [ref=e107]: ₹
+          - generic [ref=e108]: Overview
+        - link "▶ Runs" [ref=e109] [cursor=pointer]:
+          - /url: /payroll/runs
+          - generic [ref=e110]: ▶
+          - generic [ref=e111]: Runs
+        - link "◧ Payslips" [ref=e112] [cursor=pointer]:
+          - /url: /payroll/payslips
+          - generic [ref=e113]: ◧
+          - generic [ref=e114]: Payslips
+        - link "≡ Salary" [ref=e115] [cursor=pointer]:
+          - /url: /payroll/components
+          - generic [ref=e116]: ≡
+          - generic [ref=e117]: Salary
+        - link "◫ Structures" [ref=e118] [cursor=pointer]:
+          - /url: /payroll/structures
+          - generic [ref=e119]: ◫
+          - generic [ref=e120]: Structures
+        - link "◑ Cycles" [ref=e121] [cursor=pointer]:
+          - /url: /payroll/cycles
+          - generic [ref=e122]: ◑
+          - generic [ref=e123]: Cycles
+        - link "⚖ Statutory" [ref=e124] [cursor=pointer]:
+          - /url: /payroll/statutory-settings
+          - generic [ref=e125]: ⚖
+          - generic [ref=e126]: Statutory
+        - link "📊 Reports" [ref=e127] [cursor=pointer]:
+          - /url: /payroll/reports
+          - generic [ref=e128]: 📊
+          - generic [ref=e129]: Reports
+        - link "💳 Loans" [ref=e130] [cursor=pointer]:
+          - /url: /payroll/loans
+          - generic [ref=e131]: 💳
+          - generic [ref=e132]: Loans
+        - link "📋 FnF" [ref=e133] [cursor=pointer]:
+          - /url: /payroll/fnf
+          - generic [ref=e134]: 📋
+          - generic [ref=e135]: FnF
+        - link "🏦 Accounting" [ref=e136] [cursor=pointer]:
+          - /url: /payroll/accounting
+          - generic [ref=e137]: 🏦
+          - generic [ref=e138]: Accounting
+      - generic [ref=e139]:
+        - generic [ref=e140]: Approvals
+        - link "✓ Queue" [ref=e141] [cursor=pointer]:
+          - /url: /approvals
+          - generic [ref=e142]: ✓
+          - generic [ref=e143]: Queue
+        - link "◉ Notifications" [ref=e144] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e145]: ◉
+          - generic [ref=e146]: Notifications
+        - link "🧾 Expenses" [ref=e147] [cursor=pointer]:
+          - /url: /expense/claims
+          - generic [ref=e148]: 🧾
+          - generic [ref=e149]: Expenses
+      - generic [ref=e150]:
+        - generic [ref=e151]: Organisation
+        - link "⬡ Companies" [ref=e152] [cursor=pointer]:
+          - /url: /settings/companies
+          - generic [ref=e153]: ⬡
+          - generic [ref=e154]: Companies
+        - link "◫ Departments" [ref=e155] [cursor=pointer]:
+          - /url: /settings/departments
+          - generic [ref=e156]: ◫
+          - generic [ref=e157]: Departments
+        - link "◧ Designations" [ref=e158] [cursor=pointer]:
+          - /url: /settings/designations
+          - generic [ref=e159]: ◧
+          - generic [ref=e160]: Designations
+        - link "◎ Locations" [ref=e161] [cursor=pointer]:
+          - /url: /settings/locations
+          - generic [ref=e162]: ◎
+          - generic [ref=e163]: Locations
+      - generic [ref=e164]:
+        - generic [ref=e165]: Configuration
+        - link "⇄ Workflows" [ref=e166] [cursor=pointer]:
+          - /url: /settings/workflows
+          - generic [ref=e167]: ⇄
+          - generic [ref=e168]: Workflows
+        - link "⚖ Rule Sets" [ref=e169] [cursor=pointer]:
+          - /url: /settings/rules
+          - generic [ref=e170]: ⚖
+          - generic [ref=e171]: Rule Sets
+        - link "☰ Forms" [ref=e172] [cursor=pointer]:
+          - /url: /settings/forms
+          - generic [ref=e173]: ☰
+          - generic [ref=e174]: Forms
+      - generic [ref=e175]:
+        - generic [ref=e176]: Reports
+        - link "📄 All Reports" [ref=e177] [cursor=pointer]:
+          - /url: /reports
+          - generic [ref=e178]: 📄
+          - generic [ref=e179]: All Reports
+        - link "📈 Analytics" [ref=e180] [cursor=pointer]:
+          - /url: /reports/analytics
+          - generic [ref=e181]: 📈
+          - generic [ref=e182]: Analytics
+      - generic [ref=e183]:
+        - generic [ref=e184]: Integrations
+        - link "🔑 API Clients" [ref=e185] [cursor=pointer]:
+          - /url: /integrations
+          - generic [ref=e186]: 🔑
+          - generic [ref=e187]: API Clients
+        - link "🔗 Webhooks" [ref=e188] [cursor=pointer]:
+          - /url: /integrations/webhooks
+          - generic [ref=e189]: 🔗
+          - generic [ref=e190]: Webhooks
+      - generic [ref=e191]:
+        - generic [ref=e192]: Admin
+        - link "◈ Users" [ref=e193] [cursor=pointer]:
+          - /url: /admin/users
+          - generic [ref=e194]: ◈
+          - generic [ref=e195]: Users
+        - link "◆ Roles" [ref=e196] [cursor=pointer]:
+          - /url: /roles
+          - generic [ref=e197]: ◆
+          - generic [ref=e198]: Roles
+        - link "⚙ Settings" [ref=e199] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e200]: ⚙
+          - generic [ref=e201]: Settings
+  - generic [ref=e202]:
+    - banner [ref=e203]:
+      - button "Toggle sidebar" [ref=e205] [cursor=pointer]: ☰
+      - generic [ref=e206]:
+        - button "Notifications" [ref=e207] [cursor=pointer]: 🔔
+        - button "Toggle theme" [ref=e208] [cursor=pointer]: 🌙
+        - generic [ref=e210]:
+          - generic [ref=e211]: "82"
+          - generic [ref=e212]: 82rn4Ql6if
+          - button "Sign out" [ref=e213] [cursor=pointer]: ⏏
+    - main [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - generic [ref=e8]:
+            - heading "Salary Components" [level=1] [ref=e9]
+            - paragraph [ref=e10]: Define earnings, deductions, and contributions
+          - button "+ Add Component" [active] [ref=e11] [cursor=pointer]
+        - generic [ref=e12]:
+          - generic [ref=e13]:
+            - img [ref=e15]
+            - generic [ref=e17]:
+              - generic [ref=e18]: Build Your Salary Components
+              - generic [ref=e19]: Components are the building blocks of pay — Basic, HRA, PF, TDS. Define once, reuse across all salary structures.
+            - generic [ref=e20]:
+              - generic [ref=e21]:
+                - img [ref=e22]
+                - text: Formula engine built-in
+              - generic [ref=e24]:
+                - img [ref=e25]
+                - text: Reuse across structures
+              - generic [ref=e27]:
+                - img [ref=e28]
+                - text: Statutory auto-calculation
+          - generic [ref=e30]:
+            - generic [ref=e31]: How it works
+            - generic [ref=e32]:
+              - generic [ref=e33]:
+                - generic [ref=e34]: "1"
+                - img [ref=e36]
+                - generic [ref=e38]: Create earnings
+                - generic [ref=e39]: Basic Salary, HRA, Special Allowance — type Earning.
+              - generic [ref=e40]:
+                - generic [ref=e41]: "2"
+                - img [ref=e43]
+                - generic [ref=e45]: Create deductions
+                - generic [ref=e46]: PF Employee, TDS, Professional Tax — type Deduction.
+              - generic [ref=e47]:
+                - generic [ref=e48]: "3"
+                - img [ref=e50]
+                - generic [ref=e52]: Set formula type
+                - generic [ref=e53]: Fixed Amount, % of Basic, % of Gross, or Statutory auto.
+              - generic [ref=e54]:
+                - generic [ref=e55]: "4"
+                - img [ref=e57]
+                - generic [ref=e59]: Build a structure
+                - generic [ref=e60]: Group components into a Salary Structure to assign to employees.
+        - dialog "Add Salary Component" [ref=e214]:
+          - generic [ref=e215]:
+            - generic [ref=e216]:
+              - heading "Add Salary Component" [level=2] [ref=e217]
+              - button "Close modal" [ref=e218] [cursor=pointer]: ✕
+            - generic [ref=e219]:
+              - generic [ref=e220]:
+                - generic [ref=e221]:
+                  - generic [ref=e222]: Code *
+                  - textbox "BASIC" [ref=e223]
+                - generic [ref=e224]:
+                  - generic [ref=e225]: Name *
+                  - textbox "Basic Salary" [ref=e226]
+                - generic [ref=e227]:
+                  - generic [ref=e228]: Type *
+                  - combobox [ref=e229] [cursor=pointer]:
+                    - option "Earning" [selected]
+                    - option "Deduction"
+                    - option "Employer Contribution"
+                    - option "Benefit"
+                - generic [ref=e230]:
+                  - generic [ref=e231]: Formula Type *
+                  - combobox [ref=e232] [cursor=pointer]:
+                    - option "Fixed Amount (₹)" [selected]
+                    - option "% of Basic"
+                    - option "% of Gross"
+                    - option "Custom Formula"
+                    - option "Statutory (auto)"
+                - generic [ref=e233]:
+                  - generic [ref=e234]: Default Amount (₹) *
+                  - spinbutton [ref=e235]
+                - generic [ref=e236]:
+                  - generic [ref=e237]: Display Order
+                  - spinbutton [ref=e238]: "0"
+              - generic [ref=e239]:
+                - generic [ref=e240] [cursor=pointer]:
+                  - checkbox "Taxable" [checked] [ref=e241]
+                  - generic [ref=e242]: Taxable
+                - generic [ref=e243] [cursor=pointer]:
+                  - checkbox "Show on payslip" [checked] [ref=e244]
+                  - generic [ref=e245]: Show on payslip
+              - generic [ref=e246]:
+                - generic [ref=e247]: Description
+                - textbox "Optional" [ref=e248]
+            - generic [ref=e250]:
+              - button "Cancel" [ref=e251] [cursor=pointer]
+              - button "Create" [ref=e252] [cursor=pointer]

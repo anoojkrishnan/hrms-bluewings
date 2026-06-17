@@ -139,7 +139,7 @@ export default function LeaveApplicationList() {
               <tbody>
                 {applications.map((app) => (
                   <tr key={app.publicId}>
-                    <td>{employees.find(e => e.publicId === app.employeeId)?.employeeCode ?? app.employeeId}</td>
+                    <td>{(() => { const e = employees.find(emp => emp.publicId === app.employeeId); return e ? (e.firstName || e.lastName ? `${e.firstName ?? ''} ${e.lastName ?? ''}`.trim() : e.employeeCode) : app.employeeId; })()}</td>
                     <td>{leaveTypes?.find((t: { publicId: string; name: string }) => t.publicId === app.leaveTypeId)?.name ?? app.leaveTypeId}</td>
                     <td>
                       {new Date(app.startDate).toLocaleDateString()} – {new Date(app.endDate).toLocaleDateString()}
@@ -214,7 +214,7 @@ export default function LeaveApplicationList() {
                 <option value="">Select employee</option>
                 {employees.map((emp) => (
                   <option key={emp.employeeCode} value={emp.employeeCode}>
-                    {emp.employeeCode}
+                    {emp.firstName || emp.lastName ? `${emp.firstName ?? ''} ${emp.lastName ?? ''}`.trim() : emp.employeeCode} ({emp.employeeCode})
                   </option>
                 ))}
               </select>

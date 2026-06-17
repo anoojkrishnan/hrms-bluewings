@@ -1,0 +1,302 @@
+- generic [ref=e91]:
+  - complementary [ref=e92]:
+    - generic [ref=e93]:
+      - generic [ref=e94]: HR
+      - generic [ref=e95]: HRMS
+    - navigation "Main navigation" [ref=e96]:
+      - link "⊞ Dashboard" [ref=e98] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e99]: ⊞
+        - generic [ref=e100]: Dashboard
+      - generic [ref=e101]:
+        - generic [ref=e102]: People
+        - link "◎ Employees" [ref=e103] [cursor=pointer]:
+          - /url: /employees
+          - generic [ref=e104]: ◎
+          - generic [ref=e105]: Employees
+      - generic [ref=e106]:
+        - generic [ref=e107]: Time Off
+        - link "◷ Applications" [ref=e108] [cursor=pointer]:
+          - /url: /leave/applications
+          - generic [ref=e109]: ◷
+          - generic [ref=e110]: Applications
+        - link "◑ My Balance" [ref=e111] [cursor=pointer]:
+          - /url: /leave/balance
+          - generic [ref=e112]: ◑
+          - generic [ref=e113]: My Balance
+        - link "≡ Leave Types" [ref=e114] [cursor=pointer]:
+          - /url: /leave/types
+          - generic [ref=e115]: ≡
+          - generic [ref=e116]: Leave Types
+      - generic [ref=e117]:
+        - generic [ref=e118]: Attendance
+        - link "● Mark" [ref=e119] [cursor=pointer]:
+          - /url: /attendance
+          - generic [ref=e120]: ●
+          - generic [ref=e121]: Mark
+        - link "≡ Logs" [ref=e122] [cursor=pointer]:
+          - /url: /attendance/logs
+          - generic [ref=e123]: ≡
+          - generic [ref=e124]: Logs
+        - link "⚠ Exceptions" [ref=e125] [cursor=pointer]:
+          - /url: /attendance/exceptions
+          - generic [ref=e126]: ⚠
+          - generic [ref=e127]: Exceptions
+        - link "🕐 Shifts" [ref=e128] [cursor=pointer]:
+          - /url: /attendance/shifts
+          - generic [ref=e129]: 🕐
+          - generic [ref=e130]: Shifts
+        - link "⏱ Overtime" [ref=e131] [cursor=pointer]:
+          - /url: /attendance/overtime
+          - generic [ref=e132]: ⏱
+          - generic [ref=e133]: Overtime
+      - generic [ref=e134]:
+        - generic [ref=e135]: Payroll
+        - link "₹ Overview" [ref=e136] [cursor=pointer]:
+          - /url: /payroll
+          - generic [ref=e137]: ₹
+          - generic [ref=e138]: Overview
+        - link "▶ Runs" [ref=e139] [cursor=pointer]:
+          - /url: /payroll/runs
+          - generic [ref=e140]: ▶
+          - generic [ref=e141]: Runs
+        - link "◧ Payslips" [ref=e142] [cursor=pointer]:
+          - /url: /payroll/payslips
+          - generic [ref=e143]: ◧
+          - generic [ref=e144]: Payslips
+        - link "≡ Salary" [ref=e145] [cursor=pointer]:
+          - /url: /payroll/components
+          - generic [ref=e146]: ≡
+          - generic [ref=e147]: Salary
+        - link "◫ Structures" [ref=e148] [cursor=pointer]:
+          - /url: /payroll/structures
+          - generic [ref=e149]: ◫
+          - generic [ref=e150]: Structures
+        - link "◑ Cycles" [ref=e151] [cursor=pointer]:
+          - /url: /payroll/cycles
+          - generic [ref=e152]: ◑
+          - generic [ref=e153]: Cycles
+        - link "⚖ Statutory" [ref=e154] [cursor=pointer]:
+          - /url: /payroll/statutory-settings
+          - generic [ref=e155]: ⚖
+          - generic [ref=e156]: Statutory
+        - link "📊 Reports" [ref=e157] [cursor=pointer]:
+          - /url: /payroll/reports
+          - generic [ref=e158]: 📊
+          - generic [ref=e159]: Reports
+        - link "💳 Loans" [ref=e160] [cursor=pointer]:
+          - /url: /payroll/loans
+          - generic [ref=e161]: 💳
+          - generic [ref=e162]: Loans
+        - link "📋 FnF" [ref=e163] [cursor=pointer]:
+          - /url: /payroll/fnf
+          - generic [ref=e164]: 📋
+          - generic [ref=e165]: FnF
+        - link "🏦 Accounting" [ref=e166] [cursor=pointer]:
+          - /url: /payroll/accounting
+          - generic [ref=e167]: 🏦
+          - generic [ref=e168]: Accounting
+      - generic [ref=e169]:
+        - generic [ref=e170]: Approvals
+        - link "✓ Queue" [ref=e171] [cursor=pointer]:
+          - /url: /approvals
+          - generic [ref=e172]: ✓
+          - generic [ref=e173]: Queue
+        - link "◉ Notifications" [ref=e174] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e175]: ◉
+          - generic [ref=e176]: Notifications
+        - link "🧾 Expenses" [ref=e177] [cursor=pointer]:
+          - /url: /expense/claims
+          - generic [ref=e178]: 🧾
+          - generic [ref=e179]: Expenses
+      - generic [ref=e180]:
+        - generic [ref=e181]: Organisation
+        - link "⬡ Companies" [ref=e182] [cursor=pointer]:
+          - /url: /settings/companies
+          - generic [ref=e183]: ⬡
+          - generic [ref=e184]: Companies
+        - link "◫ Departments" [ref=e185] [cursor=pointer]:
+          - /url: /settings/departments
+          - generic [ref=e186]: ◫
+          - generic [ref=e187]: Departments
+        - link "◧ Designations" [ref=e188] [cursor=pointer]:
+          - /url: /settings/designations
+          - generic [ref=e189]: ◧
+          - generic [ref=e190]: Designations
+        - link "◎ Locations" [ref=e191] [cursor=pointer]:
+          - /url: /settings/locations
+          - generic [ref=e192]: ◎
+          - generic [ref=e193]: Locations
+      - generic [ref=e194]:
+        - generic [ref=e195]: Configuration
+        - link "⇄ Workflows" [ref=e196] [cursor=pointer]:
+          - /url: /settings/workflows
+          - generic [ref=e197]: ⇄
+          - generic [ref=e198]: Workflows
+        - link "⚖ Rule Sets" [ref=e199] [cursor=pointer]:
+          - /url: /settings/rules
+          - generic [ref=e200]: ⚖
+          - generic [ref=e201]: Rule Sets
+        - link "☰ Forms" [ref=e202] [cursor=pointer]:
+          - /url: /settings/forms
+          - generic [ref=e203]: ☰
+          - generic [ref=e204]: Forms
+      - generic [ref=e205]:
+        - generic [ref=e206]: Reports
+        - link "📄 All Reports" [ref=e207] [cursor=pointer]:
+          - /url: /reports
+          - generic [ref=e208]: 📄
+          - generic [ref=e209]: All Reports
+        - link "📈 Analytics" [ref=e210] [cursor=pointer]:
+          - /url: /reports/analytics
+          - generic [ref=e211]: 📈
+          - generic [ref=e212]: Analytics
+      - generic [ref=e213]:
+        - generic [ref=e214]: Integrations
+        - link "🔑 API Clients" [ref=e215] [cursor=pointer]:
+          - /url: /integrations
+          - generic [ref=e216]: 🔑
+          - generic [ref=e217]: API Clients
+        - link "🔗 Webhooks" [ref=e218] [cursor=pointer]:
+          - /url: /integrations/webhooks
+          - generic [ref=e219]: 🔗
+          - generic [ref=e220]: Webhooks
+      - generic [ref=e221]:
+        - generic [ref=e222]: Admin
+        - link "◈ Users" [ref=e223] [cursor=pointer]:
+          - /url: /admin/users
+          - generic [ref=e224]: ◈
+          - generic [ref=e225]: Users
+        - link "◆ Roles" [ref=e226] [cursor=pointer]:
+          - /url: /roles
+          - generic [ref=e227]: ◆
+          - generic [ref=e228]: Roles
+        - link "⚙ Settings" [ref=e229] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e230]: ⚙
+          - generic [ref=e231]: Settings
+  - generic [ref=e232]:
+    - banner [ref=e233]:
+      - button "Toggle sidebar" [ref=e235] [cursor=pointer]: ☰
+      - generic [ref=e236]:
+        - button "Notifications" [ref=e237] [cursor=pointer]: 🔔
+        - button "Toggle theme" [ref=e238] [cursor=pointer]: 🌙
+        - generic [ref=e240]:
+          - generic [ref=e241]: "82"
+          - generic [ref=e242]: 82rn4Ql6if
+          - button "Sign out" [ref=e243] [cursor=pointer]: ⏏
+    - main [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - generic [ref=e8]:
+            - heading "Payroll Runs" [level=1] [ref=e9]
+            - paragraph [ref=e10]: Manage monthly payroll processing cycles
+          - button "+ New Run" [active] [ref=e11] [cursor=pointer]
+        - combobox [ref=e13] [cursor=pointer]:
+          - option "All Companies" [selected]
+          - option "Test Corp Pvt Ltd"
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - img [ref=e17]
+            - generic [ref=e19]:
+              - generic [ref=e20]: Run Your First Payroll
+              - generic [ref=e21]: A payroll run calculates salaries, applies all deductions, and generates payslips — in one automated pipeline.
+            - generic [ref=e22]:
+              - generic [ref=e23]:
+                - img [ref=e24]
+                - text: Auto PF, ESI, PT, TDS
+              - generic [ref=e26]:
+                - img [ref=e27]
+                - text: Instant payslip generation
+              - generic [ref=e29]:
+                - img [ref=e30]
+                - text: Rollback before finalise
+          - generic [ref=e32]:
+            - generic [ref=e33]:
+              - generic [ref=e34]: Set up first
+              - generic [ref=e35]:
+                - generic [ref=e36]:
+                  - link "Salary Components" [ref=e37] [cursor=pointer]:
+                    - /url: /payroll/components
+                    - img [ref=e38]
+                    - text: Salary Components
+                  - img [ref=e40]
+                - generic [ref=e42]:
+                  - link "Salary Structure" [ref=e43] [cursor=pointer]:
+                    - /url: /payroll/structures
+                    - img [ref=e44]
+                    - text: Salary Structure
+                  - img [ref=e46]
+                - generic [ref=e48]:
+                  - link "Pay Cycle" [ref=e49] [cursor=pointer]:
+                    - /url: /payroll/cycles
+                    - img [ref=e50]
+                    - text: Pay Cycle
+                  - img [ref=e52]
+                - link "Employees with salary assigned" [ref=e55] [cursor=pointer]:
+                  - /url: /employees
+                  - img [ref=e56]
+                  - text: Employees with salary assigned
+                - img [ref=e58]
+                - generic [ref=e60]: Payroll
+            - generic [ref=e61]: How it works
+            - generic [ref=e62]:
+              - generic [ref=e63]:
+                - generic [ref=e64]: "1"
+                - img [ref=e66]
+                - generic [ref=e68]: Create a run
+                - generic [ref=e69]: Select company, pay cycle, month and year.
+              - generic [ref=e70]:
+                - generic [ref=e71]: "2"
+                - img [ref=e73]
+                - generic [ref=e75]: Enter inputs
+                - generic [ref=e76]: Add LOP days and bonuses via Manage Inputs.
+              - generic [ref=e77]:
+                - generic [ref=e78]: "3"
+                - img [ref=e80]
+                - generic [ref=e82]: Preview
+                - generic [ref=e83]: See calculated results without locking anything.
+              - generic [ref=e84]:
+                - generic [ref=e85]: "4"
+                - img [ref=e87]
+                - generic [ref=e89]: Process and finalise
+                - generic [ref=e90]: Process, approve, finalize, then publish payslips.
+        - dialog "Create Payroll Run" [ref=e244]:
+          - generic [ref=e245]:
+            - generic [ref=e246]:
+              - heading "Create Payroll Run" [level=2] [ref=e247]
+              - button "Close modal" [ref=e248] [cursor=pointer]: ✕
+            - generic [ref=e249]:
+              - generic [ref=e250]:
+                - generic [ref=e251]: Company *
+                - combobox [ref=e252] [cursor=pointer]:
+                  - option "Select company"
+                  - option "Test Corp Pvt Ltd" [selected]
+              - generic [ref=e253]:
+                - generic [ref=e254]: Pay Cycle *
+                - combobox [ref=e255] [cursor=pointer]:
+                  - option "Select cycle" [selected]
+                  - option "Monthly"
+              - generic [ref=e256]:
+                - generic [ref=e257]:
+                  - generic [ref=e258]: Month
+                  - combobox [ref=e259] [cursor=pointer]:
+                    - option "Jan"
+                    - option "Feb"
+                    - option "Mar"
+                    - option "Apr"
+                    - option "May"
+                    - option "Jun" [selected]
+                    - option "Jul"
+                    - option "Aug"
+                    - option "Sep"
+                    - option "Oct"
+                    - option "Nov"
+                    - option "Dec"
+                - generic [ref=e260]:
+                  - generic [ref=e261]: Year
+                  - spinbutton [ref=e262]: "2026"
+            - generic [ref=e264]:
+              - button "Cancel" [ref=e265] [cursor=pointer]
+              - button "Create Run" [disabled] [ref=e266]

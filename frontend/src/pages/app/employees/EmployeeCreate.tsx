@@ -9,6 +9,8 @@ import { ROUTES } from '@/router/routes';
 type Step = 'basic' | 'employment' | 'review';
 
 interface FormData {
+  firstName: string;
+  lastName: string;
   companyId: string;
   workEmail: string;
   joiningDate: string;
@@ -23,6 +25,8 @@ interface FormData {
 }
 
 const INITIAL_FORM: FormData = {
+  firstName: '',
+  lastName: '',
   companyId: '',
   workEmail: '',
   joiningDate: '',
@@ -80,6 +84,8 @@ export default function EmployeeCreate() {
   const mutation = useMutation({
     mutationFn: () =>
       employeeApi.create({
+        firstName: form.firstName || undefined,
+        lastName: form.lastName || undefined,
         companyId: form.companyId,
         workEmail: form.workEmail || undefined,
         joiningDate: toIso(form.joiningDate)!,
@@ -162,6 +168,16 @@ export default function EmployeeCreate() {
         {step === 'basic' && (
           <div>
             <h2 style={{ marginBottom: 24 }}>Basic Information</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div className="form-group">
+                <label className="form-label">First Name</label>
+                <input className="input" value={form.firstName} onChange={set('firstName')} placeholder="First name" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Last Name</label>
+                <input className="input" value={form.lastName} onChange={set('lastName')} placeholder="Last name" />
+              </div>
+            </div>
             <div className="form-group">
               <label className="form-label">Company *</label>
               <select className="select" value={form.companyId} onChange={set('companyId')}>

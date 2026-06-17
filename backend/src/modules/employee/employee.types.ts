@@ -27,6 +27,8 @@ export enum EmploymentType {
 export interface Employee extends BaseDocument {
   employeeCode: string;
   companyId: string;
+  firstName?: string;
+  lastName?: string;
   workEmail?: string;        // work email — used for ESS login invite
   userId?: string;           // publicId of linked user account once ESS is activated
   status: EmployeeStatus;

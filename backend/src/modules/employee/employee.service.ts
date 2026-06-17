@@ -36,6 +36,8 @@ export class EmployeeService {
       organizationId,
       employeeCode,
       companyId: dto.companyId,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
       workEmail: dto.workEmail?.toLowerCase(),
       status: dto.status ?? EmployeeStatus.ACTIVE,
       joiningDate: new Date(dto.joiningDate),
@@ -53,6 +55,15 @@ export class EmployeeService {
       updatedBy: actorId,
       deletedAt: null,
     });
+
+    if (dto.firstName && dto.lastName) {
+      await this.repo.upsertPersonalDetails(employee.publicId, tenantId, {
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        updatedBy: actorId,
+        updatedAt: new Date(),
+      });
+    }
 
     eventBus.emit(EVENTS.EMPLOYEE_CREATED, { employeeCode, tenantId });
 
@@ -126,6 +137,7 @@ export class EmployeeService {
 
     const updated = await this.repo.updateEmployee(existing.publicId, tenantId, {
       ...dto,
+      joiningDate: dto.joiningDate ? new Date(dto.joiningDate) : undefined,
       probationEndDate: dto.probationEndDate ? new Date(dto.probationEndDate) : undefined,
       updatedBy: actorId,
     });
@@ -233,6 +245,13 @@ export class EmployeeService {
       aadhaarNumber: dto.aadhaarNumber ? encryptField(dto.aadhaarNumber) : undefined,
       updatedBy: actorId,
       updatedAt: new Date(),
+    });
+
+    // Denormalize name onto employee doc so list queries return names without a join
+    await this.repo.updateEmployee(employee.publicId, tenantId, {
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      updatedBy: actorId,
     });
 
     auditService.writeAsync({
@@ -372,7 +391,7 @@ export class EmployeeService {
     // Get personal details for the employee's name (fallback to employee code)
     const personal = await this.repo.getPersonalDetails(existing.publicId, tenantId);
     const firstName = personal?.firstName ?? employeeCode;
-    const lastName  = personal?.lastName  ?? '';
+    const lastName  = personal?.lastName  || '-';
 
     // Create a user account if one doesn't exist yet
     const { UserService } = await import('@/modules/user/user.service');
@@ -380,35 +399,45 @@ export class EmployeeService {
 
     let userId = existing.userId;
     if (!userId) {
-      const tempPassword = Math.random().toString(36).slice(-10) + 'Aa1!';
-      const { user } = await userService.register(
-        {
-          email: existing.workEmail,
-          password: tempPassword,
-          firstName,
-          lastName,
-          tenantId,
-          organizationId,
-        },
-        actorId,
-      );
+      const { UserRepository } = await import('@/modules/user/user.repository');
+      const userRepo2 = new UserRepository();
+      const existingUser = await userRepo2.findByEmail(existing.workEmail);
 
-      // Auto-verify email — HR has confirmed it
-      await userService.forceVerifyEmail(user.publicId);
-
-      // Assign the 'employee' role
-      const employeeRole = await rbacService.findRoleByCode('employee', tenantId);
-      if (employeeRole) {
-        await rbacService.assignRoleToUser(
-          user.publicId,
-          employeeRole.publicId,
-          tenantId,
-          organizationId,
+      if (existingUser) {
+        // User already exists — link + re-send invite
+        userId = existingUser.publicId;
+        await userService.forceVerifyEmail(userId);
+      } else {
+        const tempPassword = Math.random().toString(36).slice(-10) + 'Aa1!';
+        const { user } = await userService.register(
+          {
+            email: existing.workEmail,
+            password: tempPassword,
+            firstName,
+            lastName,
+            tenantId,
+            organizationId,
+          },
           actorId,
         );
-      }
 
-      userId = user.publicId;
+        // Auto-verify email — HR has confirmed it
+        await userService.forceVerifyEmail(user.publicId);
+
+        // Assign the 'employee' role
+        const employeeRole = await rbacService.findRoleByCode('employee', tenantId);
+        if (employeeRole) {
+          await rbacService.assignRoleToUser(
+            user.publicId,
+            employeeRole.publicId,
+            tenantId,
+            organizationId,
+            actorId,
+          );
+        }
+
+        userId = user.publicId;
+      }
     }
 
     // Generate a set-password token so the employee can choose their own password

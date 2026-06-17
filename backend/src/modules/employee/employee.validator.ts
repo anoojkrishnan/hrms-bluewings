@@ -4,6 +4,8 @@ import { EmployeeStatus, EmploymentType } from './employee.types';
 export const createEmployeeSchema = z.object({
   body: z.object({
     companyId: z.string().min(1),
+    firstName: z.string().min(1).optional(),
+    lastName: z.string().min(1).optional(),
     workEmail: z.string().email().optional(),
     status: z.nativeEnum(EmployeeStatus).optional(),
     joiningDate: z.string().datetime(),
@@ -20,7 +22,9 @@ export const createEmployeeSchema = z.object({
 
 export const updateEmployeeSchema = z.object({
   body: z.object({
+    companyId: z.string().optional(),
     workEmail: z.string().email().optional(),
+    joiningDate: z.string().datetime().optional(),
     departmentId: z.string().optional(),
     designationId: z.string().optional(),
     gradeId: z.string().optional(),

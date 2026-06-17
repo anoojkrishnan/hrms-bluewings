@@ -124,17 +124,19 @@ export default function EmployeeDetail() {
   const { data: departmentsData }  = useQuery({ queryKey: ['departments'],  queryFn: () => organizationApi.listDepartments({ limit: '100' }) });
   const { data: designationsData } = useQuery({ queryKey: ['designations'], queryFn: () => organizationApi.listDesignations({ limit: '100' }) });
   const { data: locationsData }    = useQuery({ queryKey: ['locations'],    queryFn: () => organizationApi.listLocations({ limit: '100' }) });
+  const { data: gradesData }       = useQuery({ queryKey: ['grades'],       queryFn: () => organizationApi.listGrades({ limit: '100' }) });
 
   const companies    = companiesData?.data ?? [];
   const departments  = departmentsData?.data ?? [];
   const designations = designationsData?.data ?? [];
   const locations    = locationsData?.data ?? [];
+  const grades       = gradesData?.data ?? [];
 
   // ── Overview form ────────────────────────────────────────────────────────
 
   const [ov, setOv] = useState({
-    companyId: '', workEmail: '', employmentType: 'full_time', departmentId: '',
-    designationId: '', locationId: '', reportingManagerId: '', noticePeriodDays: '30', probationEndDate: '',
+    companyId: '', workEmail: '', joiningDate: '', employmentType: 'full_time', departmentId: '',
+    designationId: '', gradeId: '', locationId: '', reportingManagerId: '', noticePeriodDays: '30', probationEndDate: '',
   });
 
   const openOverview = () => {
@@ -142,9 +144,11 @@ export default function EmployeeDetail() {
     setOv({
       companyId: employee.companyId ?? '',
       workEmail: employee.workEmail ?? '',
+      joiningDate: toDateInput(employee.joiningDate),
       employmentType: employee.employmentType ?? 'full_time',
       departmentId: employee.departmentId ?? '',
       designationId: employee.designationId ?? '',
+      gradeId: employee.gradeId ?? '',
       locationId: employee.locationId ?? '',
       reportingManagerId: employee.reportingManagerId ?? '',
       noticePeriodDays: String(employee.noticePeriodDays ?? 30),
@@ -157,9 +161,11 @@ export default function EmployeeDetail() {
     mutationFn: () => employeeApi.update(employeeCode!, {
       companyId: ov.companyId || undefined,
       workEmail: ov.workEmail || undefined,
+      joiningDate: toIso(ov.joiningDate),
       employmentType: ov.employmentType || undefined,
       departmentId: ov.departmentId || undefined,
       designationId: ov.designationId || undefined,
+      gradeId: ov.gradeId || undefined,
       locationId: ov.locationId || undefined,
       reportingManagerId: ov.reportingManagerId || undefined,
       noticePeriodDays: ov.noticePeriodDays ? Number(ov.noticePeriodDays) : undefined,
@@ -668,6 +674,10 @@ export default function EmployeeDetail() {
             </select>
           </div>
           <div className="form-group">
+            <label className="form-label">Joining Date</label>
+            <input className="input" type="date" value={ov.joiningDate} onChange={e => setOv(p => ({ ...p, joiningDate: e.target.value }))} />
+          </div>
+          <div className="form-group">
             <label className="form-label">Employment Type</label>
             <select className="select" value={ov.employmentType} onChange={e => setOv(p => ({ ...p, employmentType: e.target.value }))}>
               {EMPLOYMENT_TYPES.map(t => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
@@ -685,6 +695,13 @@ export default function EmployeeDetail() {
             <select className="select" value={ov.designationId} onChange={e => setOv(p => ({ ...p, designationId: e.target.value }))}>
               <option value="">None</option>
               {designations.map(d => <option key={d.publicId} value={d.publicId}>{d.name}</option>)}
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Grade</label>
+            <select className="select" value={ov.gradeId} onChange={e => setOv(p => ({ ...p, gradeId: e.target.value }))}>
+              <option value="">None</option>
+              {grades.map((g: { publicId: string; name: string }) => <option key={g.publicId} value={g.publicId}>{g.name}</option>)}
             </select>
           </div>
           <div className="form-group">

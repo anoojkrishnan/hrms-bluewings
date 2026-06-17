@@ -105,7 +105,7 @@ export default function EmployeeList() {
             <table className="table">
               <thead>
                 <tr>
-                  <th>Employee Code</th>
+                  <th>Employee</th>
                   <th>Status</th>
                   <th>Employment Type</th>
                   <th>Joining Date</th>
@@ -120,8 +120,13 @@ export default function EmployeeList() {
                         to={ROUTES.EMPLOYEE_DETAIL.replace(':employeeCode', emp.employeeCode)}
                         className="link"
                       >
-                        {emp.employeeCode}
+                        {emp.firstName || emp.lastName
+                          ? `${emp.firstName ?? ''} ${emp.lastName ?? ''}`.trim()
+                          : emp.employeeCode}
                       </Link>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
+                        {emp.employeeCode}
+                      </div>
                     </td>
                     <td>
                       <Badge variant={STATUS_COLORS[emp.status] ?? 'default'}>

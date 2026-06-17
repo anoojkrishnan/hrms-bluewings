@@ -596,7 +596,7 @@ export class PayrollService {
   ): Promise<{ items: ReturnType<typeof this.buildRunItem>[], totals: { grossPay: number; totalDeductions: number; netPay: number } }> {
     const { EmployeeRepository } = await import('@/modules/employee/employee.repository');
     const empRepo = new EmployeeRepository();
-    const empResult = await empRepo.findEmployees(tenantId, run.organizationId ?? run.companyId, { status: 'active' }, 1, 1000);
+    const empResult = await empRepo.findEmployees(tenantId, undefined, { companyId: run.companyId, status: 'active' }, 1, 1000);
 
     const allComponents  = await this.repo.findComponents(tenantId);
     const componentMap   = new Map(allComponents.map((c: SalaryComponent) => [c.code.toUpperCase(), c]));

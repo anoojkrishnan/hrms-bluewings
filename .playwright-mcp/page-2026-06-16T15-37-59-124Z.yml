@@ -1,0 +1,386 @@
+- generic [ref=e20]:
+  - complementary [ref=e21]:
+    - generic [ref=e22]:
+      - generic [ref=e23]: HR
+      - generic [ref=e24]: HRMS
+    - navigation "Main navigation" [ref=e25]:
+      - link "⊞ Dashboard" [ref=e27] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e28]: ⊞
+        - generic [ref=e29]: Dashboard
+      - generic [ref=e30]:
+        - generic [ref=e31]: People
+        - link "◎ Employees" [ref=e32] [cursor=pointer]:
+          - /url: /employees
+          - generic [ref=e33]: ◎
+          - generic [ref=e34]: Employees
+      - generic [ref=e35]:
+        - generic [ref=e36]: Time Off
+        - link "◷ Applications" [ref=e37] [cursor=pointer]:
+          - /url: /leave/applications
+          - generic [ref=e38]: ◷
+          - generic [ref=e39]: Applications
+        - link "◑ My Balance" [ref=e40] [cursor=pointer]:
+          - /url: /leave/balance
+          - generic [ref=e41]: ◑
+          - generic [ref=e42]: My Balance
+        - link "≡ Leave Types" [ref=e43] [cursor=pointer]:
+          - /url: /leave/types
+          - generic [ref=e44]: ≡
+          - generic [ref=e45]: Leave Types
+      - generic [ref=e46]:
+        - generic [ref=e47]: Attendance
+        - link "● Mark" [ref=e48] [cursor=pointer]:
+          - /url: /attendance
+          - generic [ref=e49]: ●
+          - generic [ref=e50]: Mark
+        - link "≡ Logs" [ref=e51] [cursor=pointer]:
+          - /url: /attendance/logs
+          - generic [ref=e52]: ≡
+          - generic [ref=e53]: Logs
+        - link "⚠ Exceptions" [ref=e54] [cursor=pointer]:
+          - /url: /attendance/exceptions
+          - generic [ref=e55]: ⚠
+          - generic [ref=e56]: Exceptions
+        - link "🕐 Shifts" [ref=e57] [cursor=pointer]:
+          - /url: /attendance/shifts
+          - generic [ref=e58]: 🕐
+          - generic [ref=e59]: Shifts
+        - link "⏱ Overtime" [ref=e60] [cursor=pointer]:
+          - /url: /attendance/overtime
+          - generic [ref=e61]: ⏱
+          - generic [ref=e62]: Overtime
+      - generic [ref=e63]:
+        - generic [ref=e64]: Payroll
+        - link "₹ Overview" [ref=e65] [cursor=pointer]:
+          - /url: /payroll
+          - generic [ref=e66]: ₹
+          - generic [ref=e67]: Overview
+        - link "▶ Runs" [ref=e68] [cursor=pointer]:
+          - /url: /payroll/runs
+          - generic [ref=e69]: ▶
+          - generic [ref=e70]: Runs
+        - link "◧ Payslips" [ref=e71] [cursor=pointer]:
+          - /url: /payroll/payslips
+          - generic [ref=e72]: ◧
+          - generic [ref=e73]: Payslips
+        - link "≡ Salary" [ref=e74] [cursor=pointer]:
+          - /url: /payroll/components
+          - generic [ref=e75]: ≡
+          - generic [ref=e76]: Salary
+        - link "◫ Structures" [ref=e77] [cursor=pointer]:
+          - /url: /payroll/structures
+          - generic [ref=e78]: ◫
+          - generic [ref=e79]: Structures
+        - link "◑ Cycles" [ref=e80] [cursor=pointer]:
+          - /url: /payroll/cycles
+          - generic [ref=e81]: ◑
+          - generic [ref=e82]: Cycles
+        - link "⚖ Statutory" [ref=e83] [cursor=pointer]:
+          - /url: /payroll/statutory-settings
+          - generic [ref=e84]: ⚖
+          - generic [ref=e85]: Statutory
+        - link "📊 Reports" [ref=e86] [cursor=pointer]:
+          - /url: /payroll/reports
+          - generic [ref=e87]: 📊
+          - generic [ref=e88]: Reports
+        - link "💳 Loans" [ref=e89] [cursor=pointer]:
+          - /url: /payroll/loans
+          - generic [ref=e90]: 💳
+          - generic [ref=e91]: Loans
+        - link "📋 FnF" [ref=e92] [cursor=pointer]:
+          - /url: /payroll/fnf
+          - generic [ref=e93]: 📋
+          - generic [ref=e94]: FnF
+        - link "🏦 Accounting" [ref=e95] [cursor=pointer]:
+          - /url: /payroll/accounting
+          - generic [ref=e96]: 🏦
+          - generic [ref=e97]: Accounting
+      - generic [ref=e98]:
+        - generic [ref=e99]: Approvals
+        - link "✓ Queue" [ref=e100] [cursor=pointer]:
+          - /url: /approvals
+          - generic [ref=e101]: ✓
+          - generic [ref=e102]: Queue
+        - link "◉ Notifications" [ref=e103] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e104]: ◉
+          - generic [ref=e105]: Notifications
+        - link "🧾 Expenses" [ref=e106] [cursor=pointer]:
+          - /url: /expense/claims
+          - generic [ref=e107]: 🧾
+          - generic [ref=e108]: Expenses
+      - generic [ref=e109]:
+        - generic [ref=e110]: Organisation
+        - link "⬡ Companies" [ref=e111] [cursor=pointer]:
+          - /url: /settings/companies
+          - generic [ref=e112]: ⬡
+          - generic [ref=e113]: Companies
+        - link "◫ Departments" [ref=e114] [cursor=pointer]:
+          - /url: /settings/departments
+          - generic [ref=e115]: ◫
+          - generic [ref=e116]: Departments
+        - link "◧ Designations" [ref=e117] [cursor=pointer]:
+          - /url: /settings/designations
+          - generic [ref=e118]: ◧
+          - generic [ref=e119]: Designations
+        - link "◎ Locations" [ref=e120] [cursor=pointer]:
+          - /url: /settings/locations
+          - generic [ref=e121]: ◎
+          - generic [ref=e122]: Locations
+      - generic [ref=e123]:
+        - generic [ref=e124]: Configuration
+        - link "⇄ Workflows" [ref=e125] [cursor=pointer]:
+          - /url: /settings/workflows
+          - generic [ref=e126]: ⇄
+          - generic [ref=e127]: Workflows
+        - link "⚖ Rule Sets" [ref=e128] [cursor=pointer]:
+          - /url: /settings/rules
+          - generic [ref=e129]: ⚖
+          - generic [ref=e130]: Rule Sets
+        - link "☰ Forms" [ref=e131] [cursor=pointer]:
+          - /url: /settings/forms
+          - generic [ref=e132]: ☰
+          - generic [ref=e133]: Forms
+      - generic [ref=e134]:
+        - generic [ref=e135]: Reports
+        - link "📄 All Reports" [ref=e136] [cursor=pointer]:
+          - /url: /reports
+          - generic [ref=e137]: 📄
+          - generic [ref=e138]: All Reports
+        - link "📈 Analytics" [ref=e139] [cursor=pointer]:
+          - /url: /reports/analytics
+          - generic [ref=e140]: 📈
+          - generic [ref=e141]: Analytics
+      - generic [ref=e142]:
+        - generic [ref=e143]: Integrations
+        - link "🔑 API Clients" [ref=e144] [cursor=pointer]:
+          - /url: /integrations
+          - generic [ref=e145]: 🔑
+          - generic [ref=e146]: API Clients
+        - link "🔗 Webhooks" [ref=e147] [cursor=pointer]:
+          - /url: /integrations/webhooks
+          - generic [ref=e148]: 🔗
+          - generic [ref=e149]: Webhooks
+      - generic [ref=e150]:
+        - generic [ref=e151]: Admin
+        - link "◈ Users" [ref=e152] [cursor=pointer]:
+          - /url: /admin/users
+          - generic [ref=e153]: ◈
+          - generic [ref=e154]: Users
+        - link "◆ Roles" [ref=e155] [cursor=pointer]:
+          - /url: /roles
+          - generic [ref=e156]: ◆
+          - generic [ref=e157]: Roles
+        - link "⚙ Settings" [ref=e158] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e159]: ⚙
+          - generic [ref=e160]: Settings
+  - generic [ref=e161]:
+    - banner [ref=e162]:
+      - button "Toggle sidebar" [ref=e164] [cursor=pointer]: ☰
+      - generic [ref=e165]:
+        - button "Notifications" [ref=e166] [cursor=pointer]: 🔔
+        - button "Toggle theme" [ref=e167] [cursor=pointer]: 🌙
+        - generic [ref=e169]:
+          - generic [ref=e170]: "82"
+          - generic [ref=e171]: 82rn4Ql6if
+          - button "Sign out" [ref=e172] [cursor=pointer]: ⏏
+    - main [ref=e173]:
+      - generic [ref=e174]:
+        - generic [ref=e176]:
+          - heading "Good evening, Test" [level=1] [ref=e177]
+          - generic [ref=e178]: Tuesday, 16 June 2026
+        - generic [ref=e179]:
+          - generic [ref=e180]:
+            - generic [ref=e181]:
+              - generic [ref=e182]: Setup in progress
+              - generic [ref=e183]:
+                - text: "6 of 10 steps complete · Next:"
+                - strong [ref=e184]: Salary Components
+            - generic [ref=e185]:
+              - generic [ref=e186]: 60%
+              - generic [ref=e187]: complete
+          - generic [ref=e190]:
+            - generic [ref=e191] [cursor=pointer]:
+              - generic [ref=e192]:
+                - img [ref=e194]
+                - img [ref=e196]
+              - generic [ref=e198]: Company
+              - generic [ref=e199]: Legal entity for payroll
+            - generic [ref=e200] [cursor=pointer]:
+              - generic [ref=e201]:
+                - img [ref=e203]
+                - img [ref=e205]
+              - generic [ref=e207]: Departments
+              - generic [ref=e208]: Org structure for approvals
+            - generic [ref=e209] [cursor=pointer]:
+              - generic [ref=e210]:
+                - img [ref=e212]
+                - img [ref=e214]
+              - generic [ref=e216]: Designations
+              - generic [ref=e217]: Job titles
+            - generic [ref=e218] [cursor=pointer]:
+              - generic [ref=e219]:
+                - img [ref=e221]
+                - img [ref=e223]
+              - generic [ref=e225]: Employees
+              - generic [ref=e226]: People in the system
+            - generic [ref=e227] [cursor=pointer]:
+              - generic [ref=e228]:
+                - img [ref=e230]
+                - img [ref=e232]
+              - generic [ref=e234]: Leave Types
+              - generic [ref=e235]: Annual, Sick, Casual etc.
+            - generic [ref=e236] [cursor=pointer]:
+              - generic [ref=e237]:
+                - generic [ref=e239]: "6"
+                - img [ref=e240]
+              - generic [ref=e242]: Salary Components
+              - generic [ref=e243]: Basic, HRA, PF etc.
+            - generic [ref=e245]:
+              - generic [ref=e246]:
+                - generic [ref=e248]: "7"
+                - img [ref=e249]
+              - generic [ref=e251]: Salary Structure
+              - generic [ref=e252]: Bundle components
+            - generic [ref=e253]:
+              - generic [ref=e254]:
+                - generic [ref=e256]: "8"
+                - img [ref=e257]
+              - generic [ref=e259]: Pay Cycle
+              - generic [ref=e260]: Pay day and cutoff
+            - generic [ref=e261] [cursor=pointer]:
+              - generic [ref=e262]:
+                - img [ref=e264]
+                - img [ref=e266]
+              - generic [ref=e268]: Statutory
+              - generic [ref=e269]: PF, ESI, PT, TDS
+            - generic [ref=e270]:
+              - generic [ref=e271]:
+                - generic [ref=e273]: "10"
+                - img [ref=e274]
+              - generic [ref=e276]: First Payroll Run
+              - generic [ref=e277]: Process salaries
+          - 'link "Continue: Salary Components" [ref=e279] [cursor=pointer]':
+            - /url: /payroll/components
+            - text: "Continue: Salary Components"
+            - img [ref=e280]
+        - generic [ref=e282]:
+          - generic [ref=e283]: Insights
+          - generic [ref=e284]:
+            - link "Active Employees 1 across all departments" [ref=e285] [cursor=pointer]:
+              - /url: /employees
+              - generic [ref=e286]:
+                - generic [ref=e287]:
+                  - img [ref=e289]
+                  - generic [ref=e291]: Active Employees
+                - generic [ref=e292]: "1"
+                - generic [ref=e293]: across all departments
+            - link "Pending Leave 0 awaiting approval" [ref=e294] [cursor=pointer]:
+              - /url: /leave/applications
+              - generic [ref=e295]:
+                - generic [ref=e296]:
+                  - img [ref=e298]
+                  - generic [ref=e300]: Pending Leave
+                - generic [ref=e301]: "0"
+                - generic [ref=e302]: awaiting approval
+            - link "Attendance Flags 0 exceptions to review" [ref=e303] [cursor=pointer]:
+              - /url: /attendance/exceptions
+              - generic [ref=e304]:
+                - generic [ref=e305]:
+                  - img [ref=e307]
+                  - generic [ref=e309]: Attendance Flags
+                - generic [ref=e310]: "0"
+                - generic [ref=e311]: exceptions to review
+            - link "Gross Payroll ₹0.0L 0 employees this month" [ref=e312] [cursor=pointer]:
+              - /url: /payroll/runs
+              - generic [ref=e313]:
+                - generic [ref=e314]:
+                  - img [ref=e316]
+                  - generic [ref=e318]: Gross Payroll
+                - generic [ref=e319]: ₹0.0L
+                - generic [ref=e320]: 0 employees this month
+        - generic [ref=e322]:
+          - generic [ref=e323]:
+            - generic [ref=e324]: Headcount by Department
+            - link "Full analytics →" [ref=e325] [cursor=pointer]:
+              - /url: /reports/analytics
+          - generic [ref=e326]:
+            - generic "dept__WqPCAGyimZ" [ref=e327]
+            - generic [ref=e330]: "1"
+            - generic [ref=e331]: 100%
+        - generic [ref=e333]:
+          - generic [ref=e334]: Quick Access
+          - generic [ref=e335]:
+            - link "Add Employee" [ref=e336] [cursor=pointer]:
+              - /url: /employees/new
+              - img [ref=e338]
+              - text: Add Employee
+              - img [ref=e341]
+            - link "Apply Leave" [ref=e343] [cursor=pointer]:
+              - /url: /leave/applications
+              - img [ref=e345]
+              - text: Apply Leave
+              - img [ref=e348]
+            - link "Run Payroll" [ref=e350] [cursor=pointer]:
+              - /url: /payroll/runs
+              - img [ref=e352]
+              - text: Run Payroll
+              - img [ref=e355]
+            - link "Generate Report" [ref=e357] [cursor=pointer]:
+              - /url: /reports
+              - img [ref=e359]
+              - text: Generate Report
+              - img [ref=e362]
+            - link "Attendance Logs" [ref=e364] [cursor=pointer]:
+              - /url: /attendance/logs
+              - img [ref=e366]
+              - text: Attendance Logs
+              - img [ref=e369]
+            - link "Analytics" [ref=e371] [cursor=pointer]:
+              - /url: /reports/analytics
+              - img [ref=e373]
+              - text: Analytics
+              - img [ref=e376]
+        - generic [ref=e379]:
+          - generic [ref=e380]:
+            - generic [ref=e381]: Configuration Health
+            - generic [ref=e382]: 40% remaining
+          - generic [ref=e383]:
+            - link "Company" [ref=e384] [cursor=pointer]:
+              - /url: /settings/companies
+              - img [ref=e386]
+              - generic [ref=e388]: Company
+            - link "Departments" [ref=e389] [cursor=pointer]:
+              - /url: /settings/departments
+              - img [ref=e391]
+              - generic [ref=e393]: Departments
+            - link "Designations" [ref=e394] [cursor=pointer]:
+              - /url: /settings/designations
+              - img [ref=e396]
+              - generic [ref=e398]: Designations
+            - link "Employees" [ref=e399] [cursor=pointer]:
+              - /url: /employees
+              - img [ref=e401]
+              - generic [ref=e403]: Employees
+            - link "Leave Types" [ref=e404] [cursor=pointer]:
+              - /url: /leave/types
+              - img [ref=e406]
+              - generic [ref=e408]: Leave Types
+            - link "Salary Components" [ref=e409] [cursor=pointer]:
+              - /url: /payroll/components
+              - generic [ref=e412]: Salary Components
+            - link "Salary Structure" [ref=e413] [cursor=pointer]:
+              - /url: /payroll/structures
+              - generic [ref=e416]: Salary Structure
+            - link "Pay Cycle" [ref=e417] [cursor=pointer]:
+              - /url: /payroll/cycles
+              - generic [ref=e420]: Pay Cycle
+            - link "Statutory" [ref=e421] [cursor=pointer]:
+              - /url: /payroll/statutory-settings
+              - img [ref=e423]
+              - generic [ref=e425]: Statutory
+            - link "First Payroll Run" [ref=e426] [cursor=pointer]:
+              - /url: /payroll/runs
+              - generic [ref=e429]: First Payroll Run

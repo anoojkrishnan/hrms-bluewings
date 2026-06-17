@@ -4,6 +4,8 @@ export interface Employee {
   publicId: string;
   employeeCode: string;
   companyId: string;
+  firstName?: string;
+  lastName?: string;
   workEmail?: string;
   userId?: string;
   status: string;
@@ -68,6 +70,8 @@ export interface EmployeeStatusHistory {
 }
 
 export interface CreateEmployeeDto {
+  firstName?: string;
+  lastName?: string;
   companyId: string;
   workEmail?: string;
   joiningDate: string;
@@ -85,6 +89,7 @@ export interface CreateEmployeeDto {
 export interface UpdateEmployeeDto {
   companyId?: string;
   workEmail?: string;
+  joiningDate?: string;
   departmentId?: string;
   designationId?: string;
   gradeId?: string;

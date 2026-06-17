@@ -15,6 +15,8 @@ const employeeSchema = new Schema(
     organizationId: String,
     employeeCode: { type: String, required: true },
     companyId: { type: String, required: true },
+    firstName: String,
+    lastName: String,
     workEmail: String,
     userId: String,
     status: { type: String, required: true },

@@ -1,0 +1,215 @@
+- generic [ref=e71]:
+  - complementary [ref=e72]:
+    - generic [ref=e73]:
+      - generic [ref=e74]: HR
+      - generic [ref=e75]: HRMS
+    - navigation "Main navigation" [ref=e76]:
+      - link "⊞ Dashboard" [ref=e78] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e79]: ⊞
+        - generic [ref=e80]: Dashboard
+      - generic [ref=e81]:
+        - generic [ref=e82]: People
+        - link "◎ Employees" [ref=e83] [cursor=pointer]:
+          - /url: /employees
+          - generic [ref=e84]: ◎
+          - generic [ref=e85]: Employees
+      - generic [ref=e86]:
+        - generic [ref=e87]: Time Off
+        - link "◷ Applications" [ref=e88] [cursor=pointer]:
+          - /url: /leave/applications
+          - generic [ref=e89]: ◷
+          - generic [ref=e90]: Applications
+        - link "◑ My Balance" [ref=e91] [cursor=pointer]:
+          - /url: /leave/balance
+          - generic [ref=e92]: ◑
+          - generic [ref=e93]: My Balance
+        - link "≡ Leave Types" [ref=e94] [cursor=pointer]:
+          - /url: /leave/types
+          - generic [ref=e95]: ≡
+          - generic [ref=e96]: Leave Types
+      - generic [ref=e97]:
+        - generic [ref=e98]: Attendance
+        - link "● Mark" [ref=e99] [cursor=pointer]:
+          - /url: /attendance
+          - generic [ref=e100]: ●
+          - generic [ref=e101]: Mark
+        - link "≡ Logs" [ref=e102] [cursor=pointer]:
+          - /url: /attendance/logs
+          - generic [ref=e103]: ≡
+          - generic [ref=e104]: Logs
+        - link "⚠ Exceptions" [ref=e105] [cursor=pointer]:
+          - /url: /attendance/exceptions
+          - generic [ref=e106]: ⚠
+          - generic [ref=e107]: Exceptions
+        - link "🕐 Shifts" [ref=e108] [cursor=pointer]:
+          - /url: /attendance/shifts
+          - generic [ref=e109]: 🕐
+          - generic [ref=e110]: Shifts
+        - link "⏱ Overtime" [ref=e111] [cursor=pointer]:
+          - /url: /attendance/overtime
+          - generic [ref=e112]: ⏱
+          - generic [ref=e113]: Overtime
+      - generic [ref=e114]:
+        - generic [ref=e115]: Payroll
+        - link "₹ Overview" [ref=e116] [cursor=pointer]:
+          - /url: /payroll
+          - generic [ref=e117]: ₹
+          - generic [ref=e118]: Overview
+        - link "▶ Runs" [ref=e119] [cursor=pointer]:
+          - /url: /payroll/runs
+          - generic [ref=e120]: ▶
+          - generic [ref=e121]: Runs
+        - link "◧ Payslips" [ref=e122] [cursor=pointer]:
+          - /url: /payroll/payslips
+          - generic [ref=e123]: ◧
+          - generic [ref=e124]: Payslips
+        - link "≡ Salary" [ref=e125] [cursor=pointer]:
+          - /url: /payroll/components
+          - generic [ref=e126]: ≡
+          - generic [ref=e127]: Salary
+        - link "◫ Structures" [ref=e128] [cursor=pointer]:
+          - /url: /payroll/structures
+          - generic [ref=e129]: ◫
+          - generic [ref=e130]: Structures
+        - link "◑ Cycles" [ref=e131] [cursor=pointer]:
+          - /url: /payroll/cycles
+          - generic [ref=e132]: ◑
+          - generic [ref=e133]: Cycles
+        - link "⚖ Statutory" [ref=e134] [cursor=pointer]:
+          - /url: /payroll/statutory-settings
+          - generic [ref=e135]: ⚖
+          - generic [ref=e136]: Statutory
+        - link "📊 Reports" [ref=e137] [cursor=pointer]:
+          - /url: /payroll/reports
+          - generic [ref=e138]: 📊
+          - generic [ref=e139]: Reports
+        - link "💳 Loans" [ref=e140] [cursor=pointer]:
+          - /url: /payroll/loans
+          - generic [ref=e141]: 💳
+          - generic [ref=e142]: Loans
+        - link "📋 FnF" [ref=e143] [cursor=pointer]:
+          - /url: /payroll/fnf
+          - generic [ref=e144]: 📋
+          - generic [ref=e145]: FnF
+        - link "🏦 Accounting" [ref=e146] [cursor=pointer]:
+          - /url: /payroll/accounting
+          - generic [ref=e147]: 🏦
+          - generic [ref=e148]: Accounting
+      - generic [ref=e149]:
+        - generic [ref=e150]: Approvals
+        - link "✓ Queue" [ref=e151] [cursor=pointer]:
+          - /url: /approvals
+          - generic [ref=e152]: ✓
+          - generic [ref=e153]: Queue
+        - link "◉ Notifications" [ref=e154] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e155]: ◉
+          - generic [ref=e156]: Notifications
+        - link "🧾 Expenses" [ref=e157] [cursor=pointer]:
+          - /url: /expense/claims
+          - generic [ref=e158]: 🧾
+          - generic [ref=e159]: Expenses
+      - generic [ref=e160]:
+        - generic [ref=e161]: Organisation
+        - link "⬡ Companies" [ref=e162] [cursor=pointer]:
+          - /url: /settings/companies
+          - generic [ref=e163]: ⬡
+          - generic [ref=e164]: Companies
+        - link "◫ Departments" [ref=e165] [cursor=pointer]:
+          - /url: /settings/departments
+          - generic [ref=e166]: ◫
+          - generic [ref=e167]: Departments
+        - link "◧ Designations" [ref=e168] [cursor=pointer]:
+          - /url: /settings/designations
+          - generic [ref=e169]: ◧
+          - generic [ref=e170]: Designations
+        - link "◎ Locations" [ref=e171] [cursor=pointer]:
+          - /url: /settings/locations
+          - generic [ref=e172]: ◎
+          - generic [ref=e173]: Locations
+      - generic [ref=e174]:
+        - generic [ref=e175]: Configuration
+        - link "⇄ Workflows" [ref=e176] [cursor=pointer]:
+          - /url: /settings/workflows
+          - generic [ref=e177]: ⇄
+          - generic [ref=e178]: Workflows
+        - link "⚖ Rule Sets" [ref=e179] [cursor=pointer]:
+          - /url: /settings/rules
+          - generic [ref=e180]: ⚖
+          - generic [ref=e181]: Rule Sets
+        - link "☰ Forms" [ref=e182] [cursor=pointer]:
+          - /url: /settings/forms
+          - generic [ref=e183]: ☰
+          - generic [ref=e184]: Forms
+      - generic [ref=e185]:
+        - generic [ref=e186]: Reports
+        - link "📄 All Reports" [ref=e187] [cursor=pointer]:
+          - /url: /reports
+          - generic [ref=e188]: 📄
+          - generic [ref=e189]: All Reports
+        - link "📈 Analytics" [ref=e190] [cursor=pointer]:
+          - /url: /reports/analytics
+          - generic [ref=e191]: 📈
+          - generic [ref=e192]: Analytics
+      - generic [ref=e193]:
+        - generic [ref=e194]: Integrations
+        - link "🔑 API Clients" [ref=e195] [cursor=pointer]:
+          - /url: /integrations
+          - generic [ref=e196]: 🔑
+          - generic [ref=e197]: API Clients
+        - link "🔗 Webhooks" [ref=e198] [cursor=pointer]:
+          - /url: /integrations/webhooks
+          - generic [ref=e199]: 🔗
+          - generic [ref=e200]: Webhooks
+      - generic [ref=e201]:
+        - generic [ref=e202]: Admin
+        - link "◈ Users" [ref=e203] [cursor=pointer]:
+          - /url: /admin/users
+          - generic [ref=e204]: ◈
+          - generic [ref=e205]: Users
+        - link "◆ Roles" [ref=e206] [cursor=pointer]:
+          - /url: /roles
+          - generic [ref=e207]: ◆
+          - generic [ref=e208]: Roles
+        - link "⚙ Settings" [ref=e209] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e210]: ⚙
+          - generic [ref=e211]: Settings
+  - generic [ref=e212]:
+    - banner [ref=e213]:
+      - button "Toggle sidebar" [ref=e215] [cursor=pointer]: ☰
+      - generic [ref=e216]:
+        - button "Notifications" [ref=e217] [cursor=pointer]: 🔔
+        - button "Toggle theme" [ref=e218] [cursor=pointer]: 🌙
+        - generic [ref=e220]:
+          - generic [ref=e221]: "82"
+          - generic [ref=e222]: 82rn4Ql6if
+          - button "Sign out" [ref=e223] [cursor=pointer]: ⏏
+    - main [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - generic [ref=e8]:
+            - heading "Salary Structures" [level=1] [ref=e9]
+            - paragraph [ref=e10]: Templates that group components into a salary package
+          - button "+ Add Structure" [ref=e11] [cursor=pointer]
+        - table [ref=e252]:
+          - rowgroup [ref=e253]:
+            - row "Code Name Components Status" [ref=e254]:
+              - columnheader "Code" [ref=e255]
+              - columnheader "Name" [ref=e256]
+              - columnheader "Components" [ref=e257]
+              - columnheader "Status" [ref=e258]
+              - columnheader [ref=e259]
+          - rowgroup [ref=e260]:
+            - row "STD_STRUCT Standard Structure 1 component Active View Edit" [ref=e261]:
+              - cell "STD_STRUCT" [ref=e262]:
+                - code [ref=e263]: STD_STRUCT
+              - cell "Standard Structure" [ref=e264]
+              - cell "1 component" [ref=e265]
+              - cell "Active" [ref=e266]:
+                - generic [ref=e267]: Active
+              - cell "View Edit" [ref=e268]:
+                - generic [ref=e269]:
+                  - button "View" [ref=e270] [cursor=pointer]
+                  - button "Edit" [ref=e271] [cursor=pointer]

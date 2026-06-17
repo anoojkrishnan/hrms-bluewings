@@ -27,6 +27,7 @@ import { expenseRouter } from './modules/expense/expense.routes';
 import { reportsRouter } from './modules/reports/reports.routes';
 import { integrationsRouter } from './modules/integrations/integrations.routes';
 import { LeaveService } from './modules/leave/leave.service';
+import { devRouter } from './modules/dev/dev.routes';
 
 export function createApp(): express.Application {
   const app = express();
@@ -70,6 +71,12 @@ export function createApp(): express.Application {
 
   // API routes
   const api = express.Router();
+
+  // Dev-only helpers (E2E testing) — mounted first, before auth-required routers
+  if (process.env.NODE_ENV !== 'production') {
+    api.use('/', devRouter);
+  }
+
   api.use('/auth', authRouter);
   api.use('/', tenantRouter);      // includes /public/signup, /tenant/settings, /platform/tenants
   api.use('/', userRouter);

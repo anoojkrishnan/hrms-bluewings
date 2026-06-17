@@ -1,0 +1,236 @@
+- generic [ref=e17]:
+  - complementary [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e20]: HR
+      - generic [ref=e21]: HRMS
+    - navigation "Main navigation" [ref=e22]:
+      - link "⊞ Dashboard" [ref=e24] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e25]: ⊞
+        - generic [ref=e26]: Dashboard
+      - generic [ref=e27]:
+        - generic [ref=e28]: People
+        - link "◎ Employees" [ref=e29] [cursor=pointer]:
+          - /url: /employees
+          - generic [ref=e30]: ◎
+          - generic [ref=e31]: Employees
+      - generic [ref=e32]:
+        - generic [ref=e33]: Time Off
+        - link "◷ Applications" [ref=e34] [cursor=pointer]:
+          - /url: /leave/applications
+          - generic [ref=e35]: ◷
+          - generic [ref=e36]: Applications
+        - link "◑ My Balance" [ref=e37] [cursor=pointer]:
+          - /url: /leave/balance
+          - generic [ref=e38]: ◑
+          - generic [ref=e39]: My Balance
+        - link "≡ Leave Types" [ref=e40] [cursor=pointer]:
+          - /url: /leave/types
+          - generic [ref=e41]: ≡
+          - generic [ref=e42]: Leave Types
+      - generic [ref=e43]:
+        - generic [ref=e44]: Attendance
+        - link "● Mark" [ref=e45] [cursor=pointer]:
+          - /url: /attendance
+          - generic [ref=e46]: ●
+          - generic [ref=e47]: Mark
+        - link "≡ Logs" [ref=e48] [cursor=pointer]:
+          - /url: /attendance/logs
+          - generic [ref=e49]: ≡
+          - generic [ref=e50]: Logs
+        - link "⚠ Exceptions" [ref=e51] [cursor=pointer]:
+          - /url: /attendance/exceptions
+          - generic [ref=e52]: ⚠
+          - generic [ref=e53]: Exceptions
+        - link "🕐 Shifts" [ref=e54] [cursor=pointer]:
+          - /url: /attendance/shifts
+          - generic [ref=e55]: 🕐
+          - generic [ref=e56]: Shifts
+        - link "⏱ Overtime" [ref=e57] [cursor=pointer]:
+          - /url: /attendance/overtime
+          - generic [ref=e58]: ⏱
+          - generic [ref=e59]: Overtime
+      - generic [ref=e60]:
+        - generic [ref=e61]: Payroll
+        - link "₹ Overview" [ref=e62] [cursor=pointer]:
+          - /url: /payroll
+          - generic [ref=e63]: ₹
+          - generic [ref=e64]: Overview
+        - link "▶ Runs" [ref=e65] [cursor=pointer]:
+          - /url: /payroll/runs
+          - generic [ref=e66]: ▶
+          - generic [ref=e67]: Runs
+        - link "◧ Payslips" [ref=e68] [cursor=pointer]:
+          - /url: /payroll/payslips
+          - generic [ref=e69]: ◧
+          - generic [ref=e70]: Payslips
+        - link "≡ Salary" [ref=e71] [cursor=pointer]:
+          - /url: /payroll/components
+          - generic [ref=e72]: ≡
+          - generic [ref=e73]: Salary
+        - link "◫ Structures" [ref=e74] [cursor=pointer]:
+          - /url: /payroll/structures
+          - generic [ref=e75]: ◫
+          - generic [ref=e76]: Structures
+        - link "◑ Cycles" [ref=e77] [cursor=pointer]:
+          - /url: /payroll/cycles
+          - generic [ref=e78]: ◑
+          - generic [ref=e79]: Cycles
+        - link "⚖ Statutory" [ref=e80] [cursor=pointer]:
+          - /url: /payroll/statutory-settings
+          - generic [ref=e81]: ⚖
+          - generic [ref=e82]: Statutory
+        - link "📊 Reports" [ref=e83] [cursor=pointer]:
+          - /url: /payroll/reports
+          - generic [ref=e84]: 📊
+          - generic [ref=e85]: Reports
+        - link "💳 Loans" [ref=e86] [cursor=pointer]:
+          - /url: /payroll/loans
+          - generic [ref=e87]: 💳
+          - generic [ref=e88]: Loans
+        - link "📋 FnF" [ref=e89] [cursor=pointer]:
+          - /url: /payroll/fnf
+          - generic [ref=e90]: 📋
+          - generic [ref=e91]: FnF
+        - link "🏦 Accounting" [ref=e92] [cursor=pointer]:
+          - /url: /payroll/accounting
+          - generic [ref=e93]: 🏦
+          - generic [ref=e94]: Accounting
+      - generic [ref=e95]:
+        - generic [ref=e96]: Approvals
+        - link "✓ Queue" [ref=e97] [cursor=pointer]:
+          - /url: /approvals
+          - generic [ref=e98]: ✓
+          - generic [ref=e99]: Queue
+        - link "◉ Notifications" [ref=e100] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e101]: ◉
+          - generic [ref=e102]: Notifications
+        - link "🧾 Expenses" [ref=e103] [cursor=pointer]:
+          - /url: /expense/claims
+          - generic [ref=e104]: 🧾
+          - generic [ref=e105]: Expenses
+      - generic [ref=e106]:
+        - generic [ref=e107]: Organisation
+        - link "⬡ Companies" [ref=e108] [cursor=pointer]:
+          - /url: /settings/companies
+          - generic [ref=e109]: ⬡
+          - generic [ref=e110]: Companies
+        - link "◫ Departments" [ref=e111] [cursor=pointer]:
+          - /url: /settings/departments
+          - generic [ref=e112]: ◫
+          - generic [ref=e113]: Departments
+        - link "◧ Designations" [ref=e114] [cursor=pointer]:
+          - /url: /settings/designations
+          - generic [ref=e115]: ◧
+          - generic [ref=e116]: Designations
+        - link "◎ Locations" [ref=e117] [cursor=pointer]:
+          - /url: /settings/locations
+          - generic [ref=e118]: ◎
+          - generic [ref=e119]: Locations
+      - generic [ref=e120]:
+        - generic [ref=e121]: Configuration
+        - link "⇄ Workflows" [ref=e122] [cursor=pointer]:
+          - /url: /settings/workflows
+          - generic [ref=e123]: ⇄
+          - generic [ref=e124]: Workflows
+        - link "⚖ Rule Sets" [ref=e125] [cursor=pointer]:
+          - /url: /settings/rules
+          - generic [ref=e126]: ⚖
+          - generic [ref=e127]: Rule Sets
+        - link "☰ Forms" [ref=e128] [cursor=pointer]:
+          - /url: /settings/forms
+          - generic [ref=e129]: ☰
+          - generic [ref=e130]: Forms
+      - generic [ref=e131]:
+        - generic [ref=e132]: Reports
+        - link "📄 All Reports" [ref=e133] [cursor=pointer]:
+          - /url: /reports
+          - generic [ref=e134]: 📄
+          - generic [ref=e135]: All Reports
+        - link "📈 Analytics" [ref=e136] [cursor=pointer]:
+          - /url: /reports/analytics
+          - generic [ref=e137]: 📈
+          - generic [ref=e138]: Analytics
+      - generic [ref=e139]:
+        - generic [ref=e140]: Integrations
+        - link "🔑 API Clients" [ref=e141] [cursor=pointer]:
+          - /url: /integrations
+          - generic [ref=e142]: 🔑
+          - generic [ref=e143]: API Clients
+        - link "🔗 Webhooks" [ref=e144] [cursor=pointer]:
+          - /url: /integrations/webhooks
+          - generic [ref=e145]: 🔗
+          - generic [ref=e146]: Webhooks
+      - generic [ref=e147]:
+        - generic [ref=e148]: Admin
+        - link "◈ Users" [ref=e149] [cursor=pointer]:
+          - /url: /admin/users
+          - generic [ref=e150]: ◈
+          - generic [ref=e151]: Users
+        - link "◆ Roles" [ref=e152] [cursor=pointer]:
+          - /url: /roles
+          - generic [ref=e153]: ◆
+          - generic [ref=e154]: Roles
+        - link "⚙ Settings" [ref=e155] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e156]: ⚙
+          - generic [ref=e157]: Settings
+  - generic [ref=e158]:
+    - banner [ref=e159]:
+      - button "Toggle sidebar" [ref=e161] [cursor=pointer]: ☰
+      - generic [ref=e162]:
+        - button "Notifications" [ref=e163] [cursor=pointer]: 🔔
+        - button "Toggle theme" [ref=e164] [cursor=pointer]: 🌙
+        - generic [ref=e166]:
+          - generic [ref=e167]: "82"
+          - generic [ref=e168]: 82rn4Ql6if
+          - button "Sign out" [ref=e169] [cursor=pointer]: ⏏
+    - main [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - generic [ref=e8]:
+            - heading "Leave Types" [level=1] [ref=e9]
+            - paragraph [ref=e10]: 0 types configured
+          - button "+ Add Leave Type" [ref=e11] [cursor=pointer]
+        - generic [ref=e12]:
+          - heading "No leave types configured" [level=3] [ref=e13]
+          - paragraph [ref=e14]: Add leave types like Casual Leave, Sick Leave, or Annual Leave to let employees apply.
+          - button "Add Leave Type" [ref=e16] [cursor=pointer]
+        - dialog "Add Leave Type" [ref=e170]:
+          - generic [ref=e171]:
+            - generic [ref=e172]:
+              - heading "Add Leave Type" [level=2] [ref=e173]
+              - button "Close modal" [ref=e174] [cursor=pointer]: ✕
+            - generic [ref=e175]:
+              - generic [ref=e176]:
+                - generic [ref=e177]:
+                  - generic [ref=e178]: Name *
+                  - textbox "e.g. Casual Leave" [active] [ref=e179]
+                - generic [ref=e180]:
+                  - generic [ref=e181]: Code *
+                  - textbox "e.g. CL" [ref=e182]
+                  - generic [ref=e183]: Unique identifier — cannot be changed after creation
+              - generic [ref=e184]:
+                - generic [ref=e185]:
+                  - generic [ref=e186]: Paid Leave
+                  - switch [checked] [ref=e187] [cursor=pointer]
+                - generic [ref=e189]:
+                  - generic [ref=e190]: Carry Forward to next year
+                  - switch [ref=e191] [cursor=pointer]
+                - generic [ref=e193]:
+                  - generic [ref=e194]: Encashable
+                  - switch [ref=e195] [cursor=pointer]
+                - generic [ref=e197]:
+                  - generic [ref=e198]: Requires supporting document
+                  - switch [ref=e199] [cursor=pointer]
+              - generic [ref=e201]:
+                - generic [ref=e202]:
+                  - generic [ref=e203]: Min Days Notice
+                  - spinbutton [ref=e204]
+                - generic [ref=e205]:
+                  - generic [ref=e206]: Max Consecutive Days
+                  - spinbutton [ref=e207]
+            - generic [ref=e209]:
+              - button "Cancel" [ref=e210] [cursor=pointer]
+              - button "Create" [ref=e211] [cursor=pointer]
