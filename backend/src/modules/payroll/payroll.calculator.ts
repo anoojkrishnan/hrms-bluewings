@@ -72,9 +72,13 @@ export class PayrollCalculator {
     // Pre-populate vars with 0 for all component codes so forward references in formulas don't fail
     for (const sc of ctx.structure.components) {
       const code = sc.componentCode;
+      const safe = toMathVar(code);
       vars[code.toUpperCase()] = 0;
       vars[code.toLowerCase()] = 0;
       vars[code] = 0;
+      vars[safe] = 0;
+      vars[safe.toUpperCase()] = 0;
+      vars[safe.toLowerCase()] = 0;
     }
 
     // ── Pass 2: All EARNING components ───────────────────────────────────
@@ -93,9 +97,13 @@ export class PayrollCalculator {
       // Expose this component's amount in vars so later formulas can reference it by code
       const upperCode = def.code.toUpperCase();
       const lowerCode = def.code.toLowerCase();
+      const safe = toMathVar(def.code);
       vars[upperCode] = amount;
       vars[lowerCode] = amount;
       vars[def.code]  = amount;
+      vars[safe] = amount;
+      vars[safe.toUpperCase()] = amount;
+      vars[safe.toLowerCase()] = amount;
 
       // Update vars.gross incrementally so later formulas can reference it
       if (upperCode === 'BASIC') vars.basic = amount;
@@ -299,4 +307,9 @@ export class PayrollCalculator {
 
 function round2(n: number): number {
   return Math.round(n * 100) / 100;
+}
+
+// Converts a component code (may have spaces/special chars) to a valid mathjs identifier
+function toMathVar(code: string): string {
+  return code.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
 }

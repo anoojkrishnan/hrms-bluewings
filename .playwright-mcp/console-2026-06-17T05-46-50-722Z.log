@@ -1,0 +1,6 @@
+[      91ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-WERSD76P.js?v=6ead6801:21550
+[     107ms] [WARNING] ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition. @ http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=6ead6801:4426
+[     110ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/api/v1/auth/me:0
+[     112ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/api/v1/auth/me:0
+[    5529ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/api/v1/auth/login:0
+[   16706ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/api/v1/auth/login:0

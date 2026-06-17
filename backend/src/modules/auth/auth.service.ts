@@ -10,6 +10,7 @@ import { AuditAction } from '@/modules/audit/audit.types';
 import { eventBus } from '@/shared/events/eventBus';
 import { EVENTS } from '@/shared/events/events';
 import { emailService } from '@/shared/email/email.service';
+import { invalidateCache } from '@/shared/utils/cache';
 
 const ACCESS_TOKEN_EXPIRY = process.env.JWT_EXPIRY ?? '15m';
 const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY ?? '7d';
@@ -139,6 +140,9 @@ export class AuthService {
 
   async logout(sessionId: string, userId: string, tenantId: string, ipAddress: string, userAgent: string): Promise<void> {
     await this.userService.revokeSession(sessionId, userId);
+
+    // Purge auth caches so revoked session is not served from Redis
+    void invalidateCache(`session:${sessionId}`, `user:${userId}`, `emp:${userId}:${tenantId}`);
 
     eventBus.emit(EVENTS.USER_LOGOUT, { userId, tenantId });
 

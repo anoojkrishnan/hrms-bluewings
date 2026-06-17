@@ -135,6 +135,7 @@ const payrollRunSchema = new Schema(
 payrollRunSchema.index({ tenantId: 1, publicId: 1 }, { unique: true });
 payrollRunSchema.index({ tenantId: 1, companyId: 1, month: 1, year: 1 });
 payrollRunSchema.index({ tenantId: 1, companyId: 1, status: 1 });
+payrollRunSchema.index({ tenantId: 1, deletedAt: 1, year: -1, month: -1 }); // findRuns list query
 
 // Must use new Schema() — a plain object with a "type" key is interpreted by Mongoose
 // as a field-type shorthand, not a sub-document schema.

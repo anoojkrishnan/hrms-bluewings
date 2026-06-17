@@ -2,6 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from '@/shared/errors/AppError';
 import { ErrorCodes } from '@/shared/errors/errorCodes';
+import { DataScope } from '@/shared/types/common';
+import { tryCache } from '@/shared/utils/cache';
+import { RbacService } from '@/modules/rbac/rbac.service';
+import { UserService } from '@/modules/user/user.service';
+import { UserRepository } from '@/modules/user/user.repository';
+import { EmployeeRepository } from '@/modules/employee/employee.repository';
 
 interface JwtPayload {
   userId: string;
@@ -10,6 +16,12 @@ interface JwtPayload {
   sessionId: string;
   type: 'access' | 'refresh';
 }
+
+// Singletons — created once at module load, shared across all requests
+const rbacService = new RbacService();
+const userService = new UserService();
+const userRepo = new UserRepository();
+const empRepo = new EmployeeRepository();
 
 function extractToken(req: Request): string | null {
   if (req.cookies?.accessToken) return req.cookies.accessToken as string;
@@ -40,54 +52,45 @@ export const requireAuth = async (
       throw new AppError(401, ErrorCodes.UNAUTHORIZED, 'Invalid token type');
     }
 
-    // Lazy import to avoid circular dependency
-    const { RbacService } = await import('@/modules/rbac/rbac.service');
-    const { UserService } = await import('@/modules/user/user.service');
+    // All 4 lookups depend only on JWT payload — fire in parallel
+    const [session, userRaw, resolved, linkedEmployee] = await Promise.all([
+      tryCache(`session:${payload.sessionId}`, 60, () =>
+        userService.findSession(payload.sessionId),
+      ),
+      tryCache(`user:${payload.userId}`, 120, () =>
+        userRepo.findByPublicId(payload.userId),
+      ),
+      tryCache(`perms:${payload.userId}:${payload.tenantId}:${payload.organizationId}`, 60, () =>
+        rbacService.resolvePermissions(payload.userId, payload.tenantId, payload.organizationId),
+      ),
+      tryCache(`emp:${payload.userId}:${payload.tenantId}`, 120, () =>
+        empRepo.findByUserId(payload.userId, payload.tenantId),
+      ),
+    ]);
 
-    const rbacService = new RbacService();
-    const userService = new UserService();
-
-    // Validate session is still active
-    const session = await userService.findSession(payload.sessionId);
     if (!session) {
       throw new AppError(401, ErrorCodes.SESSION_NOT_FOUND, 'Session not found or expired');
     }
-
-    // Load user
-    const userRaw = await (async () => {
-      const { UserRepository } = await import('@/modules/user/user.repository');
-      const repo = new UserRepository();
-      return repo.findByPublicId(payload.userId);
-    })();
-
     if (!userRaw) {
       throw new AppError(401, ErrorCodes.UNAUTHORIZED, 'User not found');
     }
 
-    // Resolve permissions
-    const resolved = await rbacService.resolvePermissions(
-      payload.userId,
-      payload.tenantId,
-      payload.organizationId,
-    );
-
-    // Look up linked employee record (present for ESS users invited via HR)
-    const { EmployeeRepository } = await import('@/modules/employee/employee.repository');
-    const empRepo = new EmployeeRepository();
-    const linkedEmployee = await empRepo.findByUserId(payload.userId, payload.tenantId);
+    // After Redis deserialization userRaw is a plain object — access fields directly
+    const user = userRaw as { name?: { first?: string; last?: string } };
+    const perms = resolved as { roles: string[]; permissions: string[]; dataScope: DataScope } | null;
+    const emp = linkedEmployee as { employeeCode?: string } | null;
 
     req.user = {
       userId: payload.userId,
-      firstName: userRaw.name?.first,
-      lastName: userRaw.name?.last,
+      firstName: user.name?.first,
+      lastName: user.name?.last,
       tenantId: payload.tenantId,
       organizationId: payload.organizationId,
       sessionId: payload.sessionId,
-      roles: resolved.roles,
-      permissions: resolved.permissions,
-      dataScope: resolved.dataScope,
-      // employeePublicId is the employeeCode — used as the external ID in leave/attendance routes
-      employeePublicId: linkedEmployee?.employeeCode,
+      roles: perms?.roles ?? [],
+      permissions: perms?.permissions ?? [],
+      dataScope: perms?.dataScope ?? DataScope.SELF,
+      employeePublicId: emp?.employeeCode,
       isImpersonating: false,
     };
 

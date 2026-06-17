@@ -18,3 +18,4 @@
 [  644633ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/api/v1/payroll/runs/prun_33qB6uKW6w/preview:0
 [  647219ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/api/v1/notifications/unread-count:0
 [  648224ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/api/v1/notifications/unread-count:0
+[  752535ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4000/api/v1/payroll/runs/prun_33qB6uKW6w/preview:0

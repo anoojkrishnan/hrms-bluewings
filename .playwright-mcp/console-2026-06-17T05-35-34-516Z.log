@@ -1,0 +1,14 @@
+[      57ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-WERSD76P.js?v=6ead6801:21550
+[      63ms] [WARNING] ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition. @ http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=6ead6801:4426
+[   37480ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4000/api/v1/payroll/runs/prun_33qB6uKW6w/preview:0
+[   75494ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:4000/api/v1/payroll/runs/prun_33qB6uKW6w/preview:0
+[  242472ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4000/api/v1/payroll/components?limit=20:0
+[  280263ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4000/api/v1/payroll/components?limit=20:0
+[  406813ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4000/api/v1/notifications/unread-count:0
+[  407074ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4000/api/v1/auth/refresh:0
+[  407165ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-WERSD76P.js?v=6ead6801:21550
+[  407176ms] [WARNING] ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition. @ http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=6ead6801:4426
+[  407184ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4000/api/v1/auth/me:0
+[  407186ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4000/api/v1/auth/me:0
+[  407441ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4000/api/v1/auth/refresh:0
+[  409830ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4000/api/v1/employees?limit=10:0
