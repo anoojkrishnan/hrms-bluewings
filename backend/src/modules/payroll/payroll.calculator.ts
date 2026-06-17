@@ -69,6 +69,14 @@ export class PayrollCalculator {
       }
     }
 
+    // Pre-populate vars with 0 for all component codes so forward references in formulas don't fail
+    for (const sc of ctx.structure.components) {
+      const code = sc.componentCode;
+      vars[code.toUpperCase()] = 0;
+      vars[code.toLowerCase()] = 0;
+      vars[code] = 0;
+    }
+
     // ── Pass 2: All EARNING components ───────────────────────────────────
     for (const structComp of ctx.structure.components) {
       const def = ctx.components.get(structComp.componentCode.toUpperCase());
@@ -82,8 +90,15 @@ export class PayrollCalculator {
 
       earnings.push({ componentCode: def.code, componentName: def.name, type: def.type, amount });
 
+      // Expose this component's amount in vars so later formulas can reference it by code
+      const upperCode = def.code.toUpperCase();
+      const lowerCode = def.code.toLowerCase();
+      vars[upperCode] = amount;
+      vars[lowerCode] = amount;
+      vars[def.code]  = amount;
+
       // Update vars.gross incrementally so later formulas can reference it
-      if (def.code.toUpperCase() === 'BASIC') vars.basic = amount;
+      if (upperCode === 'BASIC') vars.basic = amount;
       vars.gross = earnings.reduce((s, e) => s + e.amount, 0);
     }
 
@@ -209,7 +224,17 @@ export class PayrollCalculator {
       case FormulaType.FORMULA: {
         if (!formula) return 0;
         try {
-          const result = evaluate(formula, { ...vars });
+          // Spread all vars (includes component codes from prior passes) plus case aliases
+          const scope = {
+            ...vars,
+            Basic: vars.basic, BASIC: vars.basic,
+            Gross: vars.gross, GROSS: vars.gross,
+            Ctc: vars.ctc,   CTC:   vars.ctc,
+            WorkingDays: vars.workingDays, WORKING_DAYS: vars.workingDays,
+            PresentDays: vars.presentDays, PRESENT_DAYS: vars.presentDays,
+            LopDays:     vars.lopDays,     LOP_DAYS:     vars.lopDays,
+          };
+          const result = evaluate(formula, scope);
           if (typeof result !== 'number' || isNaN(result) || !isFinite(result)) {
             throw new Error(`Non-numeric result: ${String(result)}`);
           }
