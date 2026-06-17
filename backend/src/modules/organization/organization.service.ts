@@ -14,12 +14,122 @@ import { auditService } from '@/modules/audit/audit.service';
 import { AuditAction } from '@/modules/audit/audit.types';
 import { eventBus } from '@/shared/events/eventBus';
 import { EVENTS } from '@/shared/events/events';
+import { s3Storage } from '@/shared/storage/s3.storage';
+
+const LOGO_SIGNED_URL_TTL = 3600; // 1 hour
+
+function mimeToExt(mimeType: string): string {
+  const map: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+    'image/svg+xml': 'svg',
+  };
+  return map[mimeType] ?? 'jpg';
+}
 
 export class OrganizationService {
   private readonly repo: OrganizationRepository;
 
   constructor() {
     this.repo = new OrganizationRepository();
+  }
+
+  // ── Logo helpers ──────────────────────────────────────────────────────
+
+  private async withLogoUrl(company: Company): Promise<Company> {
+    if (!company.logo) return { ...company, logo: undefined };
+    try {
+      const logoUrl = await s3Storage.generatePresignedDownloadUrl(company.logo, LOGO_SIGNED_URL_TTL);
+      return { ...company, logo: undefined, logoUrl };
+    } catch {
+      return { ...company, logo: undefined };
+    }
+  }
+
+  async presignLogoUpload(
+    publicId: string, tenantId: string, mimeType: string,
+  ): Promise<{ uploadUrl: string; s3Key: string; expiresAt: Date }> {
+    const company = await this.repo.findCompanyByPublicId(publicId, tenantId);
+    if (!company) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Company not found');
+    const ext = mimeToExt(mimeType);
+    const uid = generatePublicId('');
+    const s3Key = `tenants/${tenantId}/logos/companies/${publicId}/${uid}.${ext}`;
+    return s3Storage.generatePresignedUploadUrl({ s3Key, mimeType });
+  }
+
+  async confirmLogoUpload(
+    publicId: string, tenantId: string, s3Key: string, actorId: string,
+  ): Promise<Company> {
+    const company = await this.repo.findCompanyByPublicId(publicId, tenantId);
+    if (!company) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Company not found');
+
+    if (company.logo && company.logo !== s3Key) {
+      void s3Storage.deleteObject(company.logo).catch(() => undefined);
+    }
+
+    const updated = await this.repo.updateCompany(publicId, tenantId, { logo: s3Key, updatedBy: actorId });
+    if (!updated) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Company not found');
+
+    auditService.writeAsync({
+      tenantId, actorId,
+      action: AuditAction.UPDATE,
+      module: 'organization',
+      entityType: 'company',
+      entityPublicId: publicId,
+      newValue: { logo: '[updated]' } as Record<string, unknown>,
+    });
+
+    return this.withLogoUrl(updated);
+  }
+
+  async uploadCompanyLogoBuffer(
+    publicId: string, tenantId: string, buffer: Buffer, mimeType: string, actorId: string,
+  ): Promise<Company> {
+    const company = await this.repo.findCompanyByPublicId(publicId, tenantId);
+    if (!company) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Company not found');
+
+    const ext = mimeToExt(mimeType);
+    const uid = generatePublicId('');
+    const s3Key = `tenants/${tenantId}/logos/companies/${publicId}/${uid}.${ext}`;
+
+    await s3Storage.uploadObject(s3Key, buffer, mimeType);
+
+    if (company.logo && company.logo !== s3Key) {
+      void s3Storage.deleteObject(company.logo).catch(() => undefined);
+    }
+
+    const updated = await this.repo.updateCompany(publicId, tenantId, { logo: s3Key, updatedBy: actorId });
+    if (!updated) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Company not found');
+
+    auditService.writeAsync({
+      tenantId, actorId,
+      action: AuditAction.UPDATE,
+      module: 'organization',
+      entityType: 'company',
+      entityPublicId: publicId,
+      newValue: { logo: '[updated]' } as Record<string, unknown>,
+    });
+
+    return this.withLogoUrl(updated);
+  }
+
+  async deleteCompanyLogo(publicId: string, tenantId: string, actorId: string): Promise<void> {
+    const company = await this.repo.findCompanyByPublicId(publicId, tenantId);
+    if (!company) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Company not found');
+    if (company.logo) {
+      void s3Storage.deleteObject(company.logo).catch(() => undefined);
+    }
+    await this.repo.clearCompanyLogo(publicId, tenantId, actorId);
+
+    auditService.writeAsync({
+      tenantId, actorId,
+      action: AuditAction.UPDATE,
+      module: 'organization',
+      entityType: 'company',
+      entityPublicId: publicId,
+      newValue: { logo: null } as Record<string, unknown>,
+    });
   }
 
   // ── Companies ─────────────────────────────────────────────────────────
@@ -61,18 +171,28 @@ export class OrganizationService {
   async getCompanyByPublicId(publicId: string, tenantId: string): Promise<Company> {
     const company = await this.repo.findCompanyByPublicId(publicId, tenantId);
     if (!company) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Company not found');
-    return company;
+    return this.withLogoUrl(company);
   }
 
   async listCompanies(tenantId: string): Promise<Company[]> {
-    return this.repo.findCompaniesByTenant(tenantId);
+    const companies = await this.repo.findCompaniesByTenant(tenantId);
+    return Promise.all(companies.map((c) => this.withLogoUrl(c)));
   }
 
   async updateCompany(publicId: string, dto: UpdateCompanyDto, tenantId: string, actorId: string): Promise<Company> {
     const existing = await this.repo.findCompanyByPublicId(publicId, tenantId);
     if (!existing) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Company not found');
 
-    const updated = await this.repo.updateCompany(publicId, tenantId, { ...dto, updatedBy: actorId });
+    const updateData: Partial<Company> = { ...dto, updatedBy: actorId };
+    // Sanitize empty string statutory fields to undefined so they don't overwrite existing values
+    const emptyToUndefined = ['cin', 'gstin', 'pan', 'tan', 'pfNumber', 'esiNumber', 'linNumber', 'phone', 'email', 'website'] as const;
+    for (const key of emptyToUndefined) {
+      if ((updateData as Record<string, unknown>)[key] === '') {
+        delete (updateData as Record<string, unknown>)[key];
+      }
+    }
+
+    const updated = await this.repo.updateCompany(publicId, tenantId, updateData);
     if (!updated) throw new AppError(404, ErrorCodes.ORGANIZATION_NOT_FOUND, 'Company not found');
 
     auditService.writeAsync({
@@ -86,7 +206,7 @@ export class OrganizationService {
       newValue: updated as unknown as Record<string, unknown>,
     });
 
-    return updated;
+    return this.withLogoUrl(updated);
   }
 
   async deleteCompany(publicId: string, tenantId: string, actorId: string): Promise<void> {

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 const STATUS_VARIANT: Record<ExpenseClaim['status'], 'default' | 'warning' | 'info' | 'success' | 'danger'> = {
   draft: 'default', submitted: 'warning', approved: 'success', rejected: 'danger', paid: 'teal' as 'success',
@@ -171,7 +172,7 @@ export default function ExpenseClaimList() {
           </div>
         }
       >
-        {createMutation.isError && <div className="alert alert-danger">{(createMutation.error as { message?: string }).message}</div>}
+        {createMutation.isError && <div className="alert alert-danger">{getErrorMessage(createMutation.error)}</div>}
         <div className="form-group">
           <label className="form-label">Claim Title *</label>
           <input className="input" value={claimTitle} onChange={e => setClaimTitle(e.target.value)} placeholder="e.g. Travel to Client Office" />

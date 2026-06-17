@@ -8,6 +8,7 @@ import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 interface DeptForm {
   name: string;
@@ -38,7 +39,7 @@ export default function DepartmentList() {
   });
   const companies = companiesData?.data ?? [];
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['departments', filterCompanyId],
     queryFn: () =>
       organizationApi.listDepartments(
@@ -136,7 +137,7 @@ export default function DepartmentList() {
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
-  const mutationError = createMutation.isError || updateMutation.isError;
+  const mutationError = createMutation.error ?? updateMutation.error;
 
   return (
     <div className="page-container">
@@ -170,7 +171,7 @@ export default function DepartmentList() {
       )}
 
       {isError && (
-        <div className="alert alert-danger">Failed to load departments. Please try again.</div>
+        <div className="alert alert-danger">{getErrorMessage(error, 'Failed to load departments.')}</div>
       )}
 
       {!isLoading && !isError && departments.length === 0 && (
@@ -238,7 +239,7 @@ export default function DepartmentList() {
         }
       >
         {mutationError && (
-          <div className="alert alert-danger">Failed to save. Please try again.</div>
+          <div className="alert alert-danger">{getErrorMessage(mutationError)}</div>
         )}
         <div className="form-group">
           <label className="form-label">Name *</label>

@@ -1,6 +1,67 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { PaginatedResponse, PaginationMeta } from '@/types/api.types';
 import { useAuthStore } from '@/lib/store/auth.store';
+
+interface BackendErrorBody {
+  success: false;
+  error: {
+    code?: string;
+    message?: string;
+    details?: unknown;
+  };
+}
+
+function fieldLabel(key: string): string {
+  // Convert camelCase / dot.paths to human readable: "workEmail" → "Work Email", "address.city" → "City"
+  const last = key.split('.').pop() ?? key;
+  return last
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (c) => c.toUpperCase())
+    .trim();
+}
+
+function buildErrorMessage(data: BackendErrorBody['error']): string {
+  const base = data.message || 'Something went wrong. Please try again.';
+  if (data.code !== 'VALIDATION_ERROR' || !data.details) return base;
+
+  const msgs: string[] = [];
+  const details = data.details as Record<string, unknown>;
+
+  // Zod field errors: { fieldErrors: { fieldName: string[] }, formErrors: string[] }
+  if (details.fieldErrors && typeof details.fieldErrors === 'object') {
+    for (const [field, errs] of Object.entries(details.fieldErrors as Record<string, string[]>)) {
+      if (Array.isArray(errs) && errs.length > 0) {
+        msgs.push(`${fieldLabel(field)}: ${errs[0]}`);
+      }
+    }
+  }
+  if (Array.isArray(details.formErrors) && (details.formErrors as string[]).length > 0) {
+    msgs.push(...(details.formErrors as string[]));
+  }
+
+  // Mongoose validation: array of strings
+  if (Array.isArray(data.details)) {
+    msgs.push(...(data.details as string[]));
+  }
+
+  return msgs.length > 0 ? msgs.join('. ') : base;
+}
+
+function toApiError(axiosErr: AxiosError): Error {
+  const body = axiosErr.response?.data as BackendErrorBody | undefined;
+  if (body?.error) {
+    const msg = buildErrorMessage(body.error);
+    const err = new Error(msg) as Error & { code?: string; status?: number; details?: unknown };
+    err.code = body.error.code;
+    err.status = axiosErr.response?.status;
+    err.details = body.error.details;
+    return err;
+  }
+  if (!axiosErr.response) {
+    return new Error('Network error. Please check your connection and try again.');
+  }
+  return new Error(axiosErr.message || 'Something went wrong. Please try again.');
+}
 
 let apiClient: AxiosInstance | null = null;
 let isRefreshing = false;
@@ -54,19 +115,18 @@ export function createApiClient(): AxiosInstance {
 
   apiClient.interceptors.response.use(
     (response: AxiosResponse) => response,
-    async (error) => {
+    async (error: AxiosError) => {
       const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
       const requestUrl: string = originalRequest.url ?? '';
 
       if (error.response?.status === 401 && !originalRequest._retry && !SKIP_REFRESH_URLS.has(requestUrl)) {
         if (isRefreshing) {
-          // Queue this request until the refresh completes
           return new Promise((resolve, reject) => {
             refreshSubscribers.push((ok) => {
               if (ok) {
                 resolve(apiClient!.request(originalRequest));
               } else {
-                reject(error);
+                reject(toApiError(error));
               }
             });
           });
@@ -94,7 +154,7 @@ export function createApiClient(): AxiosInstance {
         redirectToLogin();
       }
 
-      return Promise.reject(error);
+      return Promise.reject(toApiError(error));
     },
   );
 

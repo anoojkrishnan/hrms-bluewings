@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 export default function WebhookList() {
   const qc = useQueryClient();
@@ -105,7 +106,7 @@ export default function WebhookList() {
           </div>
         }
       >
-        {createMutation.isError && <div className="alert alert-danger">{(createMutation.error as { message?: string }).message}</div>}
+        {createMutation.isError && <div className="alert alert-danger">{getErrorMessage(createMutation.error)}</div>}
         <div className="form-group">
           <label className="form-label">Name *</label>
           <input className="input" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Slack Notifier" />

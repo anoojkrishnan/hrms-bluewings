@@ -5,16 +5,20 @@ export interface Company {
   name: string;
   legalName?: string;
   registrationNumber?: string;
+  cin?: string;
   gstin?: string;
   pan?: string;
-  cin?: string;
   tan?: string;
+  pfNumber?: string;
+  esiNumber?: string;
+  linNumber?: string;
   country: string;
   state?: string;
   currency: string;
   timezone: string;
   financialYearStart: 'jan' | 'apr';
   logo?: string;
+  logoUrl?: string;
   website?: string;
   phone?: string;
   email?: string;
@@ -122,10 +126,13 @@ export interface CreateCompanyDto {
   name: string;
   legalName?: string;
   registrationNumber?: string;
+  cin?: string;
   gstin?: string;
   pan?: string;
-  cin?: string;
   tan?: string;
+  pfNumber?: string;
+  esiNumber?: string;
+  linNumber?: string;
   country?: string;
   state?: string;
   currency?: string;
@@ -135,6 +142,10 @@ export interface CreateCompanyDto {
   email?: string;
   website?: string;
   address?: CompanyAddress;
+  pfEnabled?: boolean;
+  esiEnabled?: boolean;
+  ptEnabled?: boolean;
+  lwfEnabled?: boolean;
 }
 
 export interface UpdateCompanyDto extends Partial<CreateCompanyDto> {}

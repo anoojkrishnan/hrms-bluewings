@@ -10,10 +10,13 @@ const companySchema = new Schema(
     name: { type: String, required: true },
     legalName: String,
     registrationNumber: String,
+    cin: String,
     gstin: String,
     pan: String,
-    cin: String,
     tan: String,
+    pfNumber: String,
+    esiNumber: String,
+    linNumber: String,
     country: { type: String, default: 'IN' },
     state: String,
     currency: { type: String, default: 'INR' },
@@ -162,6 +165,15 @@ export class OrganizationRepository {
     const doc = await CompanyModel.findOneAndUpdate(
       { ...this.baseFilter(tenantId), publicId },
       { $set: data },
+      { new: true },
+    ).lean();
+    return doc as unknown as Company | null;
+  }
+
+  async clearCompanyLogo(publicId: string, tenantId: string, updatedBy: string): Promise<Company | null> {
+    const doc = await CompanyModel.findOneAndUpdate(
+      { ...this.baseFilter(tenantId), publicId },
+      { $set: { updatedBy }, $unset: { logo: '' } },
       { new: true },
     ).lean();
     return doc as unknown as Company | null;

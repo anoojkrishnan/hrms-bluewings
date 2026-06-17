@@ -8,6 +8,7 @@ import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 interface LocationForm {
   name: string;
@@ -37,7 +38,7 @@ export default function LocationList() {
   const [form, setForm] = useState<LocationForm>(INITIAL_FORM);
   const [formErrors, setFormErrors] = useState<Partial<LocationForm>>({});
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['locations'],
     queryFn: () => organizationApi.listLocations({ limit: '100' }),
   });
@@ -130,7 +131,7 @@ export default function LocationList() {
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
-  const mutationError = createMutation.isError || updateMutation.isError;
+  const mutationError = createMutation.error ?? updateMutation.error;
 
   return (
     <div className="page-container">
@@ -150,7 +151,7 @@ export default function LocationList() {
       )}
 
       {isError && (
-        <div className="alert alert-danger">Failed to load locations. Please try again.</div>
+        <div className="alert alert-danger">{getErrorMessage(error, 'Failed to load locations.')}</div>
       )}
 
       {!isLoading && !isError && locations.length === 0 && (
@@ -221,7 +222,7 @@ export default function LocationList() {
         }
       >
         {mutationError && (
-          <div className="alert alert-danger">Failed to save. Please try again.</div>
+          <div className="alert alert-danger">{getErrorMessage(mutationError)}</div>
         )}
         <div className="form-grid">
           <div className="form-group">

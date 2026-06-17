@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 interface CycleForm {
   companyId: string; name: string; payDay: string; cutoffDay: string;
@@ -99,7 +100,7 @@ export default function PayrollCycleList() {
           </div>
         }
       >
-        {mutError && <div className="alert alert-danger">{(mutError as {message?: string}).message ?? 'Failed to save'}</div>}
+        {mutError && <div className="alert alert-danger">{getErrorMessage(mutError)}</div>}
         {!edit && (
           <div className="form-group">
             <label className="form-label">Company *</label>

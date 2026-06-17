@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 type OTStatus = 'pending' | 'approved' | 'rejected' | 'converted';
 
@@ -143,7 +144,7 @@ export default function OvertimeList() {
           </div>
         }
       >
-        {createMutation.isError && <div className="alert alert-danger">{(createMutation.error as { message?: string }).message}</div>}
+        {createMutation.isError && <div className="alert alert-danger">{getErrorMessage(createMutation.error)}</div>}
         <div className="form-group">
           <label className="form-label">Date *</label>
           <input type="date" className="input" value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))} />

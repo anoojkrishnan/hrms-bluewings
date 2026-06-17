@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { ROUTES } from '@/router/routes';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 function downloadCsv(filename: string, rows: Record<string, unknown>[]) {
   if (!rows.length) return;
@@ -236,7 +237,7 @@ export default function PayrollRunDetail() {
           <label className="form-label">Reason *</label>
           <textarea className="input textarea" rows={3} value={rollbackReason} onChange={e => setRollbackReason(e.target.value)} placeholder="Explain why this run is being rolled back (min 5 chars)" />
         </div>
-        {rollbackMutation.isError && <div className="alert alert-danger">{(rollbackMutation.error as {message?: string}).message}</div>}
+        {rollbackMutation.isError && <div className="alert alert-danger">{getErrorMessage(rollbackMutation.error)}</div>}
       </Modal>
     </div>
   );

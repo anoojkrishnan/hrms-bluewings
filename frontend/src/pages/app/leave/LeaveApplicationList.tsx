@@ -10,6 +10,7 @@ import { SetupGuide } from '@/components/ui/SetupGuide';
 import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 const STATUS_VARIANTS: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'default'> = {
   approved: 'success',
@@ -252,7 +253,7 @@ export default function LeaveApplicationList() {
               onChange={(e) => setApplyForm((f) => ({ ...f, reason: e.target.value }))} />
           </div>
           {applyMutation.isError && (
-            <div className="alert alert-danger">Failed to apply. Please check your balance and try again.</div>
+            <div className="alert alert-danger">{getErrorMessage(applyMutation.error)}</div>
           )}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 16 }}>
             <Button variant="secondary" onClick={() => setShowApply(false)}>Cancel</Button>

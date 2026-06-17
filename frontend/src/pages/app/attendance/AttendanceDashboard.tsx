@@ -5,6 +5,7 @@ import { useAuthStore } from '@/lib/store/auth.store';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 function formatTime(iso?: string) {
   if (!iso) return '—';
@@ -39,7 +40,7 @@ export default function AttendanceDashboard() {
       setPunchError('');
       queryClient.invalidateQueries({ queryKey: ['attendance-today'] });
     },
-    onError: () => setPunchError('Could not record punch. Please try again.'),
+    onError: (err: unknown) => setPunchError(getErrorMessage(err, 'Could not record punch.')),
   });
 
   const isCheckedIn = !!todayLog?.firstInTime;

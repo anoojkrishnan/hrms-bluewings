@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { ROUTES } from '@/router/routes';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 const STATUS_VARIANT: Record<RunStatus, 'default' | 'warning' | 'info' | 'success' | 'danger' | 'teal'> = {
   draft: 'default', preview: 'info', processing: 'warning', processed: 'info',
@@ -124,7 +125,7 @@ export default function PayrollRunList() {
           </div>
         }
       >
-        {createMutation.isError && <div className="alert alert-danger">{(createMutation.error as {message?: string}).message ?? 'Failed to create'}</div>}
+        {createMutation.isError && <div className="alert alert-danger">{getErrorMessage(createMutation.error)}</div>}
         <div className="form-group">
           <label className="form-label">Company *</label>
           <select className="select" value={form.companyId} onChange={set('companyId')}>

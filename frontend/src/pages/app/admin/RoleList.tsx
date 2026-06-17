@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rbacApi, type Role, type Permission, type CreateRoleDto } from '@/lib/api/rbac.api';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
+import { getErrorMessage } from '@/lib/utils/errors';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -213,7 +214,7 @@ export default function RoleList() {
           <label className="form-label">Description</label>
           <input className="input" value={form.description ?? ''} onChange={set('description')} placeholder="Optional" />
         </div>
-        {createMutation.isError && <div className="alert alert-danger">Failed to create role.</div>}
+        {createMutation.isError && <div className="alert alert-danger">{getErrorMessage(createMutation.error)}</div>}
       </Modal>
 
       {/* Edit modal */}
@@ -247,7 +248,7 @@ export default function RoleList() {
           <label className="form-label">Description</label>
           <input className="input" value={form.description ?? ''} onChange={set('description')} />
         </div>
-        {updateMutation.isError && <div className="alert alert-danger">Failed to update role.</div>}
+        {updateMutation.isError && <div className="alert alert-danger">{getErrorMessage(updateMutation.error)}</div>}
       </Modal>
 
       {/* Permissions modal */}

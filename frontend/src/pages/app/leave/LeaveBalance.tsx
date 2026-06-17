@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { usePermission } from '@/lib/hooks/usePermission';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -99,7 +100,7 @@ export default function LeaveBalance() {
   const isAdmin = usePermission('leave.balance.adjust');
   const [initMsg, setInitMsg] = useState('');
 
-  const { data: balances, isLoading, isError } = useQuery({
+  const { data: balances, isLoading, isError, error: listError } = useQuery({
     queryKey: ['my-leave-balance'],
     queryFn: leaveApi.getMyBalance,
   });
@@ -139,7 +140,7 @@ export default function LeaveBalance() {
   if (isError) {
     return (
       <div className="page-container">
-        <EmptyState title="Failed to load" description="Could not load leave balances." />
+        <EmptyState title="Failed to load" description={getErrorMessage(listError, 'Could not load leave balances.')} />
       </div>
     );
   }

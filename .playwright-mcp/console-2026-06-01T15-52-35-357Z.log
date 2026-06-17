@@ -1,6 +1,0 @@
-[    2831ms] [ERROR] Attestation check for Shared Storage on https://www.googleadservices.com failed. @ https://www.googleadservices.com/pagead/managed/js/activeview/current/reach_worklet.html:0
-[    2834ms] [ERROR] Attestation check for Shared Storage on https://www.googleadservices.com failed. @ https://www.googleadservices.com/pagead/managed/js/activeview/current/reach_worklet.html:0
-[    3029ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://sync.search.spotxchange.com/partner?adv_id=7025&uid=CAESECHozN6OuyCNcilVmGVezJQ&google_cver=1:0
-[    3029ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://sync.search.spotxchange.com/partner?adv_id=7025&redir=https%3A%2F%2Fcm.g.doubleclick.net%2Fpixel%3Fgoogle_nid%3Dspotxchange_dbm%26google_hm%3D%24SPOTX_BASE64_USER_ID:0
-[    3043ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://yopmail.com/:0
-[    3052ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://yopmail.com/:0

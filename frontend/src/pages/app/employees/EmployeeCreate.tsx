@@ -5,6 +5,7 @@ import { employeeApi, type Employee } from '@/lib/api/employee.api';
 import { organizationApi } from '@/lib/api/organization.api';
 import { Button } from '@/components/ui/Button';
 import { ROUTES } from '@/router/routes';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 type Step = 'basic' | 'employment' | 'review';
 
@@ -297,7 +298,7 @@ export default function EmployeeCreate() {
             </dl>
             {mutation.isError && (
               <div className="alert alert-danger" style={{ marginTop: 16 }}>
-                Failed to create employee. Please try again.
+                {getErrorMessage(mutation.error)}
               </div>
             )}
           </div>

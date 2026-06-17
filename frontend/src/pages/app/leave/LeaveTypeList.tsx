@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 interface LeaveTypeForm {
   name: string;
@@ -92,7 +93,7 @@ export default function LeaveTypeList() {
   const [form, setForm] = useState<LeaveTypeForm>(EMPTY_FORM);
   const [errors, setErrors] = useState<Partial<Record<keyof LeaveTypeForm, string>>>({});
 
-  const { data: types, isLoading, isError } = useQuery({
+  const { data: types, isLoading, isError, error: listError } = useQuery({
     queryKey: ['leave-types'],
     queryFn: leaveApi.listTypes,
   });
@@ -176,7 +177,7 @@ export default function LeaveTypeList() {
   if (isError) {
     return (
       <div className="page-container">
-        <EmptyState title="Failed to load" description="Could not load leave types." />
+        <EmptyState title="Failed to load" description={getErrorMessage(listError, 'Could not load leave types.')} />
       </div>
     );
   }
@@ -268,7 +269,7 @@ export default function LeaveTypeList() {
       >
         {mutationError && (
           <div className="alert alert-danger" style={{ marginBottom: 16 }}>
-            {(mutationError as { message?: string }).message ?? 'Failed to save. Please try again.'}
+            {getErrorMessage(mutationError)}
           </div>
         )}
 
@@ -353,7 +354,7 @@ export default function LeaveTypeList() {
                 if (deleteTarget) {
                   leaveApi.updateType(deleteTarget.publicId, { isActive: false } as Partial<LeaveType>)
                     .then(() => { qc.invalidateQueries({ queryKey: ['leave-types'] }); setDeleteTarget(null); })
-                    .catch(() => alert('Failed to delete. Please try again.'));
+                    .catch((err: unknown) => alert(getErrorMessage(err, 'Failed to delete leave type.')));
                 }
               }}
             >

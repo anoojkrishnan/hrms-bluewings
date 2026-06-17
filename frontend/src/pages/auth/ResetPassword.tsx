@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/lib/api/auth.api';
+import { getErrorMessage } from '@/lib/utils/errors';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -39,7 +40,7 @@ export default function ResetPassword() {
         <h1 className={styles.heading}>Set new password</h1>
         {mutation.error && (
           <div className={styles.errorBanner} role="alert">
-            {(mutation.error as Error).message ?? 'Reset failed. The link may have expired.'}
+            {getErrorMessage(mutation.error, 'Reset failed. The link may have expired.')}
           </div>
         )}
         <form onSubmit={handleSubmit((d) => mutation.mutate(d))} className={styles.form} noValidate>

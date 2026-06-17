@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { ROUTES } from '@/router/routes';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 const STATUS_COLORS: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'default'> = {
   active: 'success',
@@ -42,7 +43,7 @@ export default function EmployeeList() {
     }, 350);
   };
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['employees', page, status, debouncedSearch],
     queryFn: () => employeeApi.list({
       page: String(page),
@@ -71,7 +72,7 @@ export default function EmployeeList() {
       <div className="page-container">
         <EmptyState
           title="Failed to load employees"
-          description="Something went wrong. Please try again."
+          description={getErrorMessage(error)}
         />
       </div>
     );

@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, raw } from 'express';
 import { OrganizationController } from './organization.controller';
 import { requireAuth } from '@/middleware/auth.middleware';
 import { requireTenantContext } from '@/middleware/tenantContext.middleware';
@@ -7,6 +7,7 @@ import { validate } from '@/shared/validators/common.schemas';
 import { ORGANIZATION_PERMISSIONS as P } from './organization.permissions';
 import {
   createCompanySchema, updateCompanySchema,
+  logoPresignSchema, logoConfirmSchema,
   createDepartmentSchema, updateDepartmentSchema,
   createDesignationSchema, updateDesignationSchema,
   createGradeSchema, updateGradeSchema,
@@ -25,6 +26,10 @@ router.post('/companies', requirePermission(P.COMPANY_CREATE), validate(createCo
 router.get('/companies/:publicId', requirePermission(P.COMPANY_VIEW), validate(publicIdParamSchema), ctrl.getCompany);
 router.put('/companies/:publicId', requirePermission(P.COMPANY_EDIT), validate(updateCompanySchema), ctrl.updateCompany);
 router.delete('/companies/:publicId', requirePermission(P.COMPANY_DELETE), validate(publicIdParamSchema), ctrl.deleteCompany);
+router.post('/companies/:publicId/logo', requirePermission(P.COMPANY_EDIT), raw({ type: '*/*', limit: '10mb' }), ctrl.uploadLogo);
+router.post('/companies/:publicId/logo/presign', requirePermission(P.COMPANY_EDIT), validate(logoPresignSchema), ctrl.presignLogo);
+router.post('/companies/:publicId/logo/confirm', requirePermission(P.COMPANY_EDIT), validate(logoConfirmSchema), ctrl.confirmLogo);
+router.delete('/companies/:publicId/logo', requirePermission(P.COMPANY_EDIT), validate(publicIdParamSchema), ctrl.deleteLogo);
 
 // ── Departments ───────────────────────────────────────────────────────────
 router.get('/departments', requirePermission(P.DEPARTMENT_VIEW), ctrl.listDepartments);

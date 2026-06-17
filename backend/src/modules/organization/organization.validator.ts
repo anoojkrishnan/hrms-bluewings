@@ -1,54 +1,118 @@
 import { z } from 'zod';
 
 const addressSchema = z.object({
-  line1: z.string().min(1),
+  line1: z.string().min(1, 'Address line 1 is required'),
   line2: z.string().optional(),
-  city: z.string().min(1),
-  state: z.string().min(1),
-  pincode: z.string().min(1),
+  city: z.string().min(1, 'City is required'),
+  state: z.string().min(1, 'State is required'),
+  pincode: z.string().regex(/^[0-9]{6}$/, 'Pincode must be 6 digits'),
   country: z.string().default('IN'),
 }).optional();
 
+// India-specific statutory number formats
+const gstinSchema = z.string()
+  .regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GSTIN format (e.g. 27AAAAA0000A1Z5)')
+  .optional()
+  .or(z.literal(''));
+
+const panSchema = z.string()
+  .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN format (e.g. AAAPL1234C)')
+  .optional()
+  .or(z.literal(''));
+
+const tanSchema = z.string()
+  .regex(/^[A-Z]{4}[0-9]{5}[A-Z]{1}$/, 'Invalid TAN format (e.g. PDES03028F)')
+  .optional()
+  .or(z.literal(''));
+
+const cinSchema = z.string()
+  .regex(/^[A-Z]{1}[0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$/, 'Invalid CIN format (e.g. L17110MH1973PLC019786)')
+  .optional()
+  .or(z.literal(''));
+
+const pfNumberSchema = z.string()
+  .regex(/^[A-Z]{2}[A-Z]{3}[0-9]{7}[0-9]{3}[0-9]{7}$|^[A-Z]{2}\/[A-Z]{3}\/[0-9]{7}\/[0-9]{3}\/[0-9]{7}$/, 'Invalid PF number format (e.g. MH/BAN/0010704/000/0014141)')
+  .optional()
+  .or(z.literal(''));
+
+const esiNumberSchema = z.string()
+  .regex(/^[0-9]{17}$/, 'ESI number must be 17 digits')
+  .optional()
+  .or(z.literal(''));
+
+const linNumberSchema = z.string()
+  .regex(/^[A-Z0-9]{14}$/, 'LIN must be 14 alphanumeric characters')
+  .optional()
+  .or(z.literal(''));
+
 export const createCompanySchema = z.object({
   body: z.object({
-    name: z.string().min(1, 'Company name required'),
+    name: z.string().min(2, 'Company name must be at least 2 characters'),
     legalName: z.string().optional(),
     registrationNumber: z.string().optional(),
-    gstin: z.string().optional(),
-    pan: z.string().optional(),
-    cin: z.string().optional(),
-    tan: z.string().optional(),
+    cin: cinSchema,
+    gstin: gstinSchema,
+    pan: panSchema,
+    tan: tanSchema,
+    pfNumber: pfNumberSchema,
+    esiNumber: esiNumberSchema,
+    linNumber: linNumberSchema,
     country: z.string().default('IN'),
     state: z.string().optional(),
     currency: z.string().default('INR'),
     timezone: z.string().default('Asia/Kolkata'),
     financialYearStart: z.enum(['jan', 'apr']).default('apr'),
-    phone: z.string().optional(),
-    email: z.string().email().optional(),
-    website: z.string().url().optional(),
+    phone: z.string().regex(/^\+?[0-9\s\-()]{7,15}$/, 'Invalid phone number').optional().or(z.literal('')),
+    email: z.string().email('Invalid email address').optional().or(z.literal('')),
+    website: z.string().url('Invalid website URL').optional().or(z.literal('')),
     address: addressSchema,
+    pfEnabled: z.boolean().optional(),
+    esiEnabled: z.boolean().optional(),
+    ptEnabled: z.boolean().optional(),
+    lwfEnabled: z.boolean().optional(),
   }),
 });
 
 export const updateCompanySchema = z.object({
   params: z.object({ publicId: z.string().min(1) }),
   body: z.object({
-    name: z.string().min(1).optional(),
+    name: z.string().min(2).optional(),
     legalName: z.string().optional(),
     registrationNumber: z.string().optional(),
-    gstin: z.string().optional(),
-    pan: z.string().optional(),
-    cin: z.string().optional(),
-    tan: z.string().optional(),
+    cin: cinSchema,
+    gstin: gstinSchema,
+    pan: panSchema,
+    tan: tanSchema,
+    pfNumber: pfNumberSchema,
+    esiNumber: esiNumberSchema,
+    linNumber: linNumberSchema,
+    country: z.string().optional(),
     state: z.string().optional(),
-    phone: z.string().optional(),
-    email: z.string().email().optional(),
-    website: z.string().url().optional(),
+    currency: z.string().optional(),
+    timezone: z.string().optional(),
+    financialYearStart: z.enum(['jan', 'apr']).optional(),
+    phone: z.string().regex(/^\+?[0-9\s\-()]{7,15}$/, 'Invalid phone number').optional().or(z.literal('')),
+    email: z.string().email('Invalid email address').optional().or(z.literal('')),
+    website: z.string().url('Invalid website URL').optional().or(z.literal('')),
     address: addressSchema,
     pfEnabled: z.boolean().optional(),
     esiEnabled: z.boolean().optional(),
     ptEnabled: z.boolean().optional(),
     lwfEnabled: z.boolean().optional(),
+  }),
+});
+
+export const logoPresignSchema = z.object({
+  params: z.object({ publicId: z.string().min(1) }),
+  body: z.object({
+    mimeType: z.string().regex(/^image\/(jpeg|png|webp|svg\+xml)$/, 'Only JPEG, PNG, WebP, or SVG images are allowed'),
+  }),
+});
+
+export const logoConfirmSchema = z.object({
+  params: z.object({ publicId: z.string().min(1) }),
+  body: z.object({
+    s3Key: z.string().min(1),
   }),
 });
 

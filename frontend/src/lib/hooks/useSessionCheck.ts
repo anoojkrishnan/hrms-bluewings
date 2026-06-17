@@ -17,8 +17,13 @@ export function useSessionCheck() {
       .then((user) => {
         if (!cancelled) setUser(user);
       })
-      .catch(() => {
-        if (!cancelled) setUser(null);
+      .catch((err: unknown) => {
+        // Only clear the session on explicit auth rejection (401).
+        // Network errors or server errors (5xx) should not log the user out —
+        // the axios interceptor already calls redirectToLogin() for 401s that
+        // can't be refreshed, so we avoid double-clearing here.
+        const status = (err as { status?: number })?.status;
+        if (!cancelled && status === 401) setUser(null);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);

@@ -8,6 +8,7 @@ import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 const MODULE_OPTIONS = [
   'leave', 'attendance', 'payroll', 'employee', 'expense',
@@ -186,7 +187,7 @@ export default function WorkflowList() {
             <label className="form-label" style={{ margin: 0 }}>Active</label>
           </div>
           {createMutation.isError && (
-            <div className="alert alert-danger">Failed to create workflow. Please try again.</div>
+            <div className="alert alert-danger">{getErrorMessage(createMutation.error)}</div>
           )}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 16 }}>
             <Button variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>

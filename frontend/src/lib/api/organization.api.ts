@@ -2,21 +2,41 @@ import { get, getList, post, put, del } from './client';
 
 // ── Interfaces ────────────────────────────────────────────────────────────────
 
+export interface CompanyAddress {
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+}
+
 export interface Company {
   publicId: string;
   name: string;
   legalName?: string;
   registrationNumber?: string;
+  cin?: string;
   gstin?: string;
   pan?: string;
-  pf?: string;
-  esi?: string;
-  pt?: string;
+  tan?: string;
+  pfNumber?: string;
+  esiNumber?: string;
+  linNumber?: string;
   country: string;
   state?: string;
   currency: string;
   timezone: string;
-  logo?: string;
+  financialYearStart?: 'jan' | 'apr';
+  logoUrl?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  address?: CompanyAddress;
+  pfEnabled: boolean;
+  esiEnabled: boolean;
+  ptEnabled: boolean;
+  lwfEnabled: boolean;
   isActive: boolean;
   createdAt: string;
 }
@@ -68,15 +88,35 @@ export interface CreateCompanyDto {
   name: string;
   legalName?: string;
   registrationNumber?: string;
+  cin?: string;
   gstin?: string;
   pan?: string;
+  tan?: string;
+  pfNumber?: string;
+  esiNumber?: string;
+  linNumber?: string;
   country?: string;
   state?: string;
   currency?: string;
   timezone?: string;
+  financialYearStart?: 'jan' | 'apr';
+  phone?: string;
+  email?: string;
+  website?: string;
+  address?: CompanyAddress;
+  pfEnabled?: boolean;
+  esiEnabled?: boolean;
+  ptEnabled?: boolean;
+  lwfEnabled?: boolean;
 }
 
 export interface UpdateCompanyDto extends Partial<CreateCompanyDto> {}
+
+export interface LogoPresignResult {
+  uploadUrl: string;
+  s3Key: string;
+  expiresAt: string;
+}
 
 export interface CreateDepartmentDto {
   name: string;
@@ -131,6 +171,27 @@ export const organizationApi = {
 
   deleteCompany: (publicId: string) =>
     del<void>(`/companies/${publicId}`),
+
+  uploadLogo: async (publicId: string, file: File): Promise<Company> => {
+    const { getApiClient } = await import('./client');
+    const client = getApiClient();
+    const buffer = await file.arrayBuffer();
+    const res = await client.post<{ success: boolean; data: Company }>(
+      `/companies/${publicId}/logo`,
+      buffer,
+      { headers: { 'Content-Type': file.type || 'image/png' } },
+    );
+    return res.data.data;
+  },
+
+  presignLogoUpload: (publicId: string, mimeType: string) =>
+    post<LogoPresignResult>(`/companies/${publicId}/logo/presign`, { mimeType }),
+
+  confirmLogoUpload: (publicId: string, s3Key: string) =>
+    post<Company>(`/companies/${publicId}/logo/confirm`, { s3Key }),
+
+  deleteCompanyLogo: (publicId: string) =>
+    del<void>(`/companies/${publicId}/logo`),
 
   // Departments
   listDepartments: (params?: Record<string, string>) =>

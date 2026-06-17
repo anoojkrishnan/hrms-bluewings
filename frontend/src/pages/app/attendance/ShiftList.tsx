@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 interface ShiftForm {
   name: string;
@@ -210,7 +211,7 @@ export default function ShiftList() {
         }
       >
         {saveMutation.isError && (
-          <div className="alert alert-danger">{(saveMutation.error as { message?: string }).message ?? 'Failed to save'}</div>
+          <div className="alert alert-danger">{getErrorMessage(saveMutation.error)}</div>
         )}
         <div className="form-grid">
           <div className="form-group">

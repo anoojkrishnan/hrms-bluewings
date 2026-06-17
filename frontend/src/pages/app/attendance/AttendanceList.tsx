@@ -9,6 +9,7 @@ import { SETUP } from '@/lib/help/helpContent';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 function formatTime(iso?: string) {
   if (!iso) return '—';
@@ -181,7 +182,7 @@ export default function AttendanceList() {
       >
         {overrideMutation.isError && (
           <div className="alert alert-danger">
-            {(overrideMutation.error as { message?: string }).message ?? 'Failed to save override'}
+            {getErrorMessage(overrideMutation.error)}
           </div>
         )}
         <div className="form-group">

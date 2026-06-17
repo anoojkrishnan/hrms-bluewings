@@ -7,6 +7,7 @@ import { SetupGuide } from '@/components/ui/SetupGuide';
 import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 const CATEGORY_LABELS: Record<string, string> = {
   hr: 'HR', leave: 'Leave', attendance: 'Attendance', payroll: 'Payroll', finance: 'Finance',
@@ -96,7 +97,7 @@ function ReportCard({ template, companies }: { template: ReportTemplate; compani
 
       {genMutation.isError && (
         <div className="alert alert-danger" style={{ marginBottom: 8, fontSize: '0.8125rem' }}>
-          {(genMutation.error as { message?: string }).message ?? 'Generation failed'}
+          {getErrorMessage(genMutation.error)}
         </div>
       )}
 

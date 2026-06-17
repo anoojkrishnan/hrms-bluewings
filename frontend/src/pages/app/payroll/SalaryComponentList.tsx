@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 const COMPONENT_TYPES: { value: ComponentType; label: string }[] = [
   { value: 'earning',               label: 'Earning' },
@@ -172,7 +173,7 @@ export default function SalaryComponentList() {
           </div>
         }
       >
-        {mutError && <div className="alert alert-danger">{(mutError as {message?: string}).message ?? 'Failed to save'}</div>}
+        {mutError && <div className="alert alert-danger">{getErrorMessage(mutError)}</div>}
         <div className="form-grid">
           <div className="form-group">
             <label className="form-label">Code *</label>

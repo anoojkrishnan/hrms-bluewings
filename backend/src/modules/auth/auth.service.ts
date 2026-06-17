@@ -16,6 +16,20 @@ const ACCESS_TOKEN_EXPIRY = process.env.JWT_EXPIRY ?? '15m';
 const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY ?? '7d';
 const REFRESH_TOKEN_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
 
+function parseDurationToSeconds(str: string): number {
+  const match = str.match(/^(\d+)([smhd])$/);
+  if (!match) return 900;
+  const n = parseInt(match[1], 10);
+  switch (match[2]) {
+    case 's': return n;
+    case 'm': return n * 60;
+    case 'h': return n * 3600;
+    case 'd': return n * 86400;
+    default: return 900;
+  }
+}
+const ACCESS_TOKEN_EXPIRY_SECONDS = parseDurationToSeconds(ACCESS_TOKEN_EXPIRY);
+
 export class AuthService {
   constructor(private readonly userService: UserService) {}
 
@@ -131,7 +145,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
-      expiresIn: 900,
+      expiresIn: ACCESS_TOKEN_EXPIRY_SECONDS,
       userId: user.publicId,
       tenantId: user.tenantId,
       organizationId,
@@ -209,7 +223,7 @@ export class AuthService {
       type: 'access',
     });
 
-    return { accessToken: newAccessToken, refreshToken: newRefreshToken, expiresIn: 900 };
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken, expiresIn: ACCESS_TOKEN_EXPIRY_SECONDS };
   }
 
   async forgotPassword(email: string): Promise<void> {

@@ -5,6 +5,7 @@ import type { User } from '@/lib/api/user.api';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 type StatusFilter = '' | 'active' | 'suspended' | 'pending_verification';
 
@@ -25,7 +26,7 @@ export default function UserList() {
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['users', statusFilter],
     queryFn: () =>
       userApi.list(statusFilter ? { status: statusFilter, limit: '100' } : { limit: '100' }),
@@ -74,7 +75,7 @@ export default function UserList() {
       )}
 
       {isError && (
-        <div className="alert alert-danger">Failed to load users. Please try again.</div>
+        <div className="alert alert-danger">{getErrorMessage(error, 'Failed to load users.')}</div>
       )}
 
       {!isLoading && !isError && users.length === 0 && (

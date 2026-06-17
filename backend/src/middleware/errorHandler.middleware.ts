@@ -27,8 +27,20 @@ export const errorHandler = (
   }
 
   if (err instanceof ZodError) {
+    const fieldErrors: Record<string, string[]> = {};
+    const formErrors: string[] = [];
+    for (const issue of err.issues) {
+      const parts = issue.path.slice(1); // strip leading 'body'/'query'/'params' wrapper
+      if (parts.length === 0) {
+        formErrors.push(issue.message);
+      } else {
+        const key = parts.join('.');
+        if (!fieldErrors[key]) fieldErrors[key] = [];
+        fieldErrors[key].push(issue.message);
+      }
+    }
     res.status(400).json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, 'Validation failed', err.flatten()),
+      errorResponse(ErrorCodes.VALIDATION_ERROR, 'Validation failed', { fieldErrors, formErrors }),
     );
     return;
   }

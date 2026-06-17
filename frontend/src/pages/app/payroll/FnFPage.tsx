@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 type FnFStatus = 'draft' | 'pending_approval' | 'approved' | 'settled';
 
@@ -149,7 +150,7 @@ export default function FnFPage() {
           </div>
         }
       >
-        {initiateMutation.isError && <div className="alert alert-danger">{(initiateMutation.error as { message?: string }).message}</div>}
+        {initiateMutation.isError && <div className="alert alert-danger">{getErrorMessage(initiateMutation.error)}</div>}
         <div className="form-group">
           <label className="form-label">Employee *</label>
           <select className="select" value={selectedEmp} onChange={e => setSelectedEmp(e.target.value)}>

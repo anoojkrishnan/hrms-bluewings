@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 interface StructForm {
   code: string;
@@ -150,7 +151,7 @@ export default function SalaryStructureList() {
           </div>
         }
       >
-        {mutError && <div className="alert alert-danger">{(mutError as {message?: string}).message ?? 'Failed to save'}</div>}
+        {mutError && <div className="alert alert-danger">{getErrorMessage(mutError)}</div>}
         <div className="form-grid" style={{ marginBottom: 16 }}>
           <div className="form-group">
             <label className="form-label">Code *</label>

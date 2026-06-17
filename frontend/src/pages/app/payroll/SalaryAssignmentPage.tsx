@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 interface SalaryForm {
   structurePublicId: string;
@@ -189,7 +190,7 @@ export default function SalaryAssignmentPage() {
           </div>
         }
       >
-        {saveMutation.isError && <div className="alert alert-danger">{(saveMutation.error as { message?: string }).message ?? 'Failed to assign'}</div>}
+        {saveMutation.isError && <div className="alert alert-danger">{getErrorMessage(saveMutation.error)}</div>}
         <div className="form-group">
           <label className="form-label">Salary Structure *</label>
           <select className="select" value={form.structurePublicId} onChange={set('structurePublicId')}>
@@ -217,7 +218,7 @@ export default function SalaryAssignmentPage() {
           </div>
         }
       >
-        {saveMutation.isError && <div className="alert alert-danger">{(saveMutation.error as { message?: string }).message ?? 'Failed to revise'}</div>}
+        {saveMutation.isError && <div className="alert alert-danger">{getErrorMessage(saveMutation.error)}</div>}
         <div className="form-group">
           <label className="form-label">New Salary Structure *</label>
           <select className="select" value={form.structurePublicId} onChange={set('structurePublicId')}>

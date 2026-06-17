@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { PermissionGuard } from '@/components/guards/PermissionGuard';
 import { ROUTES } from '@/router/routes';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 type Tab = 'overview' | 'personal' | 'bank' | 'documents' | 'timeline';
 
@@ -109,6 +110,7 @@ export default function EmployeeDetail() {
   const [editDocOpen, setEditDocOpen] = useState(false);
   const [editingDoc, setEditingDoc] = useState<EmployeeDocument | null>(null);
   const [editDocForm, setEditDocForm] = useState({ documentName: '', documentType: 'general', expiryDate: '', verificationStatus: 'pending' });
+  const [deleteDocTarget, setDeleteDocTarget] = useState<EmployeeDocument | null>(null);
 
   // ── Queries ──────────────────────────────────────────────────────────────
 
@@ -301,7 +303,7 @@ export default function EmployeeDetail() {
       );
       qc.invalidateQueries({ queryKey: ['employee-documents', employeeCode] });
     } catch (err) {
-      setUploadError(err instanceof Error ? err.message : 'Upload failed. Please try again.');
+      setUploadError(getErrorMessage(err));
     } finally {
       setUploading(false);
       setPendingFile(null);
@@ -344,8 +346,8 @@ export default function EmployeeDetail() {
     try {
       const { url } = await employeeApi.getDocumentDownloadUrl(employeeCode, doc.publicId);
       window.open(url, '_blank', 'noopener,noreferrer');
-    } catch {
-      alert('Could not load document. Please try again.');
+    } catch (err) {
+      alert(getErrorMessage(err, 'Could not load document.'));
     } finally {
       setViewingDocId(null);
     }
@@ -682,7 +684,7 @@ export default function EmployeeDetail() {
                           <button
                             className="btn btn-ghost btn-sm"
                             style={{ color: 'var(--color-danger)' }}
-                            onClick={() => { if (confirm('Delete this document?')) deleteDocMutation.mutate(doc.publicId); }}
+                            onClick={() => setDeleteDocTarget(doc)}
                           >
                             Delete
                           </button>
@@ -764,7 +766,7 @@ export default function EmployeeDetail() {
           </div>
         }
       >
-        {updateMutation.isError && <div className="alert alert-danger">Failed to save. Please try again.</div>}
+        {updateMutation.isError && <div className="alert alert-danger">{getErrorMessage(updateMutation.error)}</div>}
         <div className="form-grid">
           <div className="form-group" style={{ gridColumn: '1 / -1' }}>
             <label className="form-label">Work Email</label>
@@ -852,7 +854,7 @@ export default function EmployeeDetail() {
           </div>
         }
       >
-        {updatePersonalMutation.isError && <div className="alert alert-danger">Failed to save. Please try again.</div>}
+        {updatePersonalMutation.isError && <div className="alert alert-danger">{getErrorMessage(updatePersonalMutation.error)}</div>}
         <div className="form-grid">
           <div className="form-group">
             <label className="form-label">First Name *</label>
@@ -978,7 +980,7 @@ export default function EmployeeDetail() {
           </div>
         }
       >
-        {updateDocMutation.isError && <div className="alert alert-danger">Failed to save. Please try again.</div>}
+        {updateDocMutation.isError && <div className="alert alert-danger">{getErrorMessage(updateDocMutation.error)}</div>}
         <div className="form-grid">
           <div className="form-group" style={{ gridColumn: '1 / -1' }}>
             <label className="form-label">Document Name *</label>
@@ -1035,7 +1037,7 @@ export default function EmployeeDetail() {
           </div>
         }
       >
-        {upsertBankMutation.isError && <div className="alert alert-danger">Failed to save. Please try again.</div>}
+        {upsertBankMutation.isError && <div className="alert alert-danger">{getErrorMessage(upsertBankMutation.error)}</div>}
         <div className="form-grid">
           <div className="form-group">
             <label className="form-label">Bank Name *</label>
@@ -1064,6 +1066,32 @@ export default function EmployeeDetail() {
             <label htmlFor="isPrimary" className="form-label" style={{ margin: 0 }}>Primary Account</label>
           </div>
         </div>
+      </Modal>
+
+      {/* ── Delete Document Confirmation Modal ── */}
+      <Modal
+        open={!!deleteDocTarget}
+        onClose={() => setDeleteDocTarget(null)}
+        title="Delete Document"
+        footer={
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={() => setDeleteDocTarget(null)}>Cancel</Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                if (deleteDocTarget) deleteDocMutation.mutate(deleteDocTarget.publicId);
+                setDeleteDocTarget(null);
+              }}
+              disabled={deleteDocMutation.isPending}
+            >
+              {deleteDocMutation.isPending ? 'Deleting…' : 'Delete'}
+            </Button>
+          </div>
+        }
+      >
+        <p>
+          Are you sure you want to delete <strong>{deleteDocTarget?.documentName}</strong>? This cannot be undone.
+        </p>
       </Modal>
 
     </div>

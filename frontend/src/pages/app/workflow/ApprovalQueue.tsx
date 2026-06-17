@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 export default function ApprovalQueue() {
   const queryClient = useQueryClient();
@@ -169,7 +170,7 @@ export default function ApprovalQueue() {
             />
           </div>
           {approveMutation.isError && (
-            <div className="alert alert-danger">Failed to approve. Please try again.</div>
+            <div className="alert alert-danger">{getErrorMessage(approveMutation.error)}</div>
           )}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 16 }}>
             <Button variant="secondary" onClick={() => setApproveTarget(null)}>Cancel</Button>
@@ -206,7 +207,7 @@ export default function ApprovalQueue() {
             />
           </div>
           {rejectMutation.isError && (
-            <div className="alert alert-danger">Failed to reject. Please try again.</div>
+            <div className="alert alert-danger">{getErrorMessage(rejectMutation.error)}</div>
           )}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 16 }}>
             <Button variant="secondary" onClick={() => setRejectTarget(null)}>Cancel</Button>

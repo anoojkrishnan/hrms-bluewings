@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { post } from '@/lib/api/client';
+import { getErrorMessage } from '@/lib/utils/errors';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -38,7 +39,7 @@ export default function Signup() {
         <h1 className={styles.heading}>Create your HRMS account</h1>
         {signupMutation.error && (
           <div className={styles.errorBanner} role="alert">
-            {(signupMutation.error as Error).message ?? 'Signup failed. Please try again.'}
+            {getErrorMessage(signupMutation.error, 'Signup failed. Please try again.')}
           </div>
         )}
         <form onSubmit={handleSubmit((d) => signupMutation.mutate(d))} className={styles.form} noValidate>

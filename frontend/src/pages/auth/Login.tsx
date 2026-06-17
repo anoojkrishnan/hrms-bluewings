@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import styles from './Auth.module.css';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 const schema = z.object({
   email: z.string().email('Enter a valid email'),
@@ -37,11 +38,12 @@ export default function Login() {
   };
 
   const errorMessage = (() => {
-    const msg = (loginError as Error | null)?.message ?? '';
-    if (msg.toLowerCase().includes('verify your email')) {
+    const msg = getErrorMessage(loginError, '');
+    if (!msg) return '';
+    if (msg.toLowerCase().includes('verify') || msg.toLowerCase().includes('not verified')) {
       return 'Your email is not yet verified. Check your inbox and click the verification link.';
     }
-    return msg || 'Invalid credentials';
+    return msg;
   })();
 
   return (

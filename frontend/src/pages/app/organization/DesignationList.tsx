@@ -8,6 +8,7 @@ import { SETUP } from '@/lib/help/helpContent';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 interface DesignationForm {
   name: string;
@@ -24,7 +25,7 @@ export default function DesignationList() {
   const [form, setForm] = useState<DesignationForm>(INITIAL_FORM);
   const [formErrors, setFormErrors] = useState<Partial<DesignationForm>>({});
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['designations'],
     queryFn: () => organizationApi.listDesignations({ limit: '100' }),
   });
@@ -99,7 +100,7 @@ export default function DesignationList() {
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
-  const mutationError = createMutation.isError || updateMutation.isError;
+  const mutationError = createMutation.error ?? updateMutation.error;
 
   return (
     <div className="page-container">
@@ -119,7 +120,7 @@ export default function DesignationList() {
       )}
 
       {isError && (
-        <div className="alert alert-danger">Failed to load designations. Please try again.</div>
+        <div className="alert alert-danger">{getErrorMessage(error, 'Failed to load designations.')}</div>
       )}
 
       {!isLoading && !isError && designations.length === 0 && (
@@ -183,7 +184,7 @@ export default function DesignationList() {
         }
       >
         {mutationError && (
-          <div className="alert alert-danger">Failed to save. Please try again.</div>
+          <div className="alert alert-danger">{getErrorMessage(mutationError)}</div>
         )}
         <div className="form-group">
           <label className="form-label">Name *</label>

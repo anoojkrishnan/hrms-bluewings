@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/lib/api/auth.api';
+import { getErrorMessage } from '@/lib/utils/errors';
 import { Card } from '@/components/ui/Card';
 import { Spinner } from '@/components/ui/Spinner';
 import styles from './Auth.module.css';
@@ -43,7 +44,7 @@ export default function EmailVerify() {
         )}
         {mutation.isError && (
           <div className={styles.errorBanner} role="alert">
-            {(mutation.error as Error)?.message || 'Verification failed. The link may have expired.'}{' '}
+            {getErrorMessage(mutation.error, 'Verification failed. The link may have expired.')}{' '}
             <Link to="/login" className={styles.link}>Go to sign in</Link>
           </div>
         )}

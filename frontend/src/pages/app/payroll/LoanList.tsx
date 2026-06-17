@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getErrorMessage } from '@/lib/utils/errors';
 
 type LoanStatus = 'pending' | 'approved' | 'active' | 'closed' | 'rejected';
 
@@ -131,7 +132,7 @@ export default function LoanList() {
           </div>
         }
       >
-        {createMutation.isError && <div className="alert alert-danger">{(createMutation.error as { message?: string }).message}</div>}
+        {createMutation.isError && <div className="alert alert-danger">{getErrorMessage(createMutation.error)}</div>}
         <div className="form-group">
           <label className="form-label">Loan Amount (₹) *</label>
           <input type="number" className="input" value={form.amount} onChange={e => setForm(p => ({ ...p, amount: e.target.value }))} placeholder="e.g. 50000" min={1000} />

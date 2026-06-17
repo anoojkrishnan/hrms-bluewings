@@ -48,6 +48,42 @@ export class OrganizationController {
     } catch (err) { next(err); }
   };
 
+  presignLogo = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId } = req.user;
+      const result = await this.service.presignLogoUpload(req.params.publicId, tenantId, req.body.mimeType as string);
+      res.json(success(result));
+    } catch (err) { next(err); }
+  };
+
+  confirmLogo = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, userId } = req.user;
+      const company = await this.service.confirmLogoUpload(req.params.publicId, tenantId, req.body.s3Key as string, userId);
+      res.json(success(company));
+    } catch (err) { next(err); }
+  };
+
+  uploadLogo = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, userId } = req.user;
+      if (!Buffer.isBuffer(req.body)) {
+        res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'Request body must be an image file' } });
+        return;
+      }
+      const mimeType = (req.headers['content-type'] as string)?.split(';')[0].trim() || 'image/png';
+      const company = await this.service.uploadCompanyLogoBuffer(req.params.publicId, tenantId, req.body, mimeType, userId);
+      res.json(success(company));
+    } catch (err) { next(err); }
+  };
+
+  deleteLogo = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      await this.service.deleteCompanyLogo(req.params.publicId, req.user.tenantId, req.user.userId);
+      res.json(success({ message: 'Logo removed.' }));
+    } catch (err) { next(err); }
+  };
+
   // ── Departments ───────────────────────────────────────────────────────
 
   createDepartment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
