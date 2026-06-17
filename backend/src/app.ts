@@ -36,12 +36,20 @@ export function createApp(): express.Application {
   app.use(helmet());
 
   // CORS
+  const rawOrigins = process.env.CORS_ORIGIN ?? 'http://localhost:5173';
+  const allowedOrigins = rawOrigins.split(',').map((o) => o.trim());
   app.use(
     cors({
-      origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
+      origin: (origin, cb) => {
+        if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+        cb(new Error(`CORS: origin ${origin} not allowed`));
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID', 'X-Organization-ID'],
+      allowedHeaders: [
+        'Content-Type', 'Authorization', 'X-Request-ID', 'X-Organization-ID',
+        'X-File-Name', 'X-File-Size', 'X-Document-Type', 'X-Document-Name', 'X-Expiry-Date',
+      ],
       exposedHeaders: ['X-Request-ID'],
     }),
   );

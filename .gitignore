@@ -1,3 +1,4 @@
 .playwright-mcp/
 
 .mcp.json
+frontend/.env.production

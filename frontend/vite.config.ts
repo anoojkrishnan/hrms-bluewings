@@ -13,7 +13,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:4000',
+        target: 'https://d2p4manhf9c43u.cloudfront.net',
         changeOrigin: true,
       },
     },
