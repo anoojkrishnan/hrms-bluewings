@@ -213,3 +213,20 @@ export const updateLocationSchema = z.object({
     timezone:       z.string().optional(),
   }),
 });
+
+export const createAuthoritySignatureSchema = z.object({
+  body: z.object({
+    employeePublicId: z.string().min(1, 'Employee is required'),
+    employeeName:     z.string().min(1, 'Employee name is required'),
+    employeeCode:     z.string().min(1, 'Employee code is required'),
+    designationId:    z.string().optional(),
+  }),
+});
+
+export const updateAuthoritySignatureSchema = z.object({
+  params: z.object({ publicId: z.string().min(1) }),
+  body: z.object({
+    employeeName: z.string().min(1).optional(),
+    employeeCode: z.string().min(1).optional(),
+  }),
+});

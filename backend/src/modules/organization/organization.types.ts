@@ -197,3 +197,34 @@ export interface CreateLocationDto {
 }
 
 export interface UpdateLocationDto extends Partial<CreateLocationDto> {}
+
+export interface AuthoritySignature {
+  _id: string;
+  publicId: string;
+  tenantId: string;
+  organizationId: string;
+  employeePublicId: string;
+  employeeName: string;
+  employeeCode: string;
+  designationName?: string;
+  signatureKey: string;
+  signatureUrl?: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string;
+  updatedBy: string;
+  deletedAt: Date | null;
+}
+
+export interface CreateAuthoritySignatureDto {
+  employeePublicId: string;
+  employeeName: string;
+  employeeCode: string;
+  designationId?: string;
+}
+
+export interface UpdateAuthoritySignatureDto {
+  employeeName?: string;
+  employeeCode?: string;
+}

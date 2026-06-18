@@ -33,6 +33,7 @@ export const ROUTES = {
   DEPARTMENTS: '/settings/departments',
   DESIGNATIONS: '/settings/designations',
   LOCATIONS: '/settings/locations',
+  AUTHORITY_SIGNATURES: '/settings/authority-signatures',
   // Admin
   USERS_MGMT: '/admin/users',
   // Payroll

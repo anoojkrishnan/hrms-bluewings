@@ -153,6 +153,30 @@ export interface CreateLocationDto {
 
 export interface UpdateLocationDto extends Partial<CreateLocationDto> {}
 
+export interface AuthoritySignature {
+  publicId: string;
+  employeePublicId: string;
+  employeeName: string;
+  employeeCode: string;
+  designationName?: string;
+  signatureUrl?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateAuthoritySignatureDto {
+  employeePublicId: string;
+  employeeName: string;
+  employeeCode: string;
+  designationId?: string;
+}
+
+export interface UpdateAuthoritySignatureDto {
+  employeeName?: string;
+  employeeCode?: string;
+}
+
 // ── API client ────────────────────────────────────────────────────────────────
 
 export const organizationApi = {
@@ -259,4 +283,35 @@ export const organizationApi = {
 
   deleteLocation: (publicId: string) =>
     del<void>(`/locations/${publicId}`),
+
+  // Authority Signatures
+  listAuthoritySignatures: (params?: Record<string, string>) =>
+    getList<AuthoritySignature>('/authority-signatures', { params }),
+
+  getAuthoritySignature: (publicId: string) =>
+    get<AuthoritySignature>(`/authority-signatures/${publicId}`),
+
+  createAuthoritySignature: (dto: CreateAuthoritySignatureDto) =>
+    post<AuthoritySignature>('/authority-signatures', dto),
+
+  updateAuthoritySignature: (publicId: string, dto: UpdateAuthoritySignatureDto) =>
+    put<AuthoritySignature>(`/authority-signatures/${publicId}`, dto),
+
+  deleteAuthoritySignature: (publicId: string) =>
+    del<void>(`/authority-signatures/${publicId}`),
+
+  uploadAuthoritySignatureImage: async (publicId: string, file: File): Promise<AuthoritySignature> => {
+    const { getApiClient } = await import('./client');
+    const client = getApiClient();
+    const buffer = await file.arrayBuffer();
+    const res = await client.post<{ success: boolean; data: AuthoritySignature }>(
+      `/authority-signatures/${publicId}/image`,
+      buffer,
+      { headers: { 'Content-Type': file.type || 'image/png' } },
+    );
+    return res.data.data;
+  },
+
+  deleteAuthoritySignatureImage: (publicId: string) =>
+    del<AuthoritySignature>(`/authority-signatures/${publicId}/image`),
 };

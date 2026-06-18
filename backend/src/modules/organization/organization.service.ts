@@ -1,6 +1,8 @@
 import { OrganizationRepository } from './organization.repository';
 import type {
+  AuthoritySignature,
   Company, Department, DepartmentTree, Designation, Grade, Location,
+  CreateAuthoritySignatureDto, UpdateAuthoritySignatureDto,
   CreateCompanyDto, UpdateCompanyDto,
   CreateDepartmentDto, UpdateDepartmentDto,
   CreateDesignationDto, UpdateDesignationDto,
@@ -17,6 +19,7 @@ import { EVENTS } from '@/shared/events/events';
 import { s3Storage } from '@/shared/storage/s3.storage';
 
 const LOGO_SIGNED_URL_TTL = 3600; // 1 hour
+const SIGNATURE_SIGNED_URL_TTL = 3600; // 1 hour
 
 function mimeToExt(mimeType: string): string {
   const map: Record<string, string> = {
@@ -548,6 +551,160 @@ export class OrganizationService {
       action: AuditAction.DELETE,
       module: 'organization',
       entityType: 'location',
+      entityPublicId: publicId,
+    });
+  }
+
+  // ── Authority Signatures ──────────────────────────────────────────────
+
+  private async withSignatureUrl(sig: AuthoritySignature): Promise<AuthoritySignature> {
+    if (!sig.signatureKey) return { ...sig, signatureKey: '', signatureUrl: undefined };
+    try {
+      const signatureUrl = await s3Storage.generatePresignedDownloadUrl(sig.signatureKey, SIGNATURE_SIGNED_URL_TTL);
+      return { ...sig, signatureUrl };
+    } catch {
+      return { ...sig, signatureUrl: undefined };
+    }
+  }
+
+  async createAuthoritySignature(dto: CreateAuthoritySignatureDto, tenantId: string, organizationId: string, actorId: string): Promise<AuthoritySignature> {
+    const existing = await this.repo.findAuthoritySignatureByEmployee(dto.employeePublicId, tenantId);
+    if (existing) {
+      throw new AppError(
+        409,
+        ErrorCodes.AUTHORITY_SIGNATURE_DUPLICATE,
+        `An authority signature already exists for this employee. Please delete the existing one before adding a new one, or edit the existing record.`,
+      );
+    }
+
+    let designationName: string | undefined;
+    if (dto.designationId) {
+      const desig = await this.repo.findDesignationByPublicId(dto.designationId, tenantId);
+      designationName = desig?.name;
+    }
+
+    const { designationId: _ignored, ...restDto } = dto;
+    const publicId = generatePublicId('sig_');
+    const sig = await this.repo.createAuthoritySignature({
+      ...restDto,
+      ...(designationName && { designationName }),
+      publicId,
+      tenantId,
+      organizationId,
+      signatureKey: '',
+      isActive: true,
+      createdBy: actorId,
+      updatedBy: actorId,
+      deletedAt: null,
+    });
+
+    auditService.writeAsync({
+      tenantId, actorId,
+      action: AuditAction.CREATE,
+      module: 'organization',
+      entityType: 'authority_signature',
+      entityPublicId: sig.publicId,
+    });
+
+    return sig;
+  }
+
+  async getAuthoritySignatureByPublicId(publicId: string, tenantId: string): Promise<AuthoritySignature> {
+    const sig = await this.repo.findAuthoritySignatureByPublicId(publicId, tenantId);
+    if (!sig) throw new AppError(404, ErrorCodes.AUTHORITY_SIGNATURE_NOT_FOUND, 'Authority signature not found');
+    return this.withSignatureUrl(sig);
+  }
+
+  async listAuthoritySignatures(tenantId: string, organizationId: string): Promise<AuthoritySignature[]> {
+    const sigs = await this.repo.findAuthoritySignaturesByOrg(tenantId, organizationId);
+    return Promise.all(sigs.map((s) => this.withSignatureUrl(s)));
+  }
+
+  async updateAuthoritySignature(publicId: string, dto: UpdateAuthoritySignatureDto, tenantId: string, actorId: string): Promise<AuthoritySignature> {
+    const existing = await this.repo.findAuthoritySignatureByPublicId(publicId, tenantId);
+    if (!existing) throw new AppError(404, ErrorCodes.AUTHORITY_SIGNATURE_NOT_FOUND, 'Authority signature not found');
+
+    const updated = await this.repo.updateAuthoritySignature(publicId, tenantId, { ...dto, updatedBy: actorId });
+    if (!updated) throw new AppError(404, ErrorCodes.AUTHORITY_SIGNATURE_NOT_FOUND, 'Authority signature not found');
+
+    auditService.writeAsync({
+      tenantId, actorId,
+      action: AuditAction.UPDATE,
+      module: 'organization',
+      entityType: 'authority_signature',
+      entityPublicId: publicId,
+      oldValue: existing as unknown as Record<string, unknown>,
+      newValue: updated as unknown as Record<string, unknown>,
+    });
+
+    return this.withSignatureUrl(updated);
+  }
+
+  async uploadAuthoritySignatureBuffer(publicId: string, tenantId: string, buffer: Buffer, mimeType: string, actorId: string): Promise<AuthoritySignature> {
+    const existing = await this.repo.findAuthoritySignatureByPublicId(publicId, tenantId);
+    if (!existing) throw new AppError(404, ErrorCodes.AUTHORITY_SIGNATURE_NOT_FOUND, 'Authority signature not found');
+
+    const ext = mimeToExt(mimeType);
+    const uid = generatePublicId('');
+    const s3Key = `tenants/${tenantId}/signatures/${existing.employeePublicId}/${uid}.${ext}`;
+
+    await s3Storage.uploadObject(s3Key, buffer, mimeType);
+
+    if (existing.signatureKey && existing.signatureKey !== s3Key) {
+      void s3Storage.deleteObject(existing.signatureKey).catch(() => undefined);
+    }
+
+    const updated = await this.repo.updateAuthoritySignature(publicId, tenantId, { signatureKey: s3Key, updatedBy: actorId });
+    if (!updated) throw new AppError(404, ErrorCodes.AUTHORITY_SIGNATURE_NOT_FOUND, 'Authority signature not found');
+
+    auditService.writeAsync({
+      tenantId, actorId,
+      action: AuditAction.UPDATE,
+      module: 'organization',
+      entityType: 'authority_signature',
+      entityPublicId: publicId,
+      newValue: { signatureKey: '[updated]' } as Record<string, unknown>,
+    });
+
+    return this.withSignatureUrl(updated);
+  }
+
+  async deleteAuthoritySignatureImage(publicId: string, tenantId: string, actorId: string): Promise<AuthoritySignature> {
+    const existing = await this.repo.findAuthoritySignatureByPublicId(publicId, tenantId);
+    if (!existing) throw new AppError(404, ErrorCodes.AUTHORITY_SIGNATURE_NOT_FOUND, 'Authority signature not found');
+    if (existing.signatureKey) {
+      void s3Storage.deleteObject(existing.signatureKey).catch(() => undefined);
+    }
+    const updated = await this.repo.clearAuthoritySignatureImage(publicId, tenantId, actorId);
+    if (!updated) throw new AppError(404, ErrorCodes.AUTHORITY_SIGNATURE_NOT_FOUND, 'Authority signature not found');
+
+    auditService.writeAsync({
+      tenantId, actorId,
+      action: AuditAction.UPDATE,
+      module: 'organization',
+      entityType: 'authority_signature',
+      entityPublicId: publicId,
+      newValue: { signatureKey: null } as Record<string, unknown>,
+    });
+
+    return updated;
+  }
+
+  async deleteAuthoritySignature(publicId: string, tenantId: string, actorId: string): Promise<void> {
+    const existing = await this.repo.findAuthoritySignatureByPublicId(publicId, tenantId);
+    if (!existing) throw new AppError(404, ErrorCodes.AUTHORITY_SIGNATURE_NOT_FOUND, 'Authority signature not found');
+
+    if (existing.signatureKey) {
+      void s3Storage.deleteObject(existing.signatureKey).catch(() => undefined);
+    }
+
+    await this.repo.softDeleteAuthoritySignature(publicId, tenantId, actorId);
+
+    auditService.writeAsync({
+      tenantId, actorId,
+      action: AuditAction.DELETE,
+      module: 'organization',
+      entityType: 'authority_signature',
       entityPublicId: publicId,
     });
   }

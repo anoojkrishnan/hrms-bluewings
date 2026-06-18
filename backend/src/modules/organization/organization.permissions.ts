@@ -19,4 +19,8 @@ export const ORGANIZATION_PERMISSIONS = {
   LOCATION_CREATE: 'organization.location.create',
   LOCATION_EDIT: 'organization.location.edit',
   LOCATION_DELETE: 'organization.location.delete',
+  AUTHORITY_SIGNATURE_VIEW: 'organization.authority_signature.view',
+  AUTHORITY_SIGNATURE_CREATE: 'organization.authority_signature.create',
+  AUTHORITY_SIGNATURE_EDIT: 'organization.authority_signature.edit',
+  AUTHORITY_SIGNATURE_DELETE: 'organization.authority_signature.delete',
 } as const;

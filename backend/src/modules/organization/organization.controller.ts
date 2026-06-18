@@ -251,4 +251,64 @@ export class OrganizationController {
       res.json(success({ message: 'Location deleted.' }));
     } catch (err) { next(err); }
   };
+
+  // ── Authority Signatures ──────────────────────────────────────────────
+
+  listAuthoritySignatures = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, organizationId } = req.user;
+      const list = await this.service.listAuthoritySignatures(tenantId, organizationId);
+      res.json(successList(list, { page: 1, limit: list.length, total: list.length, totalPages: 1, hasNext: false, hasPrev: false }));
+    } catch (err) { next(err); }
+  };
+
+  getAuthoritySignature = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const sig = await this.service.getAuthoritySignatureByPublicId(req.params.publicId, req.user.tenantId);
+      res.json(success(sig));
+    } catch (err) { next(err); }
+  };
+
+  createAuthoritySignature = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, organizationId, userId } = req.user;
+      const sig = await this.service.createAuthoritySignature(req.body, tenantId, organizationId, userId);
+      res.status(201).json(success(sig));
+    } catch (err) { next(err); }
+  };
+
+  updateAuthoritySignature = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, userId } = req.user;
+      const sig = await this.service.updateAuthoritySignature(req.params.publicId, req.body, tenantId, userId);
+      res.json(success(sig));
+    } catch (err) { next(err); }
+  };
+
+  uploadAuthoritySignature = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { tenantId, userId } = req.user;
+      if (!Buffer.isBuffer(req.body)) {
+        res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'Request body must be an image file' } });
+        return;
+      }
+      const mimeType = (req.headers['content-type'] as string)?.split(';')[0].trim() || 'image/png';
+      const sig = await this.service.uploadAuthoritySignatureBuffer(req.params.publicId, tenantId, req.body, mimeType, userId);
+      res.json(success(sig));
+    } catch (err) { next(err); }
+  };
+
+  deleteAuthoritySignatureImage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const sig = await this.service.deleteAuthoritySignatureImage(req.params.publicId, req.user.tenantId, req.user.userId);
+      res.json(success(sig));
+    } catch (err) { next(err); }
+  };
+
+  deleteAuthoritySignature = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      await this.service.deleteAuthoritySignature(req.params.publicId, req.user.tenantId, req.user.userId);
+      res.json(success({ message: 'Authority signature deleted.' }));
+    } catch (err) { next(err); }
+  };
 }

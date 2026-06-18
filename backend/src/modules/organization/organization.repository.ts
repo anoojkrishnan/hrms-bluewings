@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import type { Company, Department, Designation, Grade, Location } from './organization.types';
+import type { AuthoritySignature, Company, Department, Designation, Grade, Location } from './organization.types';
 
 // ─── Schemas (no generic Document extension to avoid tsc type explosion) ──────
 
@@ -125,6 +125,31 @@ const locationSchema = new Schema(
 );
 locationSchema.index({ tenantId: 1, publicId: 1 }, { unique: true });
 
+const authoritySignatureSchema = new Schema(
+  {
+    publicId:          { type: String, required: true },
+    tenantId:          { type: String, required: true },
+    organizationId:    { type: String, required: true },
+    employeePublicId:  { type: String, required: true },
+    employeeName:      { type: String, required: true },
+    employeeCode:      { type: String, required: true },
+    designationName:   String,
+    signatureKey:      String,
+    isActive:          { type: Boolean, default: true },
+    createdBy:         String,
+    updatedBy:         String,
+    deletedAt:         { type: Date, default: null },
+    deletedBy:         String,
+  },
+  { collection: 'authority_signatures', timestamps: true },
+);
+authoritySignatureSchema.index({ tenantId: 1, publicId: 1 }, { unique: true });
+// enforce one active signature per employee per tenant
+authoritySignatureSchema.index(
+  { tenantId: 1, employeePublicId: 1 },
+  { unique: true, partialFilterExpression: { deletedAt: null } },
+);
+
 // ─── Models ────────────────────────────────────────────────────────────────
 
 function getOrCreateModel(name: string, schema: Schema) {
@@ -136,6 +161,7 @@ const DepartmentModel = getOrCreateModel('Department', departmentSchema);
 const DesignationModel = getOrCreateModel('Designation', designationSchema);
 const GradeModel = getOrCreateModel('Grade', gradeSchema);
 const LocationModel = getOrCreateModel('Location', locationSchema);
+const AuthoritySignatureModel = getOrCreateModel('AuthoritySignature', authoritySignatureSchema);
 
 // ─── Repository ────────────────────────────────────────────────────────────
 
@@ -313,6 +339,53 @@ export class OrganizationRepository {
 
   async softDeleteLocation(publicId: string, tenantId: string, deletedBy: string): Promise<void> {
     await LocationModel.updateOne(
+      { publicId, tenantId, deletedAt: null },
+      { $set: { deletedAt: new Date(), deletedBy, isActive: false } },
+    );
+  }
+
+  // ── Authority Signatures ──────────────────────────────────────────────
+
+  async createAuthoritySignature(data: Omit<AuthoritySignature, '_id' | 'createdAt' | 'updatedAt'>): Promise<AuthoritySignature> {
+    const doc = await AuthoritySignatureModel.create(data);
+    return doc.toObject() as unknown as AuthoritySignature;
+  }
+
+  async findAuthoritySignatureByPublicId(publicId: string, tenantId: string): Promise<AuthoritySignature | null> {
+    const doc = await AuthoritySignatureModel.findOne({ ...this.baseFilter(tenantId), publicId }).lean();
+    return doc as unknown as AuthoritySignature | null;
+  }
+
+  async findAuthoritySignatureByEmployee(employeePublicId: string, tenantId: string): Promise<AuthoritySignature | null> {
+    const doc = await AuthoritySignatureModel.findOne({ ...this.baseFilter(tenantId), employeePublicId }).lean();
+    return doc as unknown as AuthoritySignature | null;
+  }
+
+  async findAuthoritySignaturesByOrg(tenantId: string, organizationId: string): Promise<AuthoritySignature[]> {
+    const docs = await AuthoritySignatureModel.find(this.baseFilter(tenantId, organizationId)).sort({ createdAt: -1 }).lean();
+    return docs as unknown as AuthoritySignature[];
+  }
+
+  async updateAuthoritySignature(publicId: string, tenantId: string, data: Partial<AuthoritySignature>): Promise<AuthoritySignature | null> {
+    const doc = await AuthoritySignatureModel.findOneAndUpdate(
+      { ...this.baseFilter(tenantId), publicId },
+      { $set: data },
+      { new: true },
+    ).lean();
+    return doc as unknown as AuthoritySignature | null;
+  }
+
+  async clearAuthoritySignatureImage(publicId: string, tenantId: string, updatedBy: string): Promise<AuthoritySignature | null> {
+    const doc = await AuthoritySignatureModel.findOneAndUpdate(
+      { ...this.baseFilter(tenantId), publicId },
+      { $set: { updatedBy }, $unset: { signatureKey: '' } },
+      { new: true },
+    ).lean();
+    return doc as unknown as AuthoritySignature | null;
+  }
+
+  async softDeleteAuthoritySignature(publicId: string, tenantId: string, deletedBy: string): Promise<void> {
+    await AuthoritySignatureModel.updateOne(
       { publicId, tenantId, deletedAt: null },
       { $set: { deletedAt: new Date(), deletedBy, isActive: false } },
     );

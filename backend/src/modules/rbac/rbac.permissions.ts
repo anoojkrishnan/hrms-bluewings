@@ -101,6 +101,10 @@ export const ALL_SYSTEM_PERMISSIONS: Array<{
   { code: 'organization.location.create', module: 'organization', action: 'create', description: 'Create locations' },
   { code: 'organization.location.edit', module: 'organization', action: 'edit', description: 'Edit locations' },
   { code: 'organization.location.delete', module: 'organization', action: 'delete', description: 'Delete locations' },
+  { code: 'organization.authority_signature.view', module: 'organization', action: 'view', description: 'View authority signatures' },
+  { code: 'organization.authority_signature.create', module: 'organization', action: 'create', description: 'Create authority signatures' },
+  { code: 'organization.authority_signature.edit', module: 'organization', action: 'edit', description: 'Edit authority signatures' },
+  { code: 'organization.authority_signature.delete', module: 'organization', action: 'delete', description: 'Delete authority signatures' },
   // Tenant
   { code: 'tenant.settings.view', module: 'tenant', action: 'view', description: 'View tenant settings' },
   { code: 'tenant.settings.edit', module: 'tenant', action: 'edit', description: 'Edit tenant settings' },

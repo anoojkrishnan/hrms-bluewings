@@ -76,10 +76,11 @@ const NAV: NavSection[] = [
   {
     title: 'Organisation',
     items: [
-      { label: 'Companies',    path: ROUTES.COMPANIES,    icon: '⬡', anyOf: ['organization.company.view'] },
-      { label: 'Departments',  path: ROUTES.DEPARTMENTS,  icon: '◫', anyOf: ['organization.department.view'] },
-      { label: 'Designations', path: ROUTES.DESIGNATIONS, icon: '◧', anyOf: ['organization.designation.view'] },
-      { label: 'Locations',    path: ROUTES.LOCATIONS,    icon: '◎', anyOf: ['organization.location.view'] },
+      { label: 'Companies',         path: ROUTES.COMPANIES,             icon: '⬡', anyOf: ['organization.company.view'] },
+      { label: 'Departments',       path: ROUTES.DEPARTMENTS,           icon: '◫', anyOf: ['organization.department.view'] },
+      { label: 'Designations',      path: ROUTES.DESIGNATIONS,          icon: '◧', anyOf: ['organization.designation.view'] },
+      { label: 'Locations',         path: ROUTES.LOCATIONS,             icon: '◎', anyOf: ['organization.location.view'] },
+      { label: 'Auth Signatures',   path: ROUTES.AUTHORITY_SIGNATURES,  icon: '✍', anyOf: ['organization.authority_signature.view'] },
     ],
   },
   {

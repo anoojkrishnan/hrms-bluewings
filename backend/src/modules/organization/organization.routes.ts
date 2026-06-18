@@ -12,6 +12,7 @@ import {
   createDesignationSchema, updateDesignationSchema,
   createGradeSchema, updateGradeSchema,
   createLocationSchema, updateLocationSchema,
+  createAuthoritySignatureSchema, updateAuthoritySignatureSchema,
   publicIdParamSchema,
 } from './organization.validator';
 
@@ -62,5 +63,14 @@ router.delete('/locations/:publicId', requirePermission(P.LOCATION_DELETE), vali
 
 // ── Org chart ─────────────────────────────────────────────────────────────
 router.get('/org-chart', requirePermission(P.DEPARTMENT_VIEW), ctrl.getDepartmentTree);
+
+// ── Authority Signatures ──────────────────────────────────────────────────
+router.get('/authority-signatures', requirePermission(P.AUTHORITY_SIGNATURE_VIEW), ctrl.listAuthoritySignatures);
+router.post('/authority-signatures', requirePermission(P.AUTHORITY_SIGNATURE_CREATE), validate(createAuthoritySignatureSchema), ctrl.createAuthoritySignature);
+router.get('/authority-signatures/:publicId', requirePermission(P.AUTHORITY_SIGNATURE_VIEW), validate(publicIdParamSchema), ctrl.getAuthoritySignature);
+router.put('/authority-signatures/:publicId', requirePermission(P.AUTHORITY_SIGNATURE_EDIT), validate(updateAuthoritySignatureSchema), ctrl.updateAuthoritySignature);
+router.delete('/authority-signatures/:publicId', requirePermission(P.AUTHORITY_SIGNATURE_DELETE), validate(publicIdParamSchema), ctrl.deleteAuthoritySignature);
+router.post('/authority-signatures/:publicId/image', requirePermission(P.AUTHORITY_SIGNATURE_EDIT), raw({ type: '*/*', limit: '5mb' }), ctrl.uploadAuthoritySignature);
+router.delete('/authority-signatures/:publicId/image', requirePermission(P.AUTHORITY_SIGNATURE_EDIT), validate(publicIdParamSchema), ctrl.deleteAuthoritySignatureImage);
 
 export { router as organizationRouter };

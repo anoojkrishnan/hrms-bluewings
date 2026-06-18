@@ -418,7 +418,7 @@ export default function CompanyList() {
                       <button
                         onClick={() => setLightboxUrl(c.logoUrl!)}
                         title="Click to view full size"
-                        style={{ background: 'none', border: 'none', padding: 0, cursor: 'zoom-in', display: 'block' }}
+                        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'block' }}
                       >
                         <img src={c.logoUrl} alt={c.name} style={{ height: 32, width: 32, objectFit: 'contain', borderRadius: 4, border: '1px solid var(--color-border)', display: 'block' }} />
                       </button>
@@ -704,7 +704,7 @@ export default function CompanyList() {
             position: 'fixed', inset: 0, zIndex: 9999,
             background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'zoom-out',
+            cursor: 'pointer',
           }}
         >
           <div

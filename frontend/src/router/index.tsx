@@ -39,10 +39,11 @@ const RuleSetList      = lazy(() => import('@/pages/app/rules/RuleSetList'));
 const FormList         = lazy(() => import('@/pages/app/forms/FormList'));
 
 // Organisation
-const CompanyList     = lazy(() => import('@/pages/app/organization/CompanyList'));
-const DepartmentList  = lazy(() => import('@/pages/app/organization/DepartmentList'));
-const DesignationList = lazy(() => import('@/pages/app/organization/DesignationList'));
-const LocationList    = lazy(() => import('@/pages/app/organization/LocationList'));
+const CompanyList              = lazy(() => import('@/pages/app/organization/CompanyList'));
+const DepartmentList           = lazy(() => import('@/pages/app/organization/DepartmentList'));
+const DesignationList          = lazy(() => import('@/pages/app/organization/DesignationList'));
+const LocationList             = lazy(() => import('@/pages/app/organization/LocationList'));
+const AuthoritySignatureList   = lazy(() => import('@/pages/app/organization/AuthoritySignatureList'));
 
 // Admin
 const UserList = lazy(() => import('@/pages/app/admin/UserList'));
@@ -179,6 +180,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.LOCATIONS,
         element: <P perm="organization.location.view"><LocationList /></P>,
+      },
+      {
+        path: ROUTES.AUTHORITY_SIGNATURES,
+        element: <P perm="organization.authority_signature.view"><AuthoritySignatureList /></P>,
       },
 
       // ── Admin ────────────────────────────────────────────────────────────
